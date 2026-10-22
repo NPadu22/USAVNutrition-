@@ -12,7 +12,14 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
-<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0}img{max-width:100%}[hidden]{display:none!important}.install{background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 20%,var(--surface)),var(--surface) 70%)}
+.inst-icon{width:52px;height:52px;border-radius:13px;flex:none;box-shadow:0 2px 8px rgb(0 0 0 / .2)}
+.install h3{font-size:1.1rem}
+.install .x{all:unset;cursor:pointer;font-size:1.4rem;line-height:1;color:var(--muted);padding:0 4px}
+.install .x:focus-visible{outline:2px solid var(--accent)}
+.steps{margin:0;padding-left:20px;display:grid;gap:6px;font-size:.9rem}
+.kbd{display:inline-block;padding:0 6px;border:1px solid var(--line);border-radius:6px;font-size:.8rem}
+</style>
 </head><body>
 <title>USA Volleyball Nutrition</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -512,11 +519,30 @@ function renderTabs(){
 }
 
 /* ===== Views ===== */
+
+/* ===== Install as a phone app ===== */
+let deferredInstall=null;
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e;if(profile)render()});
+window.addEventListener("appinstalled",()=>{deferredInstall=null;toast("Installed. Open it from your home screen");render()});
+function isInstalled(){try{return matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}catch(e){return false}}
+function phoneKind(){const u=navigator.userAgent||"";const ios=/iPhone|iPad|iPod/.test(u)||(/Macintosh/.test(u)&&navigator.maxTouchPoints>1);
+  if(ios){if(/CriOS|FxiOS|EdgiOS|Instagram|FBAN|FBAV|Line\/|GSA\//.test(u))return "ios-other";return "ios"}
+  if(/Android/.test(u))return "android";return "desktop"}
+function installSteps(){const k=phoneKind();
+  if(k==="ios")return `<ol class="steps"><li>Tap the <b>Share</b> button <span class="kbd">⬆︎</span> at the bottom of Safari.</li><li>Scroll and tap <b>Add to Home Screen</b>.</li><li>Tap <b>Add</b>, then open USAV Nutrition from your home screen.</li></ol>`;
+  if(k==="ios-other")return `<ol class="steps"><li>This browser can't install apps on iPhone. Copy the link and open it in <b>Safari</b>.</li><li>In Safari, tap <b>Share</b> <span class="kbd">⬆︎</span> → <b>Add to Home Screen</b>.</li></ol><div class="row"><span class="copybox grow" id="inst-link">${esc(CONFIG.appLink||location.href)}</span><button class="btn ghost sm" data-copy="inst-link">Copy</button></div>`;
+  if(k==="android")return deferredInstall?`<button class="btn block" data-install="1">Install the app</button>`:`<ol class="steps"><li>In Chrome, tap the <b>⋮</b> menu at the top right.</li><li>Tap <b>Install app</b> or <b>Add to Home screen</b>.</li></ol>`;
+  return deferredInstall?`<button class="btn block" data-install="1">Install the app</button>`:`<p class="muted" style="font-size:.88rem">Open this link on your phone to install it.</p>`}
+function installCard(where){
+  if(isInstalled())return "";
+  if(where==="home"){try{if(localStorage.getItem("af_installHide"))return ""}catch(e){}}
+  return `<div class="card stack install"><div class="row" style="align-items:flex-start"><img src="icon-192.png" alt="" class="inst-icon"><div class="grow"><h3>Get the app on your phone</h3><p class="muted" style="font-size:.86rem">${where==="setup"?"Install it first. Your profile and journal save inside the app, so set up after you open it from your home screen.":"Opens full screen, works without signal, and keeps your profile and journal safe."}</p></div>${where==="home"?`<button class="x" data-installhide="1" aria-label="Hide">×</button>`:""}</div>${installSteps()}</div>`}
 function vOnboard(){
   const p=draft;
   p.allergies=p.allergies||[];
   return `<div class="view">
    <div class="court hero"><div class="hero-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><span class="eyebrow">Athlete setup</span></div>${STARS5}<p class="wordmark"><span>Nutrition</span></p><p class="hello">${draft.editing?"Update your profile.":"Welcome. Takes about a minute."}</p><p class="muted" style="margin-top:6px">Your answers flag your allergens on every menu and set the protein in your smoothies.</p></div>
+   ${draft.editing?"":installCard("setup")}
    <form id="onb" class="stack card">
     <div class="namerow"><label for="f-first">First name<input id="f-first" required value="${esc(p.first??(p.name||"").split(" ")[0]??"")}" placeholder="First Name" autocomplete="given-name"></label><label for="f-last">Last name<input id="f-last" required value="${esc(p.last??(p.name||"").split(" ").slice(1).join(" "))}" placeholder="Last Name" autocomplete="family-name"></label></div>
     <div class="stack" style="gap:6px"><span class="eyebrow">Team</span><div class="choice" data-pick="team">${["WNT","MNT"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${p.team===t}">${t}</button>`).join("")}</div></div>
@@ -565,6 +591,7 @@ function vHome(){
     <div class="meta"><span class="chip blue">${profile.protein} protein</span>${myAllergens().length?`<span class="chip stop">${myAllergens().length} allergen${myAllergens().length>1?"s":""} flagged</span>`:`<span class="chip ok">No allergens listed</span>`}${esc(profile.position)?`<span class="chip">${esc(profile.position)}</span>`:""}</div>
    </header>
 
+   ${installCard("home")}
    <section><div class="sec-head"><h2>${weekend?"Monday's menu":"Today's menu"}</h2><span class="row" style="gap:14px"><button class="linkbtn" data-go="journal">Log a meal</button><button class="linkbtn" data-go="food" data-seg="menu">Full week</button></span></div>
     ${meals.length?`<div class="lineup">${luHead(weekend?"Monday's lineup":"Today's lineup",todayIso,"")}${meals.map(x=>mealHTML(x)).join("")}</div>
     ${(()=>{const x=smoothieFor(todayIso);if(!x||!(x.team==="Both"||x.team===teamOf()))return "";const me=mySmoothie(x);return `<button class="tile" data-go="food" data-seg="smoothie" style="min-height:0"><span>${weekend?"Monday's":"Today's"} smoothie</span><b>${esc(me.n)}</b><span>${esc(me.prot)}${hits(me.a)?" · may contain your allergen":""}</span></button>`})()}
@@ -716,6 +743,7 @@ function vMe(){
     <button class="btn ghost block" data-edit="1">Edit profile</button></div>
    ${canEdit?`<div class="card stack"><span class="eyebrow">Share with athletes · editors only</span><img src="qr-code.png" alt="QR code that opens this app" style="width:180px;align-self:center;border-radius:8px"><div class="row"><span class="copybox grow" id="app-link">${CONFIG.appLink}</span><button class="btn ghost sm" data-copy="app-link">Copy</button></div><p class="stamp">Athletes can open this without a Claude account once link sharing is on in the Share menu.</p></div>`:""}
    ${canEdit?`<button class="tile editlink" data-tab="edit"><b>Edit menus & announcements</b><span>Only you and other editors see this. Last published ${fmtDate(DATA.updated)}.</span></button>`:""}
+   ${isInstalled()?"":`<section><h2>Install the app</h2>${installCard("me")}</section>`}
    <section><h2>Accent color</h2><div class="swatches">${ACCENTS.map(a=>`<button class="sw" style="background:${a.c}" data-accent="${a.c}" aria-label="${a.n}" aria-pressed="${prefs.accent===a.c}"></button>`).join("")}</div></section>
    <section><h2>Appearance</h2><div class="choice" data-pref="theme">${[["system","System"],["dark","Dark"],["light","Light"]].map(([k,l])=>`<button type="button" data-v="${k}" aria-pressed="${prefs.theme===k}">${l}</button>`).join("")}</div>
     <div class="choice" data-pref="large"><button type="button" data-v="0" aria-pressed="${!prefs.large}">Standard text</button><button type="button" data-v="1" aria-pressed="${!!prefs.large}">Larger text</button></div></section></div>`;
@@ -1016,6 +1044,8 @@ document.addEventListener("click",e=>{
   if(b.dataset.accent){prefs.accent=b.dataset.accent;store.set("prefs",prefs);render();toast("Accent updated");return}
   if(b.dataset.ack){profile.ack=true;store.set("profile",profile);render();return}
   if(b.dataset.rseg){rankSeg=b.dataset.rseg;render();return}
+  if(b.dataset.install){if(deferredInstall){deferredInstall.prompt();deferredInstall.userChoice.finally(()=>{deferredInstall=null;render()})}return}
+  if(b.dataset.installhide){try{localStorage.setItem("af_installHide","1")}catch(e){}render();toast("You can install it anytime from Me");return}
   if(b.dataset.lseg){learnSeg=b.dataset.lseg;render();const q=$("#q");if(q&&draft.q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}return}
   if(b.dataset.gtopic){gTopic=b.dataset.gtopic;b.parentElement.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.gtopic===gTopic));$("#guides").innerHTML=guidesHTML();return}
   if(b.dataset.guide){const g=GUIDES[+b.dataset.guide];const lb=$("#lightbox");lb.querySelector("img").src=g.img;lb.querySelector("img").alt=g.alt;lb.querySelector("p").textContent=g.d;lb.hidden=false;lb.querySelector("button").focus();return}
@@ -1051,6 +1081,7 @@ document.addEventListener("change",e=>{if(e.target.id==="j-photo"&&e.target.file
 document.addEventListener("input",e=>{const t=e.target;if(t.dataset&&t.dataset.ed&&ED){setPath(ED,t.dataset.ed,t.dataset.num?(t.value===""?"":Number(t.value)):t.value);edStatus();return}if(e.target.id==="q"){draft.q=e.target.value;const f=$("#faq"),g=$("#guides"),h=$("#guidehint");if(f)f.innerHTML=faqHTML();if(g)g.innerHTML=guidesHTML();if(h)h.innerHTML=guideHint()}});
 
 render();
+if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
 
 /* ===== Content from Google Sheet (standalone site) =====
    CONFIG.sheetId = the long ID in the Google Sheet's address. Sheet sharing: "Anyone with the link can view".
