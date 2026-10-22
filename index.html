@@ -19,6 +19,77 @@
 .install .x:focus-visible{outline:2px solid var(--accent)}
 .steps{margin:0;padding-left:20px;display:grid;gap:6px;font-size:.9rem}
 .kbd{display:inline-block;padding:0 6px;border:1px solid var(--line);border-radius:6px;font-size:.8rem}
+
+/* ===== Personal looks: color themes, style, fonts, contrast ===== */
+:root[data-palette="rose"]{--bg:#1B1015;--surface:#2A1820;--surface-2:#3A2330;--line:#4B2E3D;--fg:#FFF4F7;--muted:#D9AEBE;--accent:#EE7FA3;--blue:#B5547A;--sel-bg:#FFF4F7;--sel-fg:#4A1F33;--wordmark:#F7A8C2;--paper:#FFF6F8;--ink:#4A1F33;--ink-muted:#8C5D70;--on-accent:#3A1426;--accent-text:var(--accent);color-scheme:dark;}
+@media (prefers-color-scheme: light){:root[data-palette="rose"]:not([data-theme="dark"]){--bg:#FFF7F9;--surface:#FFFFFF;--surface-2:#FBE8EF;--line:#F3D3DF;--fg:#4A1F33;--muted:#8C5D70;--accent:#D9507F;--blue:#E9A3BC;--sel-bg:#4A1F33;--sel-fg:#FFFFFF;--wordmark:#D9507F;--paper:#FFFFFF;--ink:#4A1F33;--ink-muted:#8C5D70;--on-accent:#FFFFFF;--accent-text:var(--accent);color-scheme:light;}}
+:root[data-palette="rose"][data-theme="light"]{--bg:#FFF7F9;--surface:#FFFFFF;--surface-2:#FBE8EF;--line:#F3D3DF;--fg:#4A1F33;--muted:#8C5D70;--accent:#D9507F;--blue:#E9A3BC;--sel-bg:#4A1F33;--sel-fg:#FFFFFF;--wordmark:#D9507F;--paper:#FFFFFF;--ink:#4A1F33;--ink-muted:#8C5D70;--on-accent:#FFFFFF;--accent-text:var(--accent);color-scheme:light;}
+:root[data-palette="blush"]{--bg:#0E1426;--surface:#1A2238;--surface-2:#262F48;--line:#333D58;--fg:#FDF1EE;--muted:#C9B9BC;--accent:#F2A7A0;--blue:#C97C76;--sel-bg:#F2A7A0;--sel-fg:#1A2238;--wordmark:#F2A7A0;--paper:#FFF5F2;--ink:#1F2A44;--ink-muted:#6A6F85;--on-accent:#1A2238;--accent-text:var(--accent);color-scheme:dark;}
+@media (prefers-color-scheme: light){:root[data-palette="blush"]:not([data-theme="dark"]){--bg:#FDF4F1;--surface:#FFFFFF;--surface-2:#F8E4DF;--line:#EFD3CC;--fg:#1F2A44;--muted:#6A6F85;--accent:#D9685F;--blue:#F2A7A0;--sel-bg:#1F2A44;--sel-fg:#FFFFFF;--wordmark:#1F2A44;--paper:#FFFFFF;--ink:#1F2A44;--ink-muted:#6A6F85;--on-accent:#FFFFFF;--accent-text:var(--accent);color-scheme:light;}}
+:root[data-palette="blush"][data-theme="light"]{--bg:#FDF4F1;--surface:#FFFFFF;--surface-2:#F8E4DF;--line:#EFD3CC;--fg:#1F2A44;--muted:#6A6F85;--accent:#D9685F;--blue:#F2A7A0;--sel-bg:#1F2A44;--sel-fg:#FFFFFF;--wordmark:#1F2A44;--paper:#FFFFFF;--ink:#1F2A44;--ink-muted:#6A6F85;--on-accent:#FFFFFF;--accent-text:var(--accent);color-scheme:light;}
+:root[data-palette="lavender"]{--bg:#14111F;--surface:#211C33;--surface-2:#2E2745;--line:#3B3356;--fg:#F6F2FF;--muted:#BFB3DD;--accent:#B39DF0;--blue:#8F78D8;--sel-bg:#F6F2FF;--sel-fg:#2E2350;--wordmark:#C9B8F5;--paper:#F9F7FF;--ink:#2E2350;--ink-muted:#6E6490;--on-accent:#1E1638;--accent-text:var(--accent);color-scheme:dark;}
+@media (prefers-color-scheme: light){:root[data-palette="lavender"]:not([data-theme="dark"]){--bg:#F8F6FE;--surface:#FFFFFF;--surface-2:#EEE9FB;--line:#DDD4F5;--fg:#2E2350;--muted:#6E6490;--accent:#7E5FD6;--blue:#C9B8F5;--sel-bg:#2E2350;--sel-fg:#FFFFFF;--wordmark:#7E5FD6;--paper:#FFFFFF;--ink:#2E2350;--ink-muted:#6E6490;--on-accent:#FFFFFF;--accent-text:var(--accent);color-scheme:light;}}
+:root[data-palette="lavender"][data-theme="light"]{--bg:#F8F6FE;--surface:#FFFFFF;--surface-2:#EEE9FB;--line:#DDD4F5;--fg:#2E2350;--muted:#6E6490;--accent:#7E5FD6;--blue:#C9B8F5;--sel-bg:#2E2350;--sel-fg:#FFFFFF;--wordmark:#7E5FD6;--paper:#FFFFFF;--ink:#2E2350;--ink-muted:#6E6490;--on-accent:#FFFFFF;--accent-text:var(--accent);color-scheme:light;}
+:root[data-palette="sage"]{--bg:#0F1512;--surface:#1A241F;--surface-2:#25322B;--line:#314038;--fg:#F1F6F2;--muted:#A9C0B2;--accent:#8CC0A0;--blue:#5E8C72;--sel-bg:#F1F6F2;--sel-fg:#1F3329;--wordmark:#A8D4B9;--paper:#F6FAF7;--ink:#1F3329;--ink-muted:#5E7468;--on-accent:#13241B;--accent-text:var(--accent);color-scheme:dark;}
+@media (prefers-color-scheme: light){:root[data-palette="sage"]:not([data-theme="dark"]){--bg:#F5F9F6;--surface:#FFFFFF;--surface-2:#E6F0EA;--line:#D2E2D8;--fg:#1F3329;--muted:#5E7468;--accent:#4F8A69;--blue:#A8D4B9;--sel-bg:#1F3329;--sel-fg:#FFFFFF;--wordmark:#4F8A69;--paper:#FFFFFF;--ink:#1F3329;--ink-muted:#5E7468;--on-accent:#FFFFFF;--accent-text:var(--accent);color-scheme:light;}}
+:root[data-palette="sage"][data-theme="light"]{--bg:#F5F9F6;--surface:#FFFFFF;--surface-2:#E6F0EA;--line:#D2E2D8;--fg:#1F3329;--muted:#5E7468;--accent:#4F8A69;--blue:#A8D4B9;--sel-bg:#1F3329;--sel-fg:#FFFFFF;--wordmark:#4F8A69;--paper:#FFFFFF;--ink:#1F3329;--ink-muted:#5E7468;--on-accent:#FFFFFF;--accent-text:var(--accent);color-scheme:light;}
+:root[data-palette="sky"]{--bg:#0B1320;--surface:#142033;--surface-2:#1E2D45;--line:#2A3B57;--fg:#F2F7FD;--muted:#A8BCD6;--accent:#7EB8F0;--blue:#4F86C6;--sel-bg:#F2F7FD;--sel-fg:#17304F;--wordmark:#9CCAF5;--paper:#F7FAFE;--ink:#17304F;--ink-muted:#5A6F8C;--on-accent:#0E2340;--accent-text:var(--accent);color-scheme:dark;}
+@media (prefers-color-scheme: light){:root[data-palette="sky"]:not([data-theme="dark"]){--bg:#F4F8FD;--surface:#FFFFFF;--surface-2:#E3EDF9;--line:#CFDDF0;--fg:#17304F;--muted:#5A6F8C;--accent:#3478C6;--blue:#9CCAF5;--sel-bg:#17304F;--sel-fg:#FFFFFF;--wordmark:#3478C6;--paper:#FFFFFF;--ink:#17304F;--ink-muted:#5A6F8C;--on-accent:#FFFFFF;--accent-text:var(--accent);color-scheme:light;}}
+:root[data-palette="sky"][data-theme="light"]{--bg:#F4F8FD;--surface:#FFFFFF;--surface-2:#E3EDF9;--line:#CFDDF0;--fg:#17304F;--muted:#5A6F8C;--accent:#3478C6;--blue:#9CCAF5;--sel-bg:#17304F;--sel-fg:#FFFFFF;--wordmark:#3478C6;--paper:#FFFFFF;--ink:#17304F;--ink-muted:#5A6F8C;--on-accent:#FFFFFF;--accent-text:var(--accent);color-scheme:light;}
+:root[data-palette="peach"]{--bg:#1A120E;--surface:#2A1D17;--surface-2:#3A2820;--line:#4A352B;--fg:#FFF6F1;--muted:#D9B9A8;--accent:#F4A07C;--blue:#C77A58;--sel-bg:#FFF6F1;--sel-fg:#4A2A1C;--wordmark:#F7B595;--paper:#FFF8F4;--ink:#4A2A1C;--ink-muted:#8C6A5A;--on-accent:#3A1E12;--accent-text:var(--accent);color-scheme:dark;}
+@media (prefers-color-scheme: light){:root[data-palette="peach"]:not([data-theme="dark"]){--bg:#FFF8F4;--surface:#FFFFFF;--surface-2:#FCEADF;--line:#F3D6C6;--fg:#4A2A1C;--muted:#8C6A5A;--accent:#D9683F;--blue:#F7B595;--sel-bg:#4A2A1C;--sel-fg:#FFFFFF;--wordmark:#D9683F;--paper:#FFFFFF;--ink:#4A2A1C;--ink-muted:#8C6A5A;--on-accent:#FFFFFF;--accent-text:var(--accent);color-scheme:light;}}
+:root[data-palette="peach"][data-theme="light"]{--bg:#FFF8F4;--surface:#FFFFFF;--surface-2:#FCEADF;--line:#F3D6C6;--fg:#4A2A1C;--muted:#8C6A5A;--accent:#D9683F;--blue:#F7B595;--sel-bg:#4A2A1C;--sel-fg:#FFFFFF;--wordmark:#D9683F;--paper:#FFFFFF;--ink:#4A2A1C;--ink-muted:#8C6A5A;--on-accent:#FFFFFF;--accent-text:var(--accent);color-scheme:light;}
+:root[data-palette="mono"]{--bg:#000000;--surface:#121212;--surface-2:#1E1E1E;--line:#3A3A3A;--fg:#FFFFFF;--muted:#C8C8C8;--accent:#FFFFFF;--blue:#9A9A9A;--sel-bg:#FFFFFF;--sel-fg:#000000;--wordmark:#FFFFFF;--paper:#FFFFFF;--ink:#000000;--ink-muted:#3A3A3A;--on-accent:#000000;--accent-text:var(--accent);color-scheme:dark;}
+@media (prefers-color-scheme: light){:root[data-palette="mono"]:not([data-theme="dark"]){--bg:#FFFFFF;--surface:#F3F3F3;--surface-2:#E6E6E6;--line:#BDBDBD;--fg:#000000;--muted:#3A3A3A;--accent:#000000;--blue:#7A7A7A;--sel-bg:#000000;--sel-fg:#FFFFFF;--wordmark:#000000;--paper:#FFFFFF;--ink:#000000;--ink-muted:#3A3A3A;--on-accent:#FFFFFF;--accent-text:var(--accent);color-scheme:light;}}
+:root[data-palette="mono"][data-theme="light"]{--bg:#FFFFFF;--surface:#F3F3F3;--surface-2:#E6E6E6;--line:#BDBDBD;--fg:#000000;--muted:#3A3A3A;--accent:#000000;--blue:#7A7A7A;--sel-bg:#000000;--sel-fg:#FFFFFF;--wordmark:#000000;--paper:#FFFFFF;--ink:#000000;--ink-muted:#3A3A3A;--on-accent:#FFFFFF;--accent-text:var(--accent);color-scheme:light;}
+:root{--chip-font:600 .7rem/1 var(--mono)}
+html{font-size:15px}
+body{font-size:1rem}
+/* Simple style (default): softer, quieter, sentence case */
+:root[data-style="soft"]{--fabric:linear-gradient(var(--bg),var(--bg));--r:20px}
+:root[data-style="soft"] body{background:var(--bg)}
+:root[data-style="soft"] h1,:root[data-style="soft"] .tile b,:root[data-style="soft"] .ng b,:root[data-style="soft"] .guide b,:root[data-style="soft"] .feature h3,:root[data-style="soft"] .datebar b,:root[data-style="soft"] .lineup .lu-title{text-transform:none;letter-spacing:0}
+:root[data-style="soft"] h1{font-size:2.1rem}
+:root[data-style="soft"] .eyebrow,:root[data-style="soft"] .stamp,:root[data-style="soft"] .chip,:root[data-style="soft"] .rot,:root[data-style="soft"] .macros i,:root[data-style="soft"] .lineup .lu-date{font-family:var(--body);letter-spacing:.01em;text-transform:none}
+:root[data-style="soft"] .eyebrow{font-weight:600;font-size:.78rem}
+:root[data-style="soft"] .stamp{font-size:.76rem}
+:root[data-style="soft"] .chip{font-size:.74rem;font-weight:600;padding:5px 10px}
+:root[data-style="soft"] .court::before{display:none}
+:root[data-style="soft"] .court{background:var(--surface)}
+:root[data-style="soft"] .court::after{height:4px}
+:root[data-style="soft"] .sb{background:color-mix(in srgb,var(--accent) 16%,transparent);box-shadow:none;border-radius:999px;padding:1px 8px;font:700 .85em var(--body);letter-spacing:0}
+:root[data-style="soft"] .sb-ghost{display:none}
+:root[data-style="soft"] .sb-on{color:inherit;text-shadow:none}
+:root[data-style="soft"] .sb.big{font-size:1.4rem}
+:root[data-style="soft"] .lineup{background:var(--paper)}
+:root[data-style="soft"] .lineup .lu-head{background:var(--surface-2);color:var(--fg)}
+:root[data-style="soft"] .lineup .lu-head .sb{color:var(--fg)}
+:root[data-style="soft"] .card,:root[data-style="soft"] .tile,:root[data-style="soft"] .ng,:root[data-style="soft"] .lineup,:root[data-style="soft"] .guide{box-shadow:0 1px 2px rgb(0 0 0 / .06),0 6px 20px rgb(0 0 0 / .06)}
+:root[data-style="soft"] .nav-grid .ng:first-child{background:var(--surface)}
+:root[data-style="soft"] h2::before{width:.5em;height:.5em}
+/* Fonts other than Classic read better without forced capitals */
+:root[data-font]:not([data-font="classic"]) h1,:root[data-font]:not([data-font="classic"]) .tile b,:root[data-font]:not([data-font="classic"]) .ng b,:root[data-font]:not([data-font="classic"]) .feature h3,:root[data-font]:not([data-font="classic"]) .lineup .lu-title,:root[data-font]:not([data-font="classic"]) .guide b{text-transform:none;letter-spacing:0}
+/* High contrast */
+:root[data-contrast="high"]:not(.a):not(.b){--muted:color-mix(in srgb,var(--fg) 85%,var(--bg));--line:color-mix(in srgb,var(--fg) 45%,var(--bg));--ink-muted:var(--ink)}
+:root[data-contrast="high"] .card,:root[data-contrast="high"] .tile,:root[data-contrast="high"] .ng,:root[data-contrast="high"] details,:root[data-contrast="high"] .lineup{box-shadow:inset 0 0 0 1.5px var(--line)}
+:root[data-contrast="high"] .contains,:root[data-contrast="high"] .lineup .muted{color:var(--ink)}
+/* Customize controls */
+.custom{display:flex;flex-direction:column;gap:18px}
+.custom h3{font-size:1rem;margin-bottom:8px}
+.pals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.pal{all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:.74rem;font-weight:600;color:var(--muted);text-align:center}
+.pal i{width:44px;height:44px;border-radius:50%;box-shadow:0 0 0 1px var(--line);display:block}
+.pal[aria-pressed="true"] i{outline:2.5px solid var(--fg);outline-offset:3px}
+.pal[aria-pressed="true"]{color:var(--fg)}
+.pal:focus-visible i{outline:2.5px solid var(--accent);outline-offset:3px}
+.fonts{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.fontbtn{all:unset;cursor:pointer;box-sizing:border-box;background:var(--surface-2);border-radius:14px;padding:10px 8px;text-align:center;display:flex;flex-direction:column;gap:2px}
+.fontbtn b{font-size:1.4rem;line-height:1.1}
+.fontbtn span{font-size:.72rem;color:var(--muted)}
+.fontbtn[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--accent)}
+.fontbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sw.theme{background:conic-gradient(var(--accent) 0 50%,var(--surface-2) 0)}
+
 </style>
 </head><body>
 <title>USA Volleyball Nutrition</title>
@@ -483,22 +554,39 @@ const FAQ=[
 const GUIDES=[{"k": "Fueling basics", "t": "Fuel the Jump", "d": "Carbs give you court energy, protein builds power, and fat supports your brain and hormones.", "img": "guide-fuel-the-jump.jpg", "alt": "Fuel the Jump: carbs equal court energy, protein equals build power, fat equals brain and hormone support."}, {"k": "Fueling basics", "t": "Sports Nutrition Pyramid", "d": "Get enough carbs, protein and fat first. Then variety, then timing. Supplements are the small top layer.", "img": "guide-sports-nutrition-pyramid.jpg", "alt": "Sports nutrition pyramid, bottom to top: adequate intake of carbohydrates, protein and fat; variety of food and food preparation; timing of meals and snacks; supplements."}, {"k": "Fueling basics", "t": "Serving the Ideal Diet", "d": "Carbs for energy, protein for repair, fats for support. Fuel and hydrate for training, perform in competition, refuel and rebuild after.", "img": "guide-serving-the-ideal-diet.jpg", "alt": "Serving the ideal diet for training, competition and recovery: carbs energy, protein repair, fats support. Balance, timing, consistency."}, {"k": "Fueling basics", "t": "The Case for Carbs", "d": "Carbs fuel high-intensity jumping and sprinting, support focus, spare muscle and restore energy after training.", "img": "guide-the-case-for-carbs.jpg", "alt": "The case for carbs: fuel high intensity, support brain function, spare muscle, restore and recover. Carbs equal performance fuel."}, {"k": "Fueling basics", "t": "Build a Better Breakfast", "d": "Breakfast fuels your day, sharpens focus and supports recovery from yesterday's training.", "img": "guide-build-a-better-breakfast.jpg", "alt": "Build a better breakfast for optimal performance: fuel your day, improve focus, support recovery."}, {"k": "Fueling basics", "t": "Olympic Caliber Nutrition", "d": "Fuel with purpose, recover with intention. Consistency builds champions.", "img": "guide-olympic-caliber-nutrition.jpg", "alt": "Olympic caliber nutrition: fuel with purpose, recover with intention, consistency builds champions."}, {"k": "Portions", "t": "Build Your Plate", "d": "Palm of protein, fist of fruit and veg, thumb of fats, cupped hand of carbs. Add more carbs on heavy training and match days.", "img": "guide-build-your-plate.jpg", "alt": "Hand portion guide: palm for protein, fist for fruit and vegetables, thumb for fats, cupped hand for carbs."}, {"k": "Portions", "t": "Nutritional Serving Sizes", "d": "Use your hand to guide serving sizes and keep each meal balanced. Larger athletes and heavy training days usually need more than one portion.", "img": "guide-nutritional-serving-sizes.jpg", "alt": "Nutritional serving sizes: palm protein, fist veggies, cupped hand carbs, thumb fats. Balance is key at every meal; consistency fuels performance."}, {"k": "Hydration", "t": "Five Signs of Dehydration", "d": "Thirst, dark yellow urine, dry mouth, fatigue and headache. Drink early and often instead of waiting for thirst.", "img": "guide-five-signs-of-dehydration.jpg", "alt": "Five signs of dehydration: thirst, dark yellow urine, dry mouth, fatigue, headache. Rehydrate: drink water early and often."}, {"k": "Hydration", "t": "Your Pee Doesn't Lie", "d": "Check your first pee each morning. Shades 1–3 mean you're hydrated, 4 means drink up, and 5–6 means rehydrate now.", "img": "guide-your-pee-doesn-t-lie.jpg", "alt": "Pee color guide, light to dark, 1 to 6. 1 to 3 hydrated, pale straw is the goal. 4 drink up. 5 to 6 drink now. Losing about 2% of body weight in sweat can hurt performance; clear all day can mean overdrinking; multivitamins can turn urine bright yellow."}, {"k": "Hydration", "t": "How Much Water Do You Need?", "d": "Starting point: body weight in pounds ÷ 2 = ounces per day. Add more on training days and in heat. Heavy or salty sweaters can ask about a sweat test.", "img": "guide-how-much-water-do-you-need.jpg", "alt": "TrueSport: how much water do you need? Body weight in pounds divided by 2 equals ounces of water per day. Example: 160 lb divided by 2 equals 80 oz."}, {"k": "Hydration", "t": "Beyond the Water Break", "d": "Electrolytes replace what you sweat out, carbs replenish energy, and recovery nutrition refuels you. Eating soon after matters most when you train again the same day.", "img": "guide-beyond-the-water-break.jpg", "alt": "Beyond the water break: electrolytes replace what you sweat out, carbs replenish energy, recovery nutrition: refuel within 60 minutes."}, {"k": "Recovery & health", "t": "Foods That Heal", "d": "Berries, leafy greens, fatty fish, nuts and seeds, turmeric and ginger. They support recovery alongside enough total food, protein and sleep.", "img": "guide-foods-that-heal.jpg", "alt": "Foods that heal: berries (antioxidants), leafy greens (vitamins and minerals), fatty fish (omega-3s), nuts and seeds (healthy fats), turmeric and ginger. Real food, real recovery."}, {"k": "Recovery & health", "t": "Ironing Out Nutrition", "d": "Iron supports red blood cells, energy and endurance. Pair plant iron with vitamin C to absorb more. Don't start iron pills without labs.", "img": "guide-ironing-out-nutrition.jpg", "alt": "Ironing out nutrition: iron supports red blood cells, improves energy and endurance, pair with vitamin C to absorb more."}, {"k": "Recovery & health", "t": "The Underrated Vitamin", "d": "Vitamin D supports immune health, bones and muscle function. Ask for a lab review if you train mostly indoors.", "img": "guide-the-underrated-vitamin.jpg", "alt": "Vitamin D supports immune health, strong bones, muscle function, mood and energy. Get outside, fuel inside."}, {"k": "Smart choices", "t": "Do Super Foods Make You Super?", "d": "No single food makes you super. Your overall diet, consistency and lifestyle do. Focus on habits, not hype.", "img": "guide-do-super-foods-make-you-super.jpg", "alt": "Do super foods make you super? No single food makes you super. Overall diet, consistency and lifestyle do."}, {"k": "Smart choices", "t": "Healthy Choices for Dining Out", "d": "Check menus ahead, build around protein and veggies plus a carb, and choose smart drinks.", "img": "guide-healthy-choices-for-dining-out.jpg", "alt": "Healthy choices for dining out: plan ahead and check menus online, focus on protein and veggies, choose smart beverages."}, {"k": "Supplements", "t": "Four Supplement Myths", "d": "More isn't better, supplements don't replace food, and not all are safe. Use only third-party tested products (NSF Certified for Sport) and check with Nick first.", "img": "guide-four-supplement-myths.jpg", "alt": "Four myths about supplements: more is better, supplements replace food, all supplements are safe, only pros need them. Focus on food, use supplements wisely."}, {"k": "Supplements", "t": "Peptides: Science vs. Hype", "d": "Popular \"wellness\" peptides like BPC-157 aren't FDA-approved for recovery or performance, have little human evidence, and several are banned by WADA.", "img": "guide-peptides-science-vs-hype.jpg", "alt": "Peptides: real science vs. marketing hype. Peptides are short chains of amino acids that signal the body to grow, repair or regulate hormones. FDA-approved peptides go through years of clinical trials; research peptides sold online lack human validation. Animal results often fail in humans. BPC-157 has no high-quality human trials and remains unregulated. Avoid products labeled For Research Use Only."}];
 const SESSIONS=["Onboarding HHQ","General sports performance","Lab review","Body tissue measurement","Request supplements"];
 const POSITIONS=["Outside hitter","Opposite","Middle blocker","Setter","Libero"];
-const ACCENTS=[{n:"USA red (187C)",c:"#A6192E"},{n:"Gold (117C)",c:"#C99700"},{n:"Bronze (8023C)",c:"#AA6443"},{n:"Silver (877C)",c:"#8A8D8F"}];
+const ACCENTS=[{n:"Theme color",c:""},{n:"USA red",c:"#C8102E"},{n:"Rose",c:"#E8749A"},{n:"Blush",c:"#E8A39A"},{n:"Coral",c:"#F07E62"},{n:"Gold",c:"#D4A017"},{n:"Sage",c:"#6FA586"},{n:"Teal",c:"#2A9D8F"},{n:"Sky",c:"#5AA9E6"},{n:"Navy",c:"#2B4C8C"},{n:"Lavender",c:"#A78BDA"},{n:"Plum",c:"#8E4585"}];
+const PALETTES=[{k:"usa",n:"Team USA",a:"#071D49",b:"#A6192E"},{k:"rose",n:"Rose",a:"#FBE8EF",b:"#D9507F"},{k:"blush",n:"Blush & navy",a:"#1F2A44",b:"#F2A7A0"},{k:"lavender",n:"Lavender",a:"#EEE9FB",b:"#7E5FD6"},
+ {k:"sage",n:"Sage",a:"#E6F0EA",b:"#4F8A69"},{k:"sky",n:"Sky",a:"#E3EDF9",b:"#3478C6"},{k:"peach",n:"Peach",a:"#FCEADF",b:"#D9683F"},{k:"mono",n:"Black & white",a:"#FFFFFF",b:"#000000"}];
+const FONTS={classic:{n:"Classic",d:'"Saira Condensed","Arial Narrow",sans-serif',b:'"Arial Nova",Arial,sans-serif',u:""},
+ soft:{n:"Soft",d:'"Quicksand",system-ui,sans-serif',b:'"Nunito",system-ui,sans-serif',u:"family=Quicksand:wght@600;700&family=Nunito:wght@400;600;700"},
+ elegant:{n:"Elegant",d:'"Playfair Display",Georgia,serif',b:'"Lato",system-ui,sans-serif',u:"family=Playfair+Display:wght@600;700&family=Lato:wght@400;700"},
+ modern:{n:"Modern",d:'"Poppins",system-ui,sans-serif',b:'"DM Sans",system-ui,sans-serif',u:"family=Poppins:wght@500;600;700&family=DM+Sans:wght@400;500;700"},
+ readable:{n:"Easy read",d:'"Atkinson Hyperlegible",Verdana,sans-serif',b:'"Atkinson Hyperlegible",Verdana,sans-serif',u:"family=Atkinson+Hyperlegible:wght@400;700"}};
+const SIZES={m:15,l:17,xl:19};
+const PREF_DEFAULTS={accent:"",theme:"system",palette:"usa",style:"soft",font:"classic",contrast:"standard",size:"m"};
 
 /* ===== State ===== */
 const store={get(k,f){try{const v=localStorage.getItem("af_"+k);return v?JSON.parse(v):f}catch(e){return f}},set(k,v){try{localStorage.setItem("af_"+k,JSON.stringify(v))}catch(e){}}};
 let profile=store.get("profile",null);
-let prefs=store.get("prefs",{accent:"#A6192E",theme:"system",large:false});
-if(!["#A6192E","#C99700","#AA6443","#8A8D8F"].includes(prefs.accent))prefs.accent="#A6192E";
+let prefs=Object.assign({},PREF_DEFAULTS,store.get("prefs",{}));
+if(prefs.large===true&&!store.get("prefs",{}).size)prefs.size="l";delete prefs.large;
+if(!ACCENTS.some(a=>a.c===prefs.accent))prefs.accent="";
+if(!PALETTES.some(p=>p.k===prefs.palette))prefs.palette="usa";if(!FONTS[prefs.font])prefs.font="classic";if(!SIZES[prefs.size])prefs.size="m";
 let tab="home", foodSeg="menu", day=DAYS[new Date().getDay()-1]||"Mon", wkOff=(new Date().getDay()%6===0)?1:0, dinnerSeg="out", draft={};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
+function loadFontCSS(q,id){if(!q)return;let l=document.getElementById(id);if(!l){l=document.createElement("link");l.rel="stylesheet";l.id=id;document.head.appendChild(l)}const h="https://fonts.googleapis.com/css2?"+q+"&display=swap";if(l.href!==h)l.href=h}
+function lum(hex){const n=parseInt(hex.slice(1),16),c=[n>>16&255,n>>8&255,n&255].map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*c[0]+.7152*c[1]+.0722*c[2]}
 function applyPrefs(){
-  const r=document.documentElement;
-  r.style.setProperty("--accent",prefs.accent);
+  const r=document.documentElement,f=FONTS[prefs.font];
+  if(prefs.accent){r.style.setProperty("--accent",prefs.accent);r.style.setProperty("--accent-text",prefs.accent);r.style.setProperty("--on-accent",lum(prefs.accent)>.45?"#111111":"#FFFFFF")}
+  else["--accent","--accent-text","--on-accent"].forEach(p=>r.style.removeProperty(p));
   if(prefs.theme==="system")r.removeAttribute("data-theme");else r.setAttribute("data-theme",prefs.theme);
-  r.classList.toggle("lg",!!prefs.large);
+  if(prefs.palette==="usa")r.removeAttribute("data-palette");else r.setAttribute("data-palette",prefs.palette);
+  r.setAttribute("data-style",prefs.style);r.setAttribute("data-font",prefs.font);r.setAttribute("data-contrast",prefs.contrast);
+  r.style.setProperty("--display",f.d);r.style.setProperty("--body",f.b);loadFontCSS(f.u,"userfont");
+  r.style.fontSize=SIZES[prefs.size]+"px";r.classList.remove("lg");
 }
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2200)}
 function myAllergens(){return profile?profile.allergies||[]:[]}
@@ -596,15 +684,15 @@ function vHome(){
     <div class="meta"><span class="chip blue">${noPref()?"Any protein":profile.protein+" protein"}</span>${myAllergens().length?`<span class="chip stop">${myAllergens().length} allergen${myAllergens().length>1?"s":""} flagged</span>`:`<span class="chip ok">No allergens listed</span>`}${esc(profile.position)?`<span class="chip">${esc(profile.position)}</span>`:""}</div>
    </header>
 
+   ${feat?`<section><div class="sec-head"><h2>Announcements</h2><span class="stamp">Updated ${fmtDate(DATA.updated)}</span></div>
+    <article class="feature"><div class="row" style="justify-content:space-between"><span class="chip accent">${esc(feat.tag)}</span><span class="stamp">${fmtDate(feat.when)}</span></div><h3>${esc(feat.t)}</h3>${feat.d?`<p>${esc(feat.d)}</p>`:""}</article>
+    ${rest.length?`<div class="card" style="padding-block:2px">${rest.map(a=>`<div class="ann"><div class="row"><span class="chip">${esc(a.tag)}</span><span class="stamp">${fmtDate(a.when)}</span></div><b style="margin-top:6px">${esc(a.t)}</b><p class="muted" style="font-size:.88rem">${esc(a.d)}</p></div>`).join("")}</div>`:""}</section>`:""}
+
    ${installCard("home")}
    <section><div class="sec-head"><h2>${weekend?"Monday's menu":"Today's menu"}</h2><span class="row" style="gap:14px"><button class="linkbtn" data-go="journal">Log a meal</button><button class="linkbtn" data-go="food" data-seg="menu">Full week</button></span></div>
     ${meals.length?`<div class="lineup">${luHead(weekend?"Monday's lineup":"Today's lineup",todayIso,"")}${meals.map(x=>mealHTML(x)).join("")}</div>
     ${(()=>{const x=smoothieFor(todayIso);if(!x||!(x.team==="Both"||x.team===teamOf()))return "";const me=mySmoothie(x);return `<button class="tile" data-go="food" data-seg="smoothie" style="min-height:0"><span>${weekend?"Monday's":"Today's"} smoothie</span><b>${esc(me.n)}</b><span>${noPref()?`Whey · or plant: ${esc(me.other)}`:esc(me.prot)}${hits(me.a)?" · may contain your allergen":""}</span></button>`})()}
     ${flagged?`<p class="stamp">${flagged} of ${meals.length} meals may contain something you listed. Ask foodservice for your safe option.</p>`:""}`:`<div class="card muted">This week's menu isn't posted yet.</div>`}</section>
-
-   ${feat?`<section><div class="sec-head"><h2>Announcements</h2><span class="stamp">Updated ${fmtDate(DATA.updated)}</span></div>
-    <article class="feature"><div class="row" style="justify-content:space-between"><span class="chip accent">${esc(feat.tag)}</span><span class="stamp">${fmtDate(feat.when)}</span></div><h3>${esc(feat.t)}</h3>${feat.d?`<p>${esc(feat.d)}</p>`:""}</article>
-    ${rest.length?`<div class="card" style="padding-block:2px">${rest.map(a=>`<div class="ann"><div class="row"><span class="chip">${esc(a.tag)}</span><span class="stamp">${fmtDate(a.when)}</span></div><b style="margin-top:6px">${esc(a.t)}</b><p class="muted" style="font-size:.88rem">${esc(a.d)}</p></div>`).join("")}</div>`:""}</section>`:""}
 
    <section><h2>Everything here</h2><div class="nav-grid">
     ${go.map(([t,seg,l,d,ic])=>t==="wa"?`<a class="ng" href="${CONFIG.whatsappLink}" target="_blank" rel="noopener">${ic}<b>${l}</b><span>${d}</span></a>`:`<button class="ng" ${t==="learn"?'data-tab="learn"':`data-go="${t}"${seg?` data-seg="${seg}"`:""}`}>${ic}<b>${l}</b><span>${d}</span></button>`).join("")}
@@ -752,6 +840,7 @@ function faqHTML(){
   return list.length?list.map(f=>`<details><summary>${f.q}</summary><div class="ans">${f.a.map(p=>`<p>${p}</p>`).join("")}<p class="src">Source: ${f.s}</p></div></details>`).join(""):`<p class="muted">No answers match "${esc(draft.q)}" yet.</p>`;
 }
 function vMe(){
+  loadFontCSS(Object.values(FONTS).map(f=>f.u).filter(Boolean).join("&"),"fontpreview");
   return `<div class="view"><div><p class="eyebrow">Profile · Look</p><h1 style="margin-top:6px">${esc(profile.name)}</h1></div>
    <div class="card stack">
     <div class="row"><span class="grow muted">Team</span><b>${profile.team}</b></div>
@@ -763,9 +852,16 @@ function vMe(){
    ${canEdit?`<div class="card stack"><span class="eyebrow">Share with athletes · editors only</span><img src="qr-code.png" alt="QR code that opens this app" style="width:180px;align-self:center;border-radius:8px"><div class="row"><span class="copybox grow" id="app-link">${CONFIG.appLink}</span><button class="btn ghost sm" data-copy="app-link">Copy</button></div><p class="stamp">Athletes can open this without a Claude account once link sharing is on in the Share menu.</p></div>`:""}
    ${canEdit?`<button class="tile editlink" data-tab="edit"><b>Edit menus & announcements</b><span>Only you and other editors see this. Last published ${fmtDate(DATA.updated)}.</span></button>`:""}
    ${isInstalled()?"":`<section><h2>Install the app</h2>${installCard("me")}</section>`}
-   <section><h2>Accent color</h2><div class="swatches">${ACCENTS.map(a=>`<button class="sw" style="background:${a.c}" data-accent="${a.c}" aria-label="${a.n}" aria-pressed="${prefs.accent===a.c}"></button>`).join("")}</div></section>
-   <section><h2>Appearance</h2><div class="choice" data-pref="theme">${[["system","System"],["dark","Dark"],["light","Light"]].map(([k,l])=>`<button type="button" data-v="${k}" aria-pressed="${prefs.theme===k}">${l}</button>`).join("")}</div>
-    <div class="choice" data-pref="large"><button type="button" data-v="0" aria-pressed="${!prefs.large}">Standard text</button><button type="button" data-v="1" aria-pressed="${!!prefs.large}">Larger text</button></div></section></div>`;
+   <section><h2>Customize</h2><div class="card custom">
+    <div><h3>Style</h3><div class="choice" data-pref="style">${[["soft","Simple"],["gameday","Game day"]].map(([k,l])=>`<button type="button" data-v="${k}" aria-pressed="${prefs.style===k}">${l}</button>`).join("")}</div></div>
+    <div><h3>Color theme</h3><div class="pals">${PALETTES.map(p=>`<button class="pal" data-palette="${p.k}" aria-pressed="${prefs.palette===p.k}"><i style="background:linear-gradient(135deg,${p.a} 0 50%,${p.b} 50%)"></i>${p.n}</button>`).join("")}</div></div>
+    <div><h3>Accent color</h3><div class="swatches">${ACCENTS.map(a=>`<button class="sw ${a.c?"":"theme"}" ${a.c?`style="background:${a.c}"`:""} data-accent="${a.c||"theme"}" aria-label="${a.n}" title="${a.n}" aria-pressed="${prefs.accent===a.c}"></button>`).join("")}</div></div>
+    <div><h3>Font</h3><div class="fonts">${Object.entries(FONTS).map(([k,f])=>`<button class="fontbtn" data-font="${k}" aria-pressed="${prefs.font===k}"><b style="font-family:${f.d.replace(/"/g,"'")}">Aa</b><span style="font-family:${f.b.replace(/"/g,"'")}">${f.n}</span></button>`).join("")}</div></div>
+    <div><h3>Appearance</h3><div class="choice" data-pref="theme">${[["system","System"],["dark","Dark"],["light","Light"]].map(([k,l])=>`<button type="button" data-v="${k}" aria-pressed="${prefs.theme===k}">${l}</button>`).join("")}</div></div>
+    <div><h3>Contrast</h3><div class="choice" data-pref="contrast">${[["standard","Standard"],["high","High"]].map(([k,l])=>`<button type="button" data-v="${k}" aria-pressed="${prefs.contrast===k}">${l}</button>`).join("")}</div></div>
+    <div><h3>Text size</h3><div class="choice" data-pref="size">${[["m","Standard"],["l","Large"],["xl","Extra large"]].map(([k,l])=>`<button type="button" data-v="${k}" aria-pressed="${prefs.size===k}">${l}</button>`).join("")}</div></div>
+    <button class="btn ghost block" data-resetlook="1">Reset to default look</button>
+   </div></section></div>`;
 }
 
 
@@ -1059,8 +1155,11 @@ document.addEventListener("click",e=>{
     if(pick.dataset.multi){draft[k]=draft[k]||[];draft[k]=draft[k].includes(v)?draft[k].filter(x=>x!==v):[...draft[k],v]}else draft[k]=v;
     pick.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",pick.dataset.multi?draft[k].includes(x.dataset.v):x.dataset.v===draft[k]));return}
   const pref=b.closest("[data-pref]");
-  if(pref){const k=pref.dataset.pref;prefs[k]=k==="large"?b.dataset.v==="1":b.dataset.v;store.set("prefs",prefs);render();return}
-  if(b.dataset.accent){prefs.accent=b.dataset.accent;store.set("prefs",prefs);render();toast("Accent updated");return}
+  if(pref){const k=pref.dataset.pref;prefs[k]=b.dataset.v;store.set("prefs",prefs);render();return}
+  if(b.dataset.accent){prefs.accent=b.dataset.accent==="theme"?"":b.dataset.accent;store.set("prefs",prefs);render();return}
+  if(b.dataset.palette){prefs.palette=b.dataset.palette;prefs.accent="";store.set("prefs",prefs);render();return}
+  if(b.dataset.font&&b.classList.contains("fontbtn")){prefs.font=b.dataset.font;store.set("prefs",prefs);render();return}
+  if(b.dataset.resetlook){prefs=Object.assign({},PREF_DEFAULTS);store.set("prefs",prefs);render();toast("Look reset");return}
   if(b.dataset.ack){profile.ack=true;store.set("profile",profile);render();return}
   if(b.dataset.rseg){rankSeg=b.dataset.rseg;render();return}
   if(b.dataset.install){if(deferredInstall){deferredInstall.prompt();deferredInstall.userChoice.finally(()=>{deferredInstall=null;render()})}return}
