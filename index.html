@@ -400,7 +400,8 @@ const teamOf=()=>profile.team==="MNT"?"Men":"Women";
 function recipeHTML(n,prot){const r=(DATA.smoothieRecipes||{})[n];if(!r)return "";
   const mac=r.kcal!=null?`<div class="macros"><span>${sb(r.kcal)}<i>kcal</i></span><span>${sb(r.cho)}<i>carbs g</i></span><span>${sb(r.pro)}<i>protein g</i></span><span>${sb(r.fat)}<i>fat g</i></span></div><p class="stamp">${r.est?"Estimated per 15 oz serving.":"Per 15 oz serving, as written in the recipe."}</p>`:"";
   return `${mac}<details class="recipe"><summary>Recipe${r.y?` · makes ${esc(r.y)}`:""}</summary><ul>${r.ing.map(i=>`<li>${esc(i)}</li>`).join("")}</ul><p class="stamp">Your version is made with ${esc(prot)}.</p></details>`}
-function mySmoothie(x){if(!x)return null;const plant=profile.protein==="Plant";return {n:plant?x.plant:x.whey,other:plant?x.whey:x.plant,a:plant?[...x.ap]:[...new Set(["Dairy",...x.aw])],ok:x.ok,prot:plant?DATA.plantProtein:DATA.wheyProtein}}
+const noPref=()=>profile.protein==="No preference";
+function mySmoothie(x,side){if(!x)return null;const plant=side?side==="plant":profile.protein==="Plant";return {n:plant?x.plant:x.whey,other:plant?x.whey:x.plant,a:plant?[...x.ap]:[...new Set(["Dairy",...x.aw])],ok:x.ok,prot:plant?DATA.plantProtein:DATA.wheyProtein,side:plant?"plant":"whey"}}
 function cycleLine(iso,src=DATA){return MEALS.map(m=>{const i=cycleWeek(src,m,iso);return i<0?"":`${m} week ${i+1} of ${src.cycles[m].length}`}).filter(Boolean).join(" · ")}
 function rotLine(iso,src=DATA){return [cycleLine(iso,src),src.smoothieCycle.length?`Smoothies week ${rotIdx(src.smoothieCycle.length,iso,src)+1} of ${src.smoothieCycle.length}`:"",src.snackCycle.length?`Court snacks week ${rotIdx(src.snackCycle.length,iso,src)+1} of ${src.snackCycle.length}`:""].filter(Boolean).join(" · ")}
 function sb(t,big){t=String(t);return `<span class="sb${big?" big":""}"><span class="sb-ghost" aria-hidden="true">${t.replace(/[0-9]/g,"8")}</span><span class="sb-on">${t}</span></span>`}
@@ -554,7 +555,7 @@ function vOnboard(){
     <label for="f-pro">Pro team<input id="f-pro" value="${esc(p.pro||"")}" placeholder="Club and country"></label>
     <div class="stack" style="gap:6px"><span class="eyebrow">Food allergies</span><div class="choice" data-pick="allergies" data-multi="1">${ALLERGENS.map(a=>`<button type="button" data-v="${a}" aria-pressed="${p.allergies.includes(a)}">${a}</button>`).join("")}</div>
      <label for="f-other">Other allergy or medical diet<input id="f-other" value="${esc(p.other||"")}" placeholder="e.g. celiac, kiwi, low-FODMAP"></label></div>
-    <div class="stack" style="gap:6px"><span class="eyebrow">Protein preference</span><div class="choice" data-pick="protein">${["Whey","Plant"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${p.protein===t}">${t}</button>`).join("")}</div></div>
+    <div class="stack" style="gap:6px"><span class="eyebrow">Protein preference</span><div class="choice" data-pick="protein">${["Whey","Plant","No preference"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${p.protein===t}">${t}</button>`).join("")}</div></div>
     <button class="btn block" type="submit">${draft.editing?"Save changes":"Get started"}</button>${draft.editing?`<button type="button" class="btn ghost block" data-cancel="1">Cancel</button>`:""}
     <p class="muted" style="font-size:.78rem">Your profile, including allergies, is shared with the USAV sports dietitian so foodservice can keep you safe. Your food journal stays on your phone.</p>
    </form><div class="usa-mark" role="img" aria-label="USA"></div></div>`;
@@ -592,13 +593,13 @@ function vHome(){
     <div class="hero-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><div style="text-align:right;display:flex;flex-direction:column;gap:6px"><span class="eyebrow">Team USA · ${profile.team}</span><span class="eyebrow">${dateLine}</span></div></div>
     ${STARS5}<p class="wordmark"><span>Nutrition</span></p>
     <p class="hello">Welcome back, ${esc(first)}.</p>
-    <div class="meta"><span class="chip blue">${profile.protein} protein</span>${myAllergens().length?`<span class="chip stop">${myAllergens().length} allergen${myAllergens().length>1?"s":""} flagged</span>`:`<span class="chip ok">No allergens listed</span>`}${esc(profile.position)?`<span class="chip">${esc(profile.position)}</span>`:""}</div>
+    <div class="meta"><span class="chip blue">${noPref()?"Any protein":profile.protein+" protein"}</span>${myAllergens().length?`<span class="chip stop">${myAllergens().length} allergen${myAllergens().length>1?"s":""} flagged</span>`:`<span class="chip ok">No allergens listed</span>`}${esc(profile.position)?`<span class="chip">${esc(profile.position)}</span>`:""}</div>
    </header>
 
    ${installCard("home")}
    <section><div class="sec-head"><h2>${weekend?"Monday's menu":"Today's menu"}</h2><span class="row" style="gap:14px"><button class="linkbtn" data-go="journal">Log a meal</button><button class="linkbtn" data-go="food" data-seg="menu">Full week</button></span></div>
     ${meals.length?`<div class="lineup">${luHead(weekend?"Monday's lineup":"Today's lineup",todayIso,"")}${meals.map(x=>mealHTML(x)).join("")}</div>
-    ${(()=>{const x=smoothieFor(todayIso);if(!x||!(x.team==="Both"||x.team===teamOf()))return "";const me=mySmoothie(x);return `<button class="tile" data-go="food" data-seg="smoothie" style="min-height:0"><span>${weekend?"Monday's":"Today's"} smoothie</span><b>${esc(me.n)}</b><span>${esc(me.prot)}${hits(me.a)?" · may contain your allergen":""}</span></button>`})()}
+    ${(()=>{const x=smoothieFor(todayIso);if(!x||!(x.team==="Both"||x.team===teamOf()))return "";const me=mySmoothie(x);return `<button class="tile" data-go="food" data-seg="smoothie" style="min-height:0"><span>${weekend?"Monday's":"Today's"} smoothie</span><b>${esc(me.n)}</b><span>${noPref()?`Whey · or plant: ${esc(me.other)}`:esc(me.prot)}${hits(me.a)?" · may contain your allergen":""}</span></button>`})()}
     ${flagged?`<p class="stamp">${flagged} of ${meals.length} meals may contain something you listed. Ask foodservice for your safe option.</p>`:""}`:`<div class="card muted">This week's menu isn't posted yet.</div>`}</section>
 
    ${feat?`<section><div class="sec-head"><h2>Announcements</h2><span class="stamp">Updated ${fmtDate(DATA.updated)}</span></div>
@@ -651,10 +652,10 @@ function vFood(){
       const n=DATA.smoothieCycle.length, wi=rotIdx(n,mon), flip=n===4&&wi>=2;
       const rows=DAYS.map((d,k)=>{const iso=jShift(mon,k),x=smoothieFor(iso);return {d,iso,x}}).filter(r=>r.x&&(r.x.team==="Both"||r.x.team===teamOf()));
       body=nav(n?`Smoothie week ${wi+1} of ${n}${flip?" · protein flip week":""}`:"")+
-      `<p class="muted" style="font-size:.9rem">Your smoothies are made with ${esc(profile.protein==="Plant"?DATA.plantProtein:DATA.wheyProtein)}. ${profile.team} smoothie days are shown.</p>
-      <div class="lineup">${luHead("Smoothie card",null,`<span class="rot"><b>${profile.team}</b></span>`)}${rows.length?rows.map(({d,iso,x})=>{const me=mySmoothie(x),hit=hits(me.a),mine=myAllergens().length||profile.other;
-        return `<div class="meal ${hit?"flag":""}"><div class="meal-top"><span class="eyebrow">${fmtDate(iso)} · ${x.team==="Both"?"Men + Women":x.team}</span>${hit?`<span class="chip stop">May contain your allergen</span>`:(!x.ok&&mine?`<span class="chip warn">Confirm allergens</span>`:"")}</div>
-        <b>${esc(me.n)}</b><p class="muted" style="font-size:.86rem">Made with ${esc(me.prot)}. The ${profile.protein==="Plant"?"whey":"plant"} option that day is ${esc(me.other)}.</p>${recipeHTML(me.n,me.prot)}
+      `<p class="muted" style="font-size:.9rem">${noPref()?`You have no protein preference, so both options are shown: ${esc(DATA.wheyProtein)} or ${esc(DATA.plantProtein)}.`:`Your smoothies are made with ${esc(profile.protein==="Plant"?DATA.plantProtein:DATA.wheyProtein)}.`} ${profile.team} smoothie days are shown.</p>
+      <div class="lineup">${luHead("Smoothie card",null,`<span class="rot"><b>${profile.team}</b></span>`)}${rows.length?rows.flatMap(r=>noPref()?[{...r,side:"whey"},{...r,side:"plant"}]:[{...r,side:null}]).map(({d,iso,x,side})=>{const me=mySmoothie(x,side),hit=hits(me.a),mine=myAllergens().length||profile.other;
+        return `<div class="meal ${hit?"flag":""}"><div class="meal-top"><span class="eyebrow">${fmtDate(iso)} · ${x.team==="Both"?"Men + Women":x.team}${side?` · ${side==="plant"?"Plant":"Whey"} option`:""}</span>${hit?`<span class="chip stop">May contain your allergen</span>`:(!x.ok&&mine?`<span class="chip warn">Confirm allergens</span>`:"")}</div>
+        <b>${esc(me.n)}</b><p class="muted" style="font-size:.86rem">Made with ${esc(me.prot)}.${side?"":` The ${me.side==="plant"?"whey":"plant"} option that day is ${esc(me.other)}.`}</p>${recipeHTML(me.n,me.prot)}
         ${(DATA.flavorNotes||{})[me.n]?`<div class="tags"><span class="chip warn">${esc(DATA.flavorNotes[me.n])}</span></div>`:""}${allergenLine(me.a)}</div>`}).join(""):'<p class="muted" style="padding:12px 0">No smoothie days posted for your team this week.</p>'}</div>
       <p class="stamp">Full ingredients and macros are on the Smoothie Recipe Sheet. Ask foodservice if you need a swap.</p>`;
     }else{
