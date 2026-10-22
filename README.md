@@ -24,7 +24,7 @@ Near the top of the script, `CONFIG` holds:
 
 ## Privacy
 
-Athlete profiles, allergies and food journal entries stay on each athlete's phone. Nothing about athletes is stored in this repository or in the content sheet.
+Athlete profiles (including allergies), session requests and food feedback go to the dietitian's Google Form inbox, which emails the dietitian each new submission. Food journal entries stay on each athlete's phone. Nothing about athletes is stored in this repository or in the content sheet.
 
 ## Hosting
 

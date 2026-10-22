@@ -33,7 +33,7 @@ See `loadSheet()` near the end of the script. The JSON in `<script id="af-data">
 ## Rules
 
 - **Allergens are safety-critical.** Never remove the allergen line, the red flag for an athlete's own allergens, the "Confirm allergens" note for unconfirmed items, or the allergy review step after setup.
-- **Privacy:** athlete profiles, allergies and journal entries stay in the athlete's browser (`localStorage`, keys starting `af_`). Never send athlete data anywhere or store it in this repo or the content sheet.
+- **Privacy:** athlete profiles (including allergies), session requests and food feedback are sent only to the RD's Google Form inbox (`CONFIG.inboxForm`, `sendInbox()`), which the RD approved. Journal entries stay in the athlete's browser. Never send athlete data anywhere else, and never store it in this repo or the content sheet.
 - No calorie or macro tracking for athletes. The journal is intentionally a food journal only.
 - Keep supplement content anti-doping safe: third-party tested (NSF Certified for Sport or Informed Sport), and check with the RD first.
 - Brand (USAV brand book): Pantone 187C red `#A6192E`, 2768C navy `#071D49`, white, 117C gold `#C99700`. Keep the logo on its white tile with clear space. Don't recolor, stretch or redraw the logo.

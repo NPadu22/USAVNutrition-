@@ -370,7 +370,11 @@ const CONFIG = {
   bookingLink: "https://calendly.com/welcometolbc/usav-rd-meeting-with-nick",
   rdName: "Nick, USAV Sports Dietitian",
   appLink: "https://npadu22.github.io/USAVNutrition-/",
-  sheetId: "1c9JblGdCmb972_vX0yK2UJvCnv_kmc4JSpDwUYuFn9g"   // Google Sheet ID for menus and announcements (see README)
+  sheetId: "1c9JblGdCmb972_vX0yK2UJvCnv_kmc4JSpDwUYuFn9g",  // Google Sheet ID for menus and announcements (see README)
+  // RD inbox (Google Form). Profiles, session requests and feedback are sent here.
+  inboxForm: "1FAIpQLSf6n-Xiews_9O3tPUH4K5VwhQq0VTy27Gw2vdZb6p0girMQQQ",
+  inboxFields: {Type:"entry.1556448955",Name:"entry.608807162",Team:"entry.423824419",Position:"entry.1247565526","Pro team":"entry.973305400",
+    Allergies:"entry.2073555924","Other allergy or medical diet":"entry.2122787666","Protein preference":"entry.356835203",Details:"entry.336166674"}
 };
 
 /* ===== Content (example data, replace weekly) ===== */
@@ -552,7 +556,7 @@ function vOnboard(){
      <label for="f-other">Other allergy or medical diet<input id="f-other" value="${esc(p.other||"")}" placeholder="e.g. celiac, kiwi, low-FODMAP"></label></div>
     <div class="stack" style="gap:6px"><span class="eyebrow">Protein preference</span><div class="choice" data-pick="protein">${["Whey","Plant"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${p.protein===t}">${t}</button>`).join("")}</div></div>
     <button class="btn block" type="submit">${draft.editing?"Save changes":"Get started"}</button>${draft.editing?`<button type="button" class="btn ghost block" data-cancel="1">Cancel</button>`:""}
-    <p class="muted" style="font-size:.78rem">Saved on this phone only. The dietitian doesn't see it unless you share it in a session request.</p>
+    <p class="muted" style="font-size:.78rem">Your profile, including allergies, is shared with the USAV sports dietitian so foodservice can keep you safe. Your food journal stays on your phone.</p>
    </form><div class="usa-mark" role="img" aria-label="USA"></div></div>`;
 }
 function vStop(){
@@ -675,8 +679,22 @@ function vFood(){
   return `<div class="view"><div><p class="eyebrow">Foodservice · updated ${fmtDate(DATA.updated)}</p><h1 style="margin-top:6px">Food</h1></div>
    <div class="seg" data-segset="food">${segs.map(([k,l])=>`<button data-v="${k}" aria-pressed="${foodSeg===k}">${l}</button>`).join("")}</div>${body}</div>`;
 }
+/* ===== Send to the RD inbox (Google Form) ===== */
+function inboxQueue(){try{return JSON.parse(localStorage.getItem("af_outbox")||"[]")}catch(e){return []}}
+function inboxSave(q){try{localStorage.setItem("af_outbox",JSON.stringify(q.slice(-30)))}catch(e){}}
+async function inboxPost(rec){
+  if(!CONFIG.inboxForm)return false;
+  const body=new URLSearchParams();Object.entries(rec).forEach(([k,v])=>{const id=CONFIG.inboxFields[k];if(id&&v)body.append(id,String(v))});
+  try{await fetch(`https://docs.google.com/forms/d/e/${CONFIG.inboxForm}/formResponse`,{method:"POST",mode:"no-cors",body});return true}catch(e){return false}
+}
+async function sendInbox(rec){const ok=await inboxPost(rec);if(!ok){const q=inboxQueue();q.push(rec);inboxSave(q)}return ok}
+async function flushInbox(){const q=inboxQueue();if(!q.length||!navigator.onLine)return;const left=[];for(const r of q){if(!(await inboxPost(r)))left.push(r)}inboxSave(left)}
+window.addEventListener("online",flushInbox);
+function profileRecord(type){return {Type:type,Name:profile.name,Team:profile.team,Position:profile.position,"Pro team":profile.pro,
+  Allergies:(profile.allergies||[]).join(", ")||"None",
+  "Other allergy or medical diet":profile.other,"Protein preference":profile.protein}}
 function formBlock(id,fields,cta){
-  if(draft[id+"Sent"])return `<div class="card stack"><span class="chip ok" style="align-self:flex-start">Ready to send</span><p>Tap Send on WhatsApp and your message opens ready to go. If WhatsApp doesn't open, copy it instead.</p><div class="copybox" id="${id}-copy">${esc(draft[id+"Sent"])}</div>
+  if(draft[id+"Sent"])return `<div class="card stack"><span class="chip ok" style="align-self:flex-start">Sent to Nick</span><p>Nick gets this in his inbox. Need a faster reply? Send it on WhatsApp too.</p><div class="copybox" id="${id}-copy">${esc(draft[id+"Sent"])}</div>
     <div class="row" style="flex-wrap:wrap"><button class="btn" data-copy="${id}-copy">Copy message</button><a class="btn ghost" href="${CONFIG.whatsappLink}?text=${encodeURIComponent(draft[id+"Sent"])}" target="_blank" rel="noopener">Send on WhatsApp</a><button class="btn ghost" data-reset="${id}">New</button></div></div>`;
   return `<form class="card stack" id="form-${id}">${fields.join("")}<button class="btn block" type="submit">${cta}</button></form>`;
 }
@@ -687,12 +705,12 @@ function vRD(){
     <a class="btn block" href="${CONFIG.bookingLink}" target="_blank" rel="noopener">Pick a time on Calendly</a>
     <p class="stamp">Covers onboarding HHQ, sports performance, lab review, body tissue measurement and supplement requests.</p>
    </div>
-   <section><h2>Tell Nick what it's for</h2><p class="muted" style="font-size:.88rem">Optional. Sends a heads-up on WhatsApp so the session starts ready.</p>
+   <section><h2>Tell Nick what it's for</h2><p class="muted" style="font-size:.88rem">Optional. Goes straight to Nick's inbox so the session starts ready.</p>
    ${formBlock("session",[
     `<div class="stack" style="gap:6px"><span class="eyebrow">Session type</span><div class="choice" data-pick="session">${SESSIONS.map(t=>`<button type="button" data-v="${t}" aria-pressed="${draft.session===t}">${t}</button>`).join("")}</div></div>`,
     `<label for="rd-note">Notes<textarea id="rd-note" placeholder="Goals, questions, labs you're bringing, or the supplement you're asking about"></textarea></label>`,
     `<p class="muted" style="font-size:.8rem">Includes your name, team (${profile.team}) and position.</p>`
-   ],"Write my message")}</section>
+   ],"Send to Nick")}</section>
    <section><h2>Nutrition 411</h2><div class="card stack"><p>Quick question that doesn't need a session? Message us on WhatsApp.</p>
     <div class="row"><span class="eyebrow" style="width:74px">Number</span><span class="copybox grow" id="wa-num">${CONFIG.whatsapp}</span><button class="btn ghost sm" data-copy="wa-num">Copy</button></div>
     <div class="row"><span class="eyebrow" style="width:74px">Username</span><span class="copybox grow" id="wa-user">@${CONFIG.whatsappUser}</span><button class="btn ghost sm" data-copy="wa-user">Copy</button></div>
@@ -1066,21 +1084,26 @@ document.addEventListener("submit",e=>{
     const prevAllergy=profile?JSON.stringify([profile.allergies,profile.other]):"";
     profile={name,first,last,team:draft.team,position:$("#f-pos").value,pro:$("#f-pro").value.trim(),allergies:draft.allergies||[],other:$("#f-other").value.trim(),protein:draft.protein,ack:profile?profile.ack:false};
     if(prevAllergy!==JSON.stringify([profile.allergies,profile.other]))profile.ack=false;
-    store.set("profile",profile);draft={};tab="home";render();toast("Profile saved");return}
+    const isNew=!draft.editing;
+    store.set("profile",profile);draft={};tab="home";render();toast("Profile saved");
+    sendInbox(profileRecord(isNew?"Profile":"Profile update"));return}
   if(f.id==="form-session"){
     if(!draft.session){toast("Pick a session type");return}
     draft.sessionSent=`Session heads-up for Nick\n${profile.name} · ${profile.team} · ${profile.position||"—"}\nType: ${draft.session}${$("#rd-note").value.trim()?"\nNotes: "+$("#rd-note").value.trim():""}`;
-    render();toast("Request ready");return}
+    sendInbox({...profileRecord("Session request"),Details:`${draft.session}${$("#rd-note").value.trim()?" · "+$("#rd-note").value.trim():""}`});
+    render();toast("Sent to Nick");return}
   if(f.id==="form-feedback"){
     if(!draft.fbType){toast("Pick a feedback type");return}
     draft.feedbackSent=`Food feedback · ${draft.fbType}\n${profile.name} · ${profile.team}\nItem: ${$("#fb-meal").value.trim()||"—"}${draft.fbRate?"\nRating: "+draft.fbRate+"/5":""}${$("#fb-note").value.trim()?"\n"+$("#fb-note").value.trim():""}`;
-    render();toast("Feedback ready");return}
+    sendInbox({Type:"Food feedback",Name:profile.name,Team:profile.team,Details:draft.feedbackSent.split("\n").slice(2).join(" · ")});
+    render();toast("Feedback sent");return}
 });
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){const lb=$("#lightbox");if(lb&&!lb.hidden)lb.hidden=true}});
 document.addEventListener("change",e=>{if(e.target.id==="j-photo"&&e.target.files&&e.target.files[0])jPhoto(e.target.files[0])});
 document.addEventListener("input",e=>{const t=e.target;if(t.dataset&&t.dataset.ed&&ED){setPath(ED,t.dataset.ed,t.dataset.num?(t.value===""?"":Number(t.value)):t.value);edStatus();return}if(e.target.id==="q"){draft.q=e.target.value;const f=$("#faq"),g=$("#guides"),h=$("#guidehint");if(f)f.innerHTML=faqHTML();if(g)g.innerHTML=guidesHTML();if(h)h.innerHTML=guideHint()}});
 
 render();
+flushInbox();
 if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
 
 /* ===== Content from Google Sheet (standalone site) =====
