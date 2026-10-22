@@ -800,7 +800,9 @@ function vRD(){
     `<label for="rd-note">Notes<textarea id="rd-note" placeholder="Goals, questions, labs you're bringing, or the supplement you're asking about"></textarea></label>`,
     `<p class="muted" style="font-size:.8rem">Includes your name, team (${profile.team}) and position.</p>`
    ],"Send to Nick")}</section>
-   <section><h2>Nutrition 411</h2><div class="card stack"><p>Quick question that doesn't need a session? Message us on WhatsApp.</p>
+   <section><h2>Nutrition 411</h2><p class="muted" style="font-size:.88rem">Quick question that doesn't need a session? Send it here and it goes straight to Nick.</p>
+   ${formBlock("ask",[`<label for="ask-q">Your question<textarea id="ask-q" placeholder="e.g. What should I eat before a 6 am lift?"></textarea></label>`],"Send to Nick")}
+   <div class="card stack"><p>Prefer to text? Message us on WhatsApp.</p>
     <div class="row"><span class="eyebrow" style="width:74px">Number</span><span class="copybox grow" id="wa-num">${CONFIG.whatsapp}</span><button class="btn ghost sm" data-copy="wa-num">Copy</button></div>
     <div class="row"><span class="eyebrow" style="width:74px">Username</span><span class="copybox grow" id="wa-user">@${CONFIG.whatsappUser}</span><button class="btn ghost sm" data-copy="wa-user">Copy</button></div>
     <a class="btn block" href="${CONFIG.whatsappLink}" target="_blank" rel="noopener">Open WhatsApp</a></div></section></div>`;
@@ -825,7 +827,7 @@ function vLearn(){
     <div class="stack" id="faq">${faqHTML()}</div><p class="stamp" id="guidehint">${guideHint()}</p>`
    :`<div class="seg" data-gtopics="1">${["All",...new Set(GUIDES.map(g=>g.k))].map(k=>`<button data-gtopic="${k}" aria-pressed="${gTopic===k}">${k}</button>`).join("")}</div>
     <div class="guides" id="guides">${guidesHTML()}</div>`}
-   <div class="card stack"><h3>Didn't find it?</h3><p class="muted">Send it to us. Good questions end up here for the whole team.</p><a class="btn block" href="${CONFIG.whatsappLink}" target="_blank" rel="noopener">Ask on WhatsApp</a></div></div>`;
+   <section><h2>Didn't find it?</h2><p class="muted" style="font-size:.88rem">Ask Nick. Good questions end up here for the whole team.</p>${formBlock("ask",[`<label for="ask-q">Your question<textarea id="ask-q" placeholder="e.g. What should I eat before a 6 am lift?"></textarea></label>`],"Send to Nick")}</section></div>`;
 }
 function guideHint(){const q=(draft.q||"").toLowerCase();if(!q)return "";const n=GUIDES.filter(g=>(g.t+" "+g.d+" "+g.alt+" "+g.k).toLowerCase().includes(q)).length;return n?`${n} visual guide${n>1?"s also match":" also matches"}. <button class="linkbtn" data-lseg="guides">View guides</button>`:""}
 let gTopic="All";
@@ -1191,6 +1193,11 @@ document.addEventListener("submit",e=>{
     if(!draft.session){toast("Pick a session type");return}
     draft.sessionSent=`Session heads-up for Nick\n${profile.name} · ${profile.team} · ${profile.position||"—"}\nType: ${draft.session}${$("#rd-note").value.trim()?"\nNotes: "+$("#rd-note").value.trim():""}`;
     sendInbox({...profileRecord("Session request"),Details:`${draft.session}${$("#rd-note").value.trim()?" · "+$("#rd-note").value.trim():""}`});
+    render();toast("Sent to Nick");return}
+  if(f.id==="form-ask"){
+    const q=$("#ask-q").value.trim();if(!q){toast("Type your question first");return}
+    draft.askSent=`Nutrition 411 question\n${profile.name} · ${profile.team}\n${q}`;
+    sendInbox({...profileRecord("Nutrition 411 question"),Details:q});
     render();toast("Sent to Nick");return}
   if(f.id==="form-feedback"){
     if(!draft.fbType){toast("Pick a feedback type");return}
