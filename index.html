@@ -1124,11 +1124,24 @@ const yesv=v=>/^(y|yes|true|x|✓)$/i.test(String(v||"").trim());
 const dayv=v=>DAYS.find(d=>String(v||"").trim().toLowerCase().startsWith(d.toLowerCase()));
 function weeks(rows,make){const W=[];rows.forEach(r=>{const w=parseInt(r.Week,10),d=dayv(r.Day);if(!w||!d)return;while(W.length<w)W.push({});(W[w-1][d]=W[w-1][d]||[]).push(make(r))});return W}
 function numv(v){const n=parseFloat(String(v||"").replace(/[^\d.]/g,""));return isNaN(n)?null:n}
+/* Read one sheet tab. JSONP (a script tag) avoids browser cross-site limits; CSV fetch is the backup. */
+function gvizTab(t){return new Promise((res,rej)=>{
+  const cb="__gv"+Math.random().toString(36).slice(2),sc=document.createElement("script");
+  const done=()=>{clearTimeout(tm);try{delete window[cb]}catch(e){window[cb]=undefined}sc.remove()};
+  const tm=setTimeout(()=>{done();rej(new Error("timeout "+t))},15000);
+  window[cb]=d=>{done();if(!d||d.status==="error"||!d.table)return rej(new Error(t));
+    const cols=d.table.cols.map(c=>String(c.label||"").trim());
+    res(d.table.rows.map(r=>Object.fromEntries(cols.map((h,i)=>{const c=(r.c||[])[i];return [h,c==null?"":String(c.f!=null?c.f:(c.v==null?"":c.v)).trim()]})))
+      .filter(o=>Object.values(o).some(v=>v)))};
+  sc.onerror=()=>{done();rej(new Error(t))};
+  sc.src=`https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/gviz/tq?tqx=out:json;responseHandler:${cb}&headers=1&sheet=${encodeURIComponent(t)}&_=${Date.now()}`;
+  document.head.appendChild(sc)})}
+async function csvTab(t){const r=await fetch(`https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/gviz/tq?tqx=out:csv&headers=1&sheet=${encodeURIComponent(t)}&_=${Date.now()}`,{cache:"no-store"});if(!r.ok)throw new Error(t);return parseCSV(await r.text())}
 async function loadSheet(){
   if(!CONFIG.sheetId)return;
-  const url=t=>`https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(t)}&_=${Date.now()}`;
   const tabs=["Settings","Announcements","Breakfast","Lunch","Stations","Smoothies","Recipes","Snacks"];
-  let T;try{T=Object.fromEntries(await Promise.all(tabs.map(async t=>{const r=await fetch(url(t),{cache:"no-store"});if(!r.ok)throw new Error(t);return [t,parseCSV(await r.text())]})))}catch(e){console.warn("Sheet not loaded",e);return}
+  const T={};
+  try{await Promise.all(tabs.map(async t=>{T[t]=await gvizTab(t).catch(()=>csvTab(t))}))}catch(e){console.warn("Sheet not loaded",e);return}
   const set=Object.fromEntries(T.Settings.map(r=>[r.Setting,r.Value]));
   const recipes={},notes={};
   T.Recipes.forEach(r=>{if(!r.Flavor)return;const x={ing:r.Ingredients.split(/\n|;/).map(s=>s.trim()).filter(Boolean),y:r.Makes||"",a:parseAl(r.Allergens),est:yesv(r.Estimated)};
