@@ -161,6 +161,32 @@ details.stations{background:var(--surface);padding:0 16px}
 details.stations[open]{padding-bottom:16px}
 details.stations summary{align-items:center}
 details.stations .lineup{margin:4px -4px 0}
+
+/* ===== Declutter (Simple style) ===== */
+details.more{background:var(--surface);padding:0 16px}
+details.more summary{font-weight:600}
+:root[data-style="soft"] h2::before,:root[data-style="soft"] .stars5,:root[data-style="soft"] nav.tabs button[aria-current="page"]::before{display:none}
+:root[data-style="soft"] h2{font-size:1.25rem}
+:root[data-style="soft"] .view{gap:26px}
+:root[data-style="soft"] .view>div:first-child>.eyebrow{display:none}
+:root[data-style="soft"] .view>div:first-child>h1{margin-top:4px!important}
+:root[data-style="soft"] .hero-top .eyebrow:first-child:not(:only-child){display:none}
+:root[data-style="soft"] .hero .meta .chip:not(.stop):not(.ok){display:none}
+:root[data-style="soft"] .hero .meta .chip.ok{display:none}
+:root[data-style="soft"] .feature .chip,:root[data-style="soft"] .ann .chip,:root[data-style="soft"] .sec-head>.stamp{display:none}
+:root[data-style="soft"] .lineup{padding-left:18px}
+:root[data-style="soft"] .lineup .lu-head,:root[data-style="soft"] .lineup .lu-rot{margin-left:-18px}
+:root[data-style="soft"] .lineup .meal::before{display:none}
+:root[data-style="soft"] .lineup .meal.flag{box-shadow:inset 3px 0 0 #C8102E;padding-left:12px;margin-left:-18px;padding-left:15px}
+:root[data-style="soft"] .lineup .lu-date{display:none}
+:root[data-style="soft"] .ng span,:root[data-style="soft"] .tile span:not(:first-child){display:none}
+:root[data-style="soft"] .ng{min-height:0;padding:14px}
+:root[data-style="soft"] .ng svg{margin-bottom:2px}
+:root[data-style="soft"] .nav-grid .ng:first-child{flex-direction:column;align-items:flex-start;gap:4px}
+:root[data-style="soft"] .nav-grid .ng:first-child svg{width:22px;height:22px}
+:root[data-style="soft"] .nav-grid .ng:first-child b{font-size:1.02rem}
+:root[data-style="soft"] .usa-mark{width:84px;opacity:.85}
+:root[data-style="soft"] .court::after{display:none}
 </style>
 </head><body>
 <title>USA Volleyball Nutrition</title>
@@ -761,7 +787,7 @@ function vHome(){
     ${rest.length?`<div class="card" style="padding-block:2px">${rest.map(a=>`<div class="ann"><div class="row"><span class="chip">${esc(a.tag)}</span><span class="stamp">${fmtDate(a.when)}</span></div><b style="margin-top:6px">${esc(a.t)}</b><p class="muted" style="font-size:.88rem">${esc(a.d)}</p></div>`).join("")}</div>`:""}</section>`:""}
 
    ${installCard("home")}
-   <section><div class="sec-head"><h2>${weekend?"Monday's menu":"Today's menu"}</h2><span class="row" style="gap:14px"><button class="linkbtn" data-go="journal">Log a meal</button><button class="linkbtn" data-go="food" data-seg="menu">Full week</button></span></div>
+   <section><div class="sec-head"><h2>${weekend?"Monday's menu":"Today's menu"}</h2><span class="row" style="gap:14px"><button class="linkbtn" data-go="food" data-seg="menu">Full week</button></span></div>
     ${meals.length?`<div class="lineup">${luHead(weekend?"Monday's lineup":"Today's lineup",todayIso,"")}${meals.map(x=>mealHTML(x)).join("")}</div>
     ${(()=>{const x=smoothieFor(todayIso);if(!x||!(x.team==="Both"||x.team===teamOf()))return "";const me=mySmoothie(x);return `<button class="tile" data-go="food" data-seg="smoothie" style="min-height:0"><span>${weekend?"Monday's":"Today's"} smoothie</span><b>${esc(me.n)}</b><span>${noPref()?`Whey · or plant: ${esc(me.other)}`:esc(me.prot)}${hits(me.a)?" · may contain your allergen":""}</span></button>`})()}
     ${flagged?`<p class="stamp">${flagged} of ${meals.length} meals may contain something you listed. Ask foodservice for your safe option.</p>`:""}`:`<div class="card muted">This week's menu isn't posted yet.</div>`}</section>
@@ -770,7 +796,7 @@ function vHome(){
     ${go.map(([t,seg,l,d,ic])=>t==="wa"?`<a class="ng" href="${CONFIG.whatsappLink}" target="_blank" rel="noopener">${ic}<b>${l}</b><span>${d}</span></a>`:`<button class="ng" ${t==="learn"?'data-tab="learn"':`data-go="${t}"${seg?` data-seg="${seg}"`:""}`}>${ic}<b>${l}</b><span>${d}</span></button>`).join("")}
    </div></section>
    <div class="usa-mark" role="img" aria-label="USA"></div>
-   <p class="stamp" style="text-align:center">Menus updated ${fmtDate(DATA.updated)} · Built by your USAV sports dietitian</p></div>`;
+</div>`;
 }
 
 /* US flag (13 stripes, 50 stars in 9 alternating rows of 6 and 5), drawn to standard 1.9:1 proportions */
@@ -874,10 +900,10 @@ function vRD(){
    ],"Send to Nick")}</section>
    <section><h2>Nutrition 411</h2><p class="muted" style="font-size:.88rem">Quick question that doesn't need a session? Send it here and it goes straight to Nick.</p>
    ${formBlock("ask",[`<label for="ask-q">Your question<textarea id="ask-q" placeholder="e.g. What should I eat before a 6 am lift?"></textarea></label>`],"Send to Nick")}
-   <div class="card stack"><p>Prefer to text? Message us on WhatsApp.</p>
+   <details class="more"><summary>Prefer WhatsApp?</summary><div class="stack" style="padding-bottom:14px">
     <div class="row"><span class="eyebrow" style="width:74px">Number</span><span class="copybox grow" id="wa-num">${CONFIG.whatsapp}</span><button class="btn ghost sm" data-copy="wa-num">Copy</button></div>
     <div class="row"><span class="eyebrow" style="width:74px">Username</span><span class="copybox grow" id="wa-user">@${CONFIG.whatsappUser}</span><button class="btn ghost sm" data-copy="wa-user">Copy</button></div>
-    <a class="btn block" href="${CONFIG.whatsappLink}" target="_blank" rel="noopener">Open WhatsApp</a></div></section></div>`;
+    <a class="btn ghost block" href="${CONFIG.whatsappLink}" target="_blank" rel="noopener">Open WhatsApp</a></div></details></section></div>`;
 }
 const RANKINGS={"men": {"asOf": "Aug 3, 2026", "teams": [["Poland", 407.56], ["Italy", 355.84], ["Russia", 352.1], ["Slovenia", 344.53], ["United States", 344.41], ["Japan", 333.33], ["Brazil", 312.13], ["France", 302.59], ["Bulgaria", 272.25], ["Turkey", 268.49], ["Ukraine", 247.16], ["Germany", 241.87], ["Serbia", 234.98], ["Argentina", 232.41], ["Cuba", 224.23], ["Finland", 218.01], ["Belgium", 211.6], ["Canada", 209.21], ["Iran", 205.6], ["Czech Republic", 203.22]], "link": "https://en.volleyballworld.com/volleyball/world-ranking/men"}, "women": {"asOf": "Jul 13, 2026", "teams": [["Italy", 467.01], ["Brazil", 400.56], ["United States", 371.71], ["Turkey", 369.04], ["Poland", 338.37], ["Japan", 335.27], ["China", 315.2], ["Netherlands", 294.84], ["Russia", 277.59], ["Serbia", 276.38], ["Canada", 276.34], ["Germany", 253.62], ["Dominican Republic", 230.37], ["Czech Republic", 220.41], ["France", 207.28], ["Belgium", 195.58], ["Thailand", 189.26], ["Ukraine", 188.1], ["Bulgaria", 136.02]], "link": "https://en.volleyballworld.com/volleyball/world-ranking/women"}};
 let rankSeg="women";
@@ -936,12 +962,14 @@ function vMe(){
    <section><h2>Customize</h2><div class="card custom">
     <div><h3>Style</h3><div class="choice" data-pref="style">${[["soft","Simple"],["gameday","Game day"]].map(([k,l])=>`<button type="button" data-v="${k}" aria-pressed="${prefs.style===k}">${l}</button>`).join("")}</div></div>
     <div><h3>Color theme</h3><div class="pals">${PALETTES.map(p=>`<button class="pal" data-palette="${p.k}" aria-pressed="${prefs.palette===p.k}"><i style="background:linear-gradient(135deg,${p.a} 0 50%,${p.b} 50%)"></i>${p.n}</button>`).join("")}</div></div>
+    <details class="more"><summary>More options</summary><div class="custom" style="padding-top:6px">
     <div><h3>Background</h3><div class="bgopts">${BGS.map(([k,l])=>`<button class="bgopt" data-bgk="${k}" aria-pressed="${prefs.bg===k}"><i></i>${l}</button>`).join("")}</div></div>
     <div><h3>Accent color</h3><div class="swatches">${ACCENTS.map(a=>`<button class="sw ${a.c?"":"theme"}" ${a.c?`style="background:${a.c}"`:""} data-accent="${a.c||"theme"}" aria-label="${a.n}" title="${a.n}" aria-pressed="${prefs.accent===a.c}"></button>`).join("")}</div></div>
     <div><h3>Font</h3><div class="fonts">${Object.entries(FONTS).map(([k,f])=>`<button class="fontbtn" data-font="${k}" aria-pressed="${prefs.font===k}"><b style="font-family:${f.d.replace(/"/g,"'")}">Aa</b><span style="font-family:${f.b.replace(/"/g,"'")}">${f.n}</span></button>`).join("")}</div></div>
     <div><h3>Appearance</h3><div class="choice" data-pref="theme">${[["system","System"],["dark","Dark"],["light","Light"]].map(([k,l])=>`<button type="button" data-v="${k}" aria-pressed="${prefs.theme===k}">${l}</button>`).join("")}</div></div>
     <div><h3>Contrast</h3><div class="choice" data-pref="contrast">${[["standard","Standard"],["high","High"]].map(([k,l])=>`<button type="button" data-v="${k}" aria-pressed="${prefs.contrast===k}">${l}</button>`).join("")}</div></div>
     <div><h3>Text size</h3><div class="choice" data-pref="size">${[["m","Standard"],["l","Large"],["xl","Extra large"]].map(([k,l])=>`<button type="button" data-v="${k}" aria-pressed="${prefs.size===k}">${l}</button>`).join("")}</div></div>
+    </div></details>
     <button class="btn ghost block" data-resetlook="1">Reset to default look</button>
    </div></section></div>`;
 }
@@ -1116,12 +1144,12 @@ function vJournal(){
       ${e.energy||e.notes?`<p class="muted" style="font-size:.82rem">${e.energy?`Energy ${e.energy}/5`:""}${e.energy&&e.notes?" · ":""}${esc(e.notes||"")}</p>`:""}
      </button>`).join("")}</div>`:`<div class="card stack"><p>Nothing logged for ${jLabel(jDate).toLowerCase()==="today"?"today":jLabel(jDate)} yet.</p><p class="muted" style="font-size:.88rem">Log meals, snacks and drinks as you go. A quick photo plus a few words is enough.</p></div>`}
     <button class="btn block" data-jnew="1">Log a meal or drink</button></section>
-   <section><h2>Share with Nick</h2><div class="card stack">
+   <details class="more"><summary>Share your journal with Nick</summary><div class="stack" style="padding-bottom:14px">
     <p class="muted" style="font-size:.88rem">Turns your journal into a message you can send before a session.</p>
     <div class="choice mini">${[[1,"This day"],[3,"Last 3 days"],[7,"Last 7 days"]].map(([n,l])=>`<button type="button" data-jrange="${n}" aria-pressed="${jRange===n}">${l}</button>`).join("")}</div>
     <button class="btn ghost block" data-jshare="1">Write summary</button>
     ${jShareText?`<div class="copybox" id="j-copy">${esc(jShareText)}</div><div class="row" style="flex-wrap:wrap"><button class="btn" data-copy="j-copy">Copy</button><a class="btn ghost" href="${CONFIG.whatsappLink}?text=${encodeURIComponent(jShareText)}" target="_blank" rel="noopener">Send on WhatsApp</a></div><p class="stamp">Photos stay on your phone. Attach them in WhatsApp if you want Nick to see them.</p>`:""}
-   </div></section></div>`;
+   </div></details></div>`;
 }
 function vJournalForm(){
   const e=jEdit, isNew=!jGet(jDate).entries.some(x=>x.id===e.id);
