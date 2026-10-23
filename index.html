@@ -903,9 +903,9 @@ function vRD(){
     `<div class="stack" style="gap:6px"><span class="eyebrow">Session type</span><div class="choice" data-pick="session">${SESSIONS.map(t=>`<button type="button" data-v="${t}" aria-pressed="${draft.session===t}">${t}</button>`).join("")}</div></div>`,
     `<label for="rd-note">Notes<textarea id="rd-note" placeholder="Goals, questions, labs you're bringing, or the supplement you're asking about"></textarea></label>`,
     `<p class="muted" style="font-size:.8rem">Includes your name, team (${profile.team}) and position.</p>`
-   ],"Send to Nick")}</section>
+   ],"Send Message to RD")}</section>
    <section><h2>Nutrition 411</h2><p class="muted" style="font-size:.88rem">Quick question that doesn't need a session? Send it here and it goes straight to Nick.</p>
-   ${formBlock("ask",[`<label for="ask-q">Your question<textarea id="ask-q" placeholder="e.g. What should I eat before a 6 am lift?"></textarea></label>`],"Send to Nick")}
+   ${formBlock("ask",[`<label for="ask-q">Your question<textarea id="ask-q" placeholder="e.g. What should I eat before a 6 am lift?"></textarea></label>`],"Send Message to RD")}
    <details class="more"><summary>Prefer WhatsApp?</summary><div class="stack" style="padding-bottom:14px">
     <div class="row"><span class="eyebrow" style="width:74px">Number</span><span class="copybox grow" id="wa-num">${CONFIG.whatsapp}</span><button class="btn ghost sm" data-copy="wa-num">Copy</button></div>
     <div class="row"><span class="eyebrow" style="width:74px">Username</span><span class="copybox grow" id="wa-user">@${CONFIG.whatsappUser}</span><button class="btn ghost sm" data-copy="wa-user">Copy</button></div>
@@ -931,7 +931,7 @@ function vLearn(){
     <div class="stack" id="faq">${faqHTML()}</div><p class="stamp" id="guidehint">${guideHint()}</p>`
    :`<div class="seg" data-gtopics="1">${["All",...new Set(GUIDES.map(g=>g.k))].map(k=>`<button data-gtopic="${k}" aria-pressed="${gTopic===k}">${k}</button>`).join("")}</div>
     <div class="guides" id="guides">${guidesHTML()}</div>`}
-   <section><h2>Didn't find it?</h2><p class="muted" style="font-size:.88rem">Ask Nick. Good questions end up here for the whole team.</p>${formBlock("ask",[`<label for="ask-q">Your question<textarea id="ask-q" placeholder="e.g. What should I eat before a 6 am lift?"></textarea></label>`],"Send to Nick")}</section></div>`;
+   <section><h2>Didn't find it?</h2><p class="muted" style="font-size:.88rem">Ask Nick. Good questions end up here for the whole team.</p>${formBlock("ask",[`<label for="ask-q">Your question<textarea id="ask-q" placeholder="e.g. What should I eat before a 6 am lift?"></textarea></label>`],"Send Message to RD")}</section></div>`;
 }
 function guideHint(){const q=(draft.q||"").toLowerCase();if(!q)return "";const n=GUIDES.filter(g=>(g.t+" "+g.d+" "+g.alt+" "+g.k).toLowerCase().includes(q)).length;return n?`${n} visual guide${n>1?"s also match":" also matches"}. <button class="linkbtn" data-lseg="guides">View guides</button>`:""}
 let gTopic="All";
