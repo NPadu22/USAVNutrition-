@@ -76,7 +76,6 @@ body{font-size:1rem}
 :root[data-style="soft"] .stamp{font-size:.76rem}
 :root[data-style="soft"] .chip{font-size:.74rem;font-weight:600;padding:5px 10px}
 :root[data-style="soft"] .court::before{display:none}
-:root[data-style="soft"] .court{background:var(--surface)}
 :root[data-style="soft"] .court::after{height:4px}
 :root[data-style="soft"] .sb{background:color-mix(in srgb,var(--accent) 16%,transparent);box-shadow:none;border-radius:999px;padding:1px 8px;font:700 .85em var(--body);letter-spacing:0}
 :root[data-style="soft"] .sb-ghost{display:none}
@@ -111,6 +110,19 @@ body{font-size:1rem}
 .fontbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .sw.theme{background:conic-gradient(var(--accent) 0 50%,var(--surface-2) 0)}
 
+/* Volleyball court header (top-down, to scale) */
+:root{--court:color-mix(in srgb,var(--accent) 34%,var(--surface));--court-free:color-mix(in srgb,var(--blue) 30%,var(--surface));--court-line:rgb(255 255 255 / .5)}
+.court{isolation:isolate;background:var(--court-free)!important}
+.court::before{display:none!important}
+.courtbg{position:absolute!important;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+.courtbg .cz{fill:var(--court-free)}
+.courtbg .cc{fill:var(--court)}
+.courtbg .cl{stroke:var(--court-line);stroke-width:1;fill:none}
+.courtbg .cnet{stroke:var(--court-line);stroke-width:2.2;stroke-linecap:round}
+.courtbg .cpost{fill:var(--court-line)}
+.court::after{z-index:1}
+.court .eyebrow,.court .hello,.court .wordmark,.court .muted{text-shadow:0 1px 8px color-mix(in srgb,var(--surface) 70%,transparent)}
+:root[data-style="soft"] .court{background:var(--surface)}
 </style>
 </head><body>
 <title>USA Volleyball Nutrition</title>
@@ -472,6 +484,7 @@ const CONFIG = {
 /* ===== Content (example data, replace weekly) ===== */
 const ALLERGENS=["Dairy","Egg","Wheat/Gluten","Peanut","Tree nut","Soy","Fish","Shellfish","Sesame"];
 const DAYS=["Mon","Tue","Wed","Thu","Fri"];
+const COURT_SVG='<svg class="courtbg" viewBox="0 0 240 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="240" height="150" class="cz"/><rect x="30" y="30" width="180" height="90" class="cc"/><g class="cl"><rect x="30" y="30" width="180" height="90" fill="none"/><line x1="90" y1="30" x2="90" y2="120"/><line x1="150" y1="30" x2="150" y2="120"/></g><line x1="120" y1="22" x2="120" y2="128" class="cnet"/><circle cx="120" cy="22" r="2" class="cpost"/><circle cx="120" cy="128" r="2" class="cpost"/></svg>';
 /* Menus, smoothies, snacks and announcements live in the af-data block above and are edited in the app's content editor. */
 let DATA;try{DATA=JSON.parse(document.getElementById("af-data").textContent)}catch(e){DATA=null}
 DATA=Object.assign({updated:"",start:"",cycles:{},stations:[],announcements:[],smoothieCycle:[],snackCycle:[],plantProtein:"plant protein",wheyProtein:"whey protein"},DATA||{});
@@ -656,7 +669,7 @@ function vOnboard(){
   const p=draft;
   p.allergies=p.allergies||[];
   return `<div class="view">
-   <div class="court hero"><div class="hero-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><span class="eyebrow">Athlete setup</span></div>${STARS5}<p class="wordmark"><span>Nutrition</span></p><p class="hello">${draft.editing?"Update your profile.":"Welcome. Takes about a minute."}</p><p class="muted" style="margin-top:6px">Your answers flag your allergens on every menu and set the protein in your smoothies.</p></div>
+   <div class="court hero">${COURT_SVG}<div class="hero-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><span class="eyebrow">Athlete setup</span></div>${STARS5}<p class="wordmark"><span>Nutrition</span></p><p class="hello">${draft.editing?"Update your profile.":"Welcome. Takes about a minute."}</p><p class="muted" style="margin-top:6px">Your answers flag your allergens on every menu and set the protein in your smoothies.</p></div>
    ${draft.editing?"":installCard("setup")}
    <form id="onb" class="stack card">
     <div class="namerow"><label for="f-first">First name<input id="f-first" required value="${esc(p.first??(p.name||"").split(" ")[0]??"")}" placeholder="First Name" autocomplete="given-name"></label><label for="f-last">Last name<input id="f-last" required value="${esc(p.last??(p.name||"").split(" ").slice(1).join(" "))}" placeholder="Last Name" autocomplete="family-name"></label></div>
@@ -699,7 +712,7 @@ function vHome(){
    ["rank","","World rankings","Men's and women's national teams",IC.ball]
   ];
   return `<div class="view home">
-   <header class="hero court">
+   <header class="hero court">${COURT_SVG}
     <div class="hero-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><div style="text-align:right;display:flex;flex-direction:column;gap:6px"><span class="eyebrow">Team USA · ${profile.team}</span><span class="eyebrow">${dateLine}</span></div></div>
     ${STARS5}<p class="wordmark"><span>Nutrition</span></p>
     <p class="hello">Welcome back, ${esc(first)}.</p>
