@@ -157,6 +157,10 @@ body{font-size:1rem}
 .court::after{z-index:1}
 .court .eyebrow,.court .hello,.court .wordmark,.court .muted{text-shadow:0 1px 8px color-mix(in srgb,var(--surface) 70%,transparent)}
 :root[data-style="soft"] .court{background:var(--surface)}
+details.stations{background:var(--surface);padding:0 16px}
+details.stations[open]{padding-bottom:16px}
+details.stations summary{align-items:center}
+details.stations .lineup{margin:4px -4px 0}
 </style>
 </head><body>
 <title>USA Volleyball Nutrition</title>
@@ -738,13 +742,9 @@ function vHome(){
   const [feat,...rest]=DATA.announcements;
   const dateLine=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
   const go=[
-   ["food","menu","Weekly menu","Every meal, allergens tagged",IC.plate],
-   ["journal","","Food journal","Log meals, photos, and energy",IC.note],
    ["food","smoothie","Smoothies","A lifting day staple",IC.cup],
    ["food","snacks","Court snacks","Between sets and matches",IC.ball],
    ["food","dinner","Away from the facility","Dinners and weekends",IC.moon],
-   ["rd","","Book the RD","Labs, body tissue, supplements",IC.cal],
-   ["learn","","Nutrition 411","Answers to everything nutrition",IC.book],
    ["food","feedback","Food feedback","Rate a meal or request one",IC.chat],
    ["rank","","World rankings","Men's and women's national teams",IC.ball]
   ];
@@ -766,7 +766,7 @@ function vHome(){
     ${(()=>{const x=smoothieFor(todayIso);if(!x||!(x.team==="Both"||x.team===teamOf()))return "";const me=mySmoothie(x);return `<button class="tile" data-go="food" data-seg="smoothie" style="min-height:0"><span>${weekend?"Monday's":"Today's"} smoothie</span><b>${esc(me.n)}</b><span>${noPref()?`Whey · or plant: ${esc(me.other)}`:esc(me.prot)}${hits(me.a)?" · may contain your allergen":""}</span></button>`})()}
     ${flagged?`<p class="stamp">${flagged} of ${meals.length} meals may contain something you listed. Ask foodservice for your safe option.</p>`:""}`:`<div class="card muted">This week's menu isn't posted yet.</div>`}</section>
 
-   <section><h2>Everything here</h2><div class="nav-grid">
+   <section><h2>More</h2><div class="nav-grid">
     ${go.map(([t,seg,l,d,ic])=>t==="wa"?`<a class="ng" href="${CONFIG.whatsappLink}" target="_blank" rel="noopener">${ic}<b>${l}</b><span>${d}</span></a>`:`<button class="ng" ${t==="learn"?'data-tab="learn"':`data-go="${t}"${seg?` data-seg="${seg}"`:""}`}>${ic}<b>${l}</b><span>${d}</span></button>`).join("")}
    </div></section>
    <div class="usa-mark" role="img" aria-label="USA"></div>
@@ -802,7 +802,7 @@ function vFood(){
     <div class="seg" data-segset="day">${DAYS.map((d,k)=>`<button data-v="${d}" aria-pressed="${d===day}">${d} ${sb(String(new Date(jShift(mon,k)+"T12:00:00").getDate()).padStart(2,"0"))}</button>`).join("")}</div>
     <div class="lineup">${luHead("Lineup card",dIso,"")}${meals.length?meals.map(x=>mealHTML(x)).join(""):'<p class="muted" style="padding:12px 0">No menu posted for this day yet.</p>'}
 </div>
-    ${DATA.stations.length?`<section><h2>Daily fuel stations</h2><p class="muted" style="font-size:.86rem">Open every breakfast, alongside the hot item.</p><div class="lineup">${luHead("Fuel stations",null,"")}${DATA.stations.map(x=>mealHTML(x,"Breakfast · every day")).join("").replace(/<b>/g,"<b>").replace(/eyebrow">Breakfast · every day/g,'eyebrow">Breakfast · every day')}</div></section>`:""}
+    ${DATA.stations.length?`<section><details class="stations"><summary><span><b>Daily fuel stations</b><span class="muted" style="display:block;font-size:.82rem;font-weight:400">Oatmeal, yogurt, toast and grab & go · every breakfast${DATA.stations.some(x=>hits(x.a))?" · some contain your allergen":""}</span></span></summary><div class="lineup">${luHead("Fuel stations",null,"")}${DATA.stations.map(x=>mealHTML(x,"Breakfast · every day")).join("").replace(/<b>/g,"<b>").replace(/eyebrow">Breakfast · every day/g,'eyebrow">Breakfast · every day')}</div></details></section>`:""}
     <p class="stamp">Menu updated ${fmtDate(DATA.updated)}. Tags cover the 9 major allergens. Shared kitchens carry cross-contact risk, so ask foodservice if you're unsure.</p>`;
   }else if(foodSeg==="smoothie"||foodSeg==="snacks"){
     const mon=jShift(mondayOf(isoToday()),wkOff*7);
@@ -895,7 +895,7 @@ function vLearn(){
   return `<div class="view"><div><p class="eyebrow">Nutrition 411</p><h1 style="margin-top:6px">Your questions</h1></div>
    <div class="searchbox"><input id="q" type="search" placeholder="Search: protein, hydration, iron, creatine…" value="${esc(draft.q||"")}" aria-label="Search quick answers and guides"></div>
    <div class="seg" data-learnseg="1"><button data-lseg="answers" aria-pressed="${learnSeg==="answers"}">Quick answers</button><button data-lseg="guides" aria-pressed="${learnSeg==="guides"}">Visual guides</button></div>
-   ${learnSeg==="answers"?`<p class="muted" style="font-size:.86rem">Evidence-based answers, each with its source.</p>
+   ${learnSeg==="answers"?`<p class="muted" style="font-size:.86rem">Evidence-based answers, each with its source.</p><div class="seg">${["All","Fueling","Hydration","Recovery & health","Supplements","Travel"].map(k=>`<button data-faqtopic="${k}" aria-pressed="${faqTopic===k}">${k}</button>`).join("")}</div>
     <div class="stack" id="faq">${faqHTML()}</div><p class="stamp" id="guidehint">${guideHint()}</p>`
    :`<div class="seg" data-gtopics="1">${["All",...new Set(GUIDES.map(g=>g.k))].map(k=>`<button data-gtopic="${k}" aria-pressed="${gTopic===k}">${k}</button>`).join("")}</div>
     <div class="guides" id="guides">${guidesHTML()}</div>`}
@@ -908,9 +908,16 @@ function guidesHTML(){
   const list=GUIDES.map((g,i)=>({g,i})).filter(({g})=>(gTopic==="All"||g.k===gTopic)&&(!q||(g.t+" "+g.d+" "+g.alt+" "+g.k).toLowerCase().includes(q)));
   return list.length?list.map(({g,i})=>`<button class="guide" data-guide="${i}" aria-label="Open ${esc(g.t)} full size"><img src="${g.img}" alt="${esc(g.alt)}" loading="lazy"><span class="eyebrow" style="padding:0 12px">${esc(g.k)}</span><b>${esc(g.t)}</b><span>${esc(g.d)}</span></button>`).join(""):`<p class="muted">No guides match.</p>`;
 }
+let faqTopic="All";
+function faqTopicOf(f){const t=f.q.toLowerCase();
+  if(/travel/.test(t))return "Travel";
+  if(/drink before|sweat|water or|hydrat/.test(t))return "Hydration";
+  if(/creatine|caffeine|supplement|beet|energy drink|omega|fish oil|peptide|bpc|banned/.test(t))return "Supplements";
+  if(/recover|tired|injur|iron|vitamin d|calcium|alcohol|weight|body tissue|stomach|not hungry/.test(t))return "Recovery & health";
+  return "Fueling"}
 function faqHTML(){
   const q=(draft.q||"").toLowerCase();
-  const list=FAQ.filter(f=>!q||(f.q+f.a.join(" ")).toLowerCase().includes(q));
+  const list=FAQ.filter(f=>(faqTopic==="All"||q||faqTopicOf(f)===faqTopic)&&(!q||(f.q+f.a.join(" ")).toLowerCase().includes(q)));
   return list.length?list.map(f=>`<details><summary>${f.q}</summary><div class="ans">${f.a.map(p=>`<p>${p}</p>`).join("")}<p class="src">Source: ${f.s}</p></div></details>`).join(""):`<p class="muted">No answers match "${esc(draft.q)}" yet.</p>`;
 }
 function vMe(){
@@ -1240,6 +1247,7 @@ document.addEventListener("click",e=>{
   if(b.dataset.rseg){rankSeg=b.dataset.rseg;render();return}
   if(b.dataset.install){if(deferredInstall){deferredInstall.prompt();deferredInstall.userChoice.finally(()=>{deferredInstall=null;render()})}return}
   if(b.dataset.installhide){try{localStorage.setItem("af_installHide","1")}catch(e){}render();toast("You can install it anytime from Me");return}
+  if(b.dataset.faqtopic){faqTopic=b.dataset.faqtopic;b.parentElement.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.faqtopic===faqTopic));const f=$("#faq");if(f)f.innerHTML=faqHTML();return}
   if(b.dataset.lseg){learnSeg=b.dataset.lseg;render();const q=$("#q");if(q&&draft.q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}return}
   if(b.dataset.gtopic){gTopic=b.dataset.gtopic;b.parentElement.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.gtopic===gTopic));$("#guides").innerHTML=guidesHTML();return}
   if(b.dataset.guide){const g=GUIDES[+b.dataset.guide];const lb=$("#lightbox");lb.querySelector("img").src=g.img;lb.querySelector("img").alt=g.alt;lb.querySelector("p").textContent=g.d;lb.hidden=false;lb.querySelector("button").focus();return}
