@@ -1126,15 +1126,16 @@ function wearData(){
 }
 function noteChapterLog(iso){const c=chapterName();if(!c)return;let ch={};try{ch=JSON.parse(localStorage.getItem("af_chapters")||"{}")}catch(e){}
   const L=ch[c]||[];if(!L.includes(iso)){L.push(iso);ch[c]=L.slice(-60);try{localStorage.setItem("af_chapters",JSON.stringify(ch))}catch(e){}}}
-function walkOut(){
-  if(reduceMotion())return;
-  const staff=STAFF_ROLES.includes(profile.position);
+function walkOut(force,who){
+  if(reduceMotion()&&!force)return;
+  const pr=who||profile;
+  const staff=STAFF_ROLES.includes(pr.position);
   const el=document.createElement("div");el.id="walkout";el.setAttribute("role","dialog");el.setAttribute("aria-label","Welcome");
   el.innerHTML=`<div class="wo-beam l"></div><div class="wo-beam r"></div><div class="wo-court"></div>
    <p class="wo-1">${staff?"Joining the staff":"Starting for Team USA"}</p>
-   ${profile.num&&!staff?`<p class="wo-2 num">${esc(profile.num)}</p>`:""}
-   <p class="wo-3">${esc(profile.first||"")} ${esc(profile.last||"")}</p>
-   <p class="wo-4">${esc(profile.position||profile.team)} · USA Volleyball Nutrition</p>`;
+   ${pr.num&&!staff?`<p class="wo-2 num">${esc(pr.num)}</p>`:""}
+   <p class="wo-3">${esc(pr.first||"")} ${esc(pr.last||"")}</p>
+   <p class="wo-4">${esc(pr.position||pr.team)} · USA Volleyball Nutrition</p>`;
   const done=()=>el.remove();el.addEventListener("click",done);setTimeout(done,4600);document.body.appendChild(el);
 }
 function vHome(){
@@ -1742,7 +1743,7 @@ document.addEventListener("input",e=>{const t=e.target;if(t.dataset&&t.dataset.e
 (()=>{let last=0;document.addEventListener("touchend",e=>{const now=Date.now();if(now-last<320&&e.touches.length===0&&e.changedTouches.length===1&&!e.target.closest("input,textarea,select,[contenteditable]")){e.preventDefault();const t=e.target.closest("button,a,label,[data-tab]");if(t)t.dispatchEvent(new MouseEvent("click",{bubbles:true,cancelable:true}))}last=now},{passive:false})})();
 
 render();
-if(/[?&#]walkout\b/.test(location.search+location.hash)&&profile)setTimeout(walkOut,300);
+if(/[?&#]walkout\b/.test(location.search+location.hash))setTimeout(()=>walkOut(true,profile||{first:"Kelsey",last:"Robinson",num:"12",position:"Outside hitter",team:"WNT"}),400);
 (()=>{const sp=document.getElementById("splash");if(!sp)return;let seen=false;try{seen=sessionStorage.getItem("af_splash")}catch(e){}
   const standalone=(()=>{try{return matchMedia("(display-mode: standalone)").matches||navigator.standalone}catch(e){return false}})();
   if(!standalone||seen||reduceMotion()){sp.remove();return}try{sessionStorage.setItem("af_splash","1")}catch(e){}
