@@ -19,7 +19,7 @@ Menus, smoothies, recipes, court snacks, stations, announcements and settings lo
 `https://docs.google.com/spreadsheets/d/<id>/gviz/tq?tqx=out:csv&sheet=<Tab>`.
 See `loadSheet()` near the end of the script. The JSON in `<script id="af-data">` is only the fallback if the sheet can't load.
 
-- **Do not rename sheet tabs or column headers in code.** The dietitian edits the sheet directly. Tabs: Settings, Announcements, Breakfast, Lunch, Stations, Smoothies, Recipes, Snacks.
+- **Do not rename sheet tabs or column headers in code.** The dietitian edits the sheet directly. Tabs: Settings, Announcements, Breakfast, Lunch, Stations, Smoothies, Recipes, Snacks, Matches (optional: Date, Start time, Opponent, Team, Location; drives the Home match-day scoreboard).
 - Menus rotate by date from `Rotation start` (a Monday). Each tab has its own cycle length (the number of weeks in that tab). No pausing.
 - Dinner is never served at the facility. The "Away from the facility" section (`DINNERS` in the script) covers dinners and weekends.
 
@@ -38,6 +38,7 @@ See `loadSheet()` near the end of the script. The JSON in `<script id="af-data">
 - Keep supplement content anti-doping safe: third-party tested (NSF Certified for Sport or Informed Sport), and check with the RD first.
 - Brand (USAV brand book): Pantone 187C red `#A6192E`, 2768C navy `#071D49`, white, 117C gold `#C99700`. Keep the logo on its white tile with clear space. Don't recolor, stretch or redraw the logo.
 - Design language: rounded, calm, content-first. Lineup-card menus, amber scoreboard digits, five gold stars, OLED-friendly dark mode with a light mode. Respect `prefers-reduced-motion`.
+- Brand details: credential badge on Me, jersey number in the hero, scoresheet journal with SPIKE/ACE/DIG stamps, nutrition passport from Travel days, "days to LA" countdown (plain text only: never use Olympic rings, LA28 marks or Olympic wording), Graduate font for numerals only, ball-seam section dividers, `splash-*.png` iOS launch images.
 - Must work at phone width (about 390 px) in dark and light mode, with no horizontal scrolling.
 - Keep everything static: no server, no build tools and no paid services.
 - The in-app content editor (`vEdit`, `publishData`, `window.claude`) only works when hosted on Claude. On GitHub Pages it stays hidden. Leave it in place or remove it cleanly; don't half-remove it.

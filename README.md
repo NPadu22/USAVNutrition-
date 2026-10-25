@@ -4,7 +4,7 @@ Athlete nutrition app for USA Volleyball national team athletes: menus, smoothie
 
 ## Updating content (no coding)
 
-Menus, smoothies, recipes, court snacks and announcements come from the Google Sheet **USAV Nutrition App Content**. Edit the sheet and athletes see the change the next time they open the app. The "How to edit" tab in the sheet explains each column.
+Menus, smoothies, recipes, court snacks, announcements and match days come from the Google Sheet **USAV Nutrition App Content**. Edit the sheet and athletes see the change the next time they open the app. The "How to edit" tab in the sheet explains each column.
 
 Rules that keep it working:
 - Don't rename the tabs or the header row.

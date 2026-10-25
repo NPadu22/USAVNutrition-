@@ -12,6 +12,16 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash-1290x2796.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash-1179x2556.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash-1170x2532.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash-1284x2778.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash-1125x2436.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash-1242x2688.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="splash-828x1792.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="splash-750x1334.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash-1206x2622.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash-1320x2868.png">
 <style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0}img{max-width:100%}[hidden]{display:none!important}.install{background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 20%,var(--surface)),var(--surface) 70%)}
 .inst-icon{width:52px;height:52px;border-radius:13px;flex:none;box-shadow:0 2px 8px rgb(0 0 0 / .2)}
 .install h3{font-size:1.1rem}
@@ -197,7 +207,7 @@ details.more summary{font-weight:600}
 <title>USA Volleyball Nutrition</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700;800&family=JetBrains+Mono:wght@400;600&family=Share+Tech+Mono&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Graduate&family=Saira+Condensed:wght@500;700;800&family=JetBrains+Mono:wght@400;600&family=Share+Tech+Mono&display=swap">
 <style id="af-style">
 /* Layout: one-column phone app. Court lines (net + two 3 m attack lines) are the recurring motif; bottom tab bar; content is the hero. Dark-first, OLED. */
 :root{
@@ -532,20 +542,110 @@ h2::before{width:.6em;height:.6em}
 .recipe{background:transparent;padding:0;border-radius:0}
 .recipe summary{padding:6px 0;font-size:.85rem;color:var(--ink)}
 .recipe ul{margin:0 0 6px;padding-left:18px;font-size:.86rem;color:var(--ink-muted);display:grid;gap:2px}
+/* ===== Brand details ===== */
+:root{--num:"Graduate","Saira Condensed",sans-serif}
+.num{font-family:var(--num);font-variant-numeric:tabular-nums;letter-spacing:.02em;font-weight:400}
+/* Paper grain on lineup cards */
+:root[data-style="soft"] .lineup{background:var(--noise),var(--paper)}
+/* Ball-seam dividers between sections */
+.view>section+section::before{content:"";display:block;height:14px;margin:-10px 0 14px;background:var(--fg);opacity:.16;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 16' preserveAspectRatio='none'%3E%3Cpath d='M0 11 C80 1 220 1 300 11' fill='none' stroke='black' stroke-width='1.6'/%3E%3Cpath d='M0 15 C80 5 220 5 300 15' fill='none' stroke='black' stroke-width='1.2' stroke-dasharray='3 5'/%3E%3C/svg%3E") center/100% 100% no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 16' preserveAspectRatio='none'%3E%3Cpath d='M0 11 C80 1 220 1 300 11' fill='none' stroke='black' stroke-width='1.6'/%3E%3Cpath d='M0 15 C80 5 220 5 300 15' fill='none' stroke='black' stroke-width='1.2' stroke-dasharray='3 5'/%3E%3C/svg%3E") center/100% 100% no-repeat}
+/* Jersey number + LA countdown in hero */
+.hero .jersey{position:absolute;right:-6px;bottom:-34px;z-index:-1;font:400 10.5rem/1 var(--num);color:var(--fg);opacity:.07;pointer-events:none;letter-spacing:-.02em}
+.la{margin-top:10px;display:flex;align-items:baseline;gap:6px;font-size:.82rem;color:var(--muted)}
+.la .num{font-size:1.25rem;color:var(--fg)}
+/* Credential */
+.credwrap{display:flex;flex-direction:column;align-items:center}
+.credwrap::before{content:"";width:40px;height:30px;background:linear-gradient(90deg,#A6192E 0 33.3%,#fff 33.3% 66.6%,#071D49 66.6%);border-radius:3px 3px 0 0;box-shadow:inset 0 -6px 0 rgb(0 0 0 / .18)}
+.cred{position:relative;width:100%;background:var(--noise),var(--paper);color:var(--ink);border-radius:18px;overflow:hidden;box-shadow:0 14px 34px rgb(0 0 0 / .3);padding:30px 18px 0}
+.cred::before{content:"";position:absolute;top:11px;left:50%;width:48px;height:9px;margin-left:-24px;border-radius:99px;background:var(--bg);box-shadow:inset 0 2px 3px rgb(0 0 0 / .45)}
+.cred-top{display:flex;align-items:center;gap:12px}
+.cred-top .logo-badge{width:70px;border-radius:9px;box-shadow:0 2px 8px rgb(0 0 0 / .15)}
+.cred-org{font:600 .7rem/1.25 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted)}
+.cred-org b{display:block;font:800 1.15rem/1 var(--display);letter-spacing:.04em;color:var(--ink)}
+.cred-num{margin-left:auto;font-size:3.3rem;line-height:.9;color:var(--ink)}
+.cred-name{margin:16px 0 0;font:600 1.05rem/1.1 var(--display);text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted)}
+.cred-name b{display:block;font:800 2.3rem/1 var(--display);color:var(--ink);letter-spacing:.01em}
+.cred-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin:14px 0 14px;padding-top:12px;border-top:1px solid rgb(7 29 73 / .14)}
+.cred-grid i{display:block;font:600 .64rem var(--mono);font-style:normal;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted)}
+.cred-grid b{font-weight:700;color:var(--ink);font-size:.95rem}
+.cred-alert{display:flex;flex-direction:column;gap:2px;margin:0 -18px;padding:10px 18px;background:#C8102E;color:#fff}
+.cred-alert span{font:700 .66rem var(--mono);letter-spacing:.16em;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.cred-alert span::before{content:"✚";font-size:.9rem}
+.cred-alert b{font-size:1.02rem}
+.cred-ok{margin:0 -18px;padding:10px 18px;background:rgb(61 190 139 / .16);color:var(--ink);font-weight:700;font-size:.9rem}
+.cred-strip{margin:0 -18px;padding:9px 18px 11px;background:var(--ink);color:var(--paper);font:800 1rem/1 var(--display);letter-spacing:.22em;text-transform:uppercase;text-align:center}
+/* Passport */
+.passport{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px;padding:16px;background:var(--noise),var(--paper);border-radius:var(--r)}
+.pstamp{--ink:#A6192E;justify-self:center;width:124px;min-height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:10px 8px;text-align:center;color:var(--ink);border:3px double currentColor;border-radius:12px;transform:rotate(var(--rot,0deg));opacity:.86;filter:url(#ink)}
+.pstamp.s1{border-radius:50%;width:116px;height:116px}
+.pstamp.s2{border-radius:4px;border-style:solid;border-width:2px;outline:2px solid currentColor;outline-offset:3px}
+.pstamp.s3{border-radius:28px 4px 28px 4px}
+.pstamp i{font:700 .52rem var(--mono);font-style:normal;letter-spacing:.14em;text-transform:uppercase}
+.pstamp b{font:800 1.2rem/1.05 var(--display);letter-spacing:.04em;word-break:break-word}
+.pstamp span{font-size:.95rem}
+/* Scoresheet journal */
+.lineup.sheet{padding:0 18px 2px!important}
+.sheet-head{display:grid;grid-template-columns:auto auto 1fr auto;margin:0 -18px;border-bottom:2px solid var(--ink)}
+.sheet-head>div{padding:8px 10px;border-right:1px solid rgb(7 29 73 / .2);min-width:0}
+.sheet-head>div:last-child{border-right:0}
+.sheet-head i{display:block;font:700 .58rem var(--mono);font-style:normal;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted)}
+.sheet-head b{display:block;color:var(--ink);font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sheet-head b.num{font-size:1.15rem}
+.sheet .jentry{flex-direction:row;gap:12px;align-items:flex-start;color:var(--ink);border-bottom:1px solid rgb(7 29 73 / .1)}
+.sheet .jentry:last-child{border-bottom:0}
+.sheet .rno{flex:none;width:30px;height:30px;display:grid;place-items:center;border:1.5px solid var(--ink);border-radius:50%;font-size:.95rem;color:var(--ink)}
+.sheet .muted,.sheet .eyebrow{color:var(--ink-muted)}
+.sheet-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:18px 4px 16px;color:var(--ink)}
+.sheet-empty span{color:var(--ink-muted);font-size:.88rem}
+/* Empty states */
+.emptycourt{width:120px;height:60px;fill:none;stroke:currentColor;stroke-width:1.4;opacity:.55}
+.card.empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:22px 16px}
+/* Match-day scoreboard */
+.board{background:#05070D;color:#fff;border-radius:var(--r);padding:16px 16px 14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 12px 30px rgb(0 0 0 / .35),inset 0 0 0 1px rgb(255 255 255 / .06)}
+.board .eyebrow{color:#A7A8AA}
+.board-top{display:flex;justify-content:space-between;gap:10px}
+.board-teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;text-align:center}
+.board-teams b{font:800 1.6rem/1 var(--display);text-transform:uppercase;letter-spacing:.03em;overflow-wrap:anywhere}
+.board-teams .vs{font:700 .7rem var(--mono);color:#A7A8AA;letter-spacing:.14em}
+.board-clock{display:flex;flex-direction:column;align-items:center;gap:2px}
+.board-clock .num{font-size:2.8rem;line-height:1;color:#FFB81C;text-shadow:0 0 18px rgb(255 184 28 / .45)}
+.board-clock span:last-child{font-size:.8rem;color:#A7A8AA}
+.board-now{background:rgb(255 255 255 / .07);border-radius:12px;padding:10px 12px}
+.board-now b{display:block;font-size:1.02rem;margin:2px 0 4px}
+.board-now p{font-size:.88rem;color:#D9DADB;margin:0}
+.board .linkbtn{color:#FFB81C;align-self:center}
+/* Stamps: inked edge, three calls */
+.killstamp{filter:url(#ink)}
+.killstamp.k-ace{border-color:#C99700;color:#C99700}
+.killstamp.k-dig{border-color:#2F5DB8;color:#2F5DB8}
+/* Ball arc after sending */
+.ballarc{position:fixed;left:14%;bottom:150px;z-index:60;pointer-events:none;animation:bx 1.05s linear both}
+.ballarc i{display:block;width:34px;height:34px;color:var(--accent-text);animation:by 1.05s both}
+.ballarc svg{width:100%;height:100%}
+@keyframes bx{from{transform:translateX(0)}to{transform:translateX(68vw)}}
+@keyframes by{0%{transform:translateY(0) rotate(0);opacity:0;animation-timing-function:cubic-bezier(.2,.7,.4,1)}10%{opacity:1}50%{transform:translateY(-36vh) rotate(300deg);animation-timing-function:cubic-bezier(.6,0,.8,.4)}90%{opacity:1}100%{transform:translateY(-4vh) rotate(620deg);opacity:0}}
+/* Launch screen (installed app only) */
+#splash{display:none}
+@media (display-mode: standalone){#splash{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:var(--bg);transition:opacity .45s}}
+#splash .logo-badge{width:150px}
+#splash i{width:66px;height:5px;border-radius:3px;background:linear-gradient(90deg,#A6192E 0 33.3%,#fff 33.3% 66.6%,#5A78BE 66.6%)}
+#splash.out{opacity:0}
 </style>
 
 <div class="pagebg" aria-hidden="true"><svg viewBox="0 0 150 240" preserveAspectRatio="xMidYMid slice"><rect width="150" height="240" class="pz"/><rect x="30" y="30" width="90" height="180" class="pc"/><g class="pl"><rect x="30" y="30" width="90" height="180"/><line x1="30" y1="90" x2="120" y2="90"/><line x1="30" y1="150" x2="120" y2="150"/></g><line x1="22" y1="120" x2="128" y2="120" class="pn"/></svg></div>
 <div class="app" id="app"></div>
 <nav class="tabs" aria-label="Main"><div class="in" id="tabs"></div></nav>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="ink"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/></filter></svg>
+<div id="splash" aria-hidden="true"><span class="logo-badge"></span><i></i></div>
 <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Guide"><button class="btn ghost" data-closelb="1">Close</button><img alt=""><p></p></div>
 
-<script type="application/json" id="af-data">{"updated": "2026-10-21", "start": "2026-10-05", "cycles": {"Breakfast": [{"Mon": [{"t": "", "n": "Scrambled Eggs & Turkey Sausage", "d": "Regular & sweet potatoes", "a": ["Egg"], "ok": false}], "Tue": [{"t": "", "n": "Breakfast Burritos", "d": "", "a": ["Egg", "Wheat/Gluten", "Dairy"], "ok": false}], "Wed": [{"t": "", "n": "Breakfast Sandwich", "d": "", "a": ["Egg", "Wheat/Gluten", "Dairy"], "ok": false}], "Thu": [{"t": "", "n": "French Toast, Scrambled Eggs & Turkey Sausage", "d": "", "a": ["Egg", "Wheat/Gluten", "Dairy"], "ok": false}], "Fri": [{"t": "", "n": "Pancakes, Scrambled Eggs & Turkey Sausage", "d": "", "a": ["Egg", "Wheat/Gluten", "Dairy"], "ok": false}]}, {"Mon": [{"t": "", "n": "Scrambled Eggs & Chicken Sausage", "d": "Regular & sweet potatoes", "a": ["Egg"], "ok": false}], "Tue": [{"t": "", "n": "Breakfast Tacos with Cotija", "d": "Pico de gallo, cilantro", "a": ["Egg", "Dairy"], "ok": false}], "Wed": [{"t": "", "n": "Breakfast Sandwich", "d": "", "a": ["Egg", "Wheat/Gluten", "Dairy"], "ok": false}], "Thu": [{"t": "", "n": "French Toast, Scrambled Eggs & Turkey Sausage", "d": "", "a": ["Egg", "Wheat/Gluten", "Dairy"], "ok": false}], "Fri": [{"t": "", "n": "Pancakes, Scrambled Eggs & Turkey Sausage", "d": "", "a": ["Egg", "Wheat/Gluten", "Dairy"], "ok": false}]}], "Lunch": [{"Mon": [{"t": "Italian Inspired", "n": "Chicken or Cod Piccata", "d": "Lemon caper sauce, Parmesan, lemon wedge. Base: linguine or gluten-free pasta. Sides: broccoli, butternut squash, red peppers.", "a": ["Fish", "Dairy", "Wheat/Gluten"], "ok": false}], "Tue": [{"t": "Mediterranean Day", "n": "Grilled Steak or Chicken", "d": "Chimichurri, hummus, crumbled feta. Base: pearled couscous. Sides: roasted zucchini & summer squash. Fruit: peaches, nectarines, plums.", "a": ["Dairy", "Wheat/Gluten", "Sesame"], "ok": false}], "Wed": [{"t": "Turkey Burgers", "n": "Turkey Burgers", "d": "Assorted cheese slices, lettuce, tomato, sliced avocado. Base: whole wheat or sourdough bun. Sides: roasted sweet potatoes & asparagus. Condiments: ketchup, mustard, garlic aioli. Fruit: watermelon.", "a": ["Dairy", "Wheat/Gluten", "Egg"], "ok": false}], "Thu": [{"t": "Sesame Stir Fry", "n": "Sweet Sesame Glazed Chicken & Miso Seared Salmon", "d": "Soy sauce, sesame seeds, scallions. Base: lo mein noodles. Sides: stir-fry sugar snap peas, red peppers, mushrooms, onion. Fruit: sliced apples.", "a": ["Sesame", "Soy", "Fish", "Wheat/Gluten", "Egg"], "ok": false}], "Fri": [{"t": "BYO Sweet Potato", "n": "Ground Turkey or Ground Beef", "d": "Base: baked sweet potato. Toppings: lime Greek yogurt sauce, tomato salsa, avocado, lime wedges, cilantro. Sides: roasted broccoli bits, roasted crispy chickpeas. Fruit: mixed berries.", "a": ["Dairy"], "ok": false}]}, {"Mon": [{"t": "Pasta Bar", "n": "Ground Beef & Turkey Meatballs", "d": "Base: penne or lentil pasta. Sauces: mushroom Bolognese, vegan cashew Alfredo, Parmesan, parsley. Sides: garlic sautéed broccoli. Fruit: mixed grapes.", "a": ["Wheat/Gluten", "Tree nut", "Dairy", "Egg"], "ok": false}], "Tue": [{"t": "Mexican Bowls", "n": "Grilled Chicken & Mahi Mahi", "d": "Base: Mexican rice. Sides: roasted corn, black beans, red pepper salad. Toppings: sliced avocado, Monterey Jack, shredded romaine, spiced yogurt sauce, cilantro, diced onion, diced tomato. Fruit: watermelon.", "a": ["Fish", "Dairy"], "ok": false}], "Wed": [{"t": "Teriyaki Bowls", "n": "Diced Chicken & Crispy Tofu", "d": "Peanut sauce, lime wedges, crushed peanuts, scallions. Base: fried quinoa rice with peas and edamame. Sides: stir-fry vegetable blend (snow peas, onions, broccoli, bell peppers, carrots). Fruit: mixed berries.", "a": ["Peanut", "Soy", "Wheat/Gluten", "Egg"], "ok": false}], "Thu": [{"t": "Greek Lemon Skewers", "n": "Marinated Chicken & Beef", "d": "Hummus, tzatziki, lemon garlic Greek yogurt sauce. Base: pearled couscous & pita halves. Sides: roasted rainbow cauliflower & rainbow carrots. Fruit: sliced mixed apples.", "a": ["Sesame", "Dairy", "Wheat/Gluten"], "ok": false}], "Fri": [{"t": "Poke Bowls", "n": "Hot Ginger Soy Chicken & Raw Cubed Salmon", "d": "Soy sauce, sesame seeds, green onions, teriyaki sauce, yuzu sauce, avocado, pickled ginger. Base: jasmine rice. Sides: edamame salad with corn, cucumbers & bell peppers. Fruit: sliced peaches, plums & nectarines.", "a": ["Fish", "Soy", "Sesame", "Wheat/Gluten"], "ok": false}]}, {"Mon": [{"t": "Korean Noodle Bowls", "n": "Bulgogi Marinated Chicken & Beef", "d": "Bulgogi sauce & green onion. Base: rice noodles & sweet potato glass noodles. Sides: roasted coined carrots, kale, shiitake mushrooms, marinated bean sprouts. Fruit: mixed grapes.", "a": ["Soy", "Sesame", "Wheat/Gluten"], "ok": false}], "Tue": [{"t": "Taco Tuesday", "n": "Grilled Mahi Mahi & Carne Asada", "d": "Base: flour tortillas, pinto beans, cilantro lime rice. Sides: fajita vegetables (green, red, orange & yellow bell peppers with onions). Toppings: mango pineapple salsa, sliced avocado, Monterey Jack, shredded romaine, spiced yogurt sauce, pepitas. Fruit: seasonal fruit.", "a": ["Fish", "Wheat/Gluten", "Dairy"], "ok": false}], "Wed": [{"t": "Indian Plate", "n": "Butter Chicken & Chickpeas", "d": "Greek yogurt, lemon wedges, cilantro, cashews. Base: white rice & naan. Sides: curry roasted cauliflower. Fruit: sliced peaches, plums & nectarines.", "a": ["Dairy", "Tree nut", "Wheat/Gluten"], "ok": false}], "Thu": [{"t": "BBQ Plate", "n": "Shredded Chicken & Pork", "d": "BBQ sauce, hot sauce, pickles, butter. Base: chia cornbread & mashed sweet potatoes. Sides: roasted balsamic Brussels sprouts. Fruit: sliced watermelon.", "a": ["Dairy", "Wheat/Gluten", "Egg"], "ok": false}], "Fri": [{"t": "Mediterranean Citrus Plate", "n": "Lemon Zest Garlic Chicken & Citrus Salmon", "d": "Base: lemon feta parsley potatoes. Sides: Greek salad (chopped tomato, cucumber, cannellini beans, lemon juice, salt & pepper). Toppings: Greek yogurt, lemon wedges, red onion, cilantro, pistachio, feta, avocado. Fruit: mixed citrus.", "a": ["Fish", "Dairy", "Tree nut"], "ok": false}]}], "Dinner": []}, "stations": [{"t": "", "n": "Oatmeal Bar", "d": "Brown sugar, cinnamon, honey, chia seeds, hemp seeds, granola, raisins, mixed berries, green apple.", "a": ["Wheat/Gluten"], "ok": false}, {"t": "", "n": "Yogurt Bar", "d": "Bases: plain non-fat, plain whole, vanilla, coconut. Toppings: granola, mixed berries, peaches, chocolate chips, mixed nuts, turmeric blend, almond butter, peanut butter, honey.", "a": ["Dairy", "Tree nut", "Peanut", "Wheat/Gluten"], "ok": false}, {"t": "", "n": "Toast Bar", "d": "Bases: bagels (plain, everything, sesame), rustico, whole wheat, sourdough, cornbread, biscuit, English muffin. Toppings: avocado, micro greens, pickled onion, cream cheese, almond butter, peanut butter, butter, EB seasoning.", "a": ["Wheat/Gluten", "Sesame", "Dairy", "Tree nut", "Peanut", "Egg"], "ok": false}, {"t": "", "n": "Grab & Go", "d": "Hard-boiled eggs, protein muffins, protein bites, chia pudding, overnight oats, granola bars, packaged yogurt, whole fruit.", "a": ["Egg", "Dairy", "Wheat/Gluten", "Tree nut", "Peanut"], "ok": false}], "announcements": [{"when": "2026-10-21", "tag": "USAV Nutrition", "t": "Welcome to USA Volleyball Nutrition 2027!", "d": ""}], "smoothieCycle": [{"Mon": [{"team": "Both", "whey": "Cherry Almond", "plant": "Pineapple Greens", "aw": ["Soy", "Tree nut"], "ap": [], "ok": false}], "Tue": [{"team": "Men", "whey": "Blueberry", "plant": "PB&J", "aw": ["Soy"], "ap": ["Soy", "Peanut"], "ok": false}], "Wed": [{"team": "Women", "whey": "Blueberry", "plant": "PB&J", "aw": ["Soy"], "ap": ["Soy", "Peanut"], "ok": false}], "Thu": [{"team": "Men", "whey": "Chocolate Covered Strawberry", "plant": "Tropical", "aw": ["Soy"], "ap": ["Soy"], "ok": false}], "Fri": [{"team": "Women", "whey": "Chocolate Covered Strawberry", "plant": "Tropical", "aw": ["Soy"], "ap": ["Soy"], "ok": false}]}, {"Mon": [{"team": "Both", "whey": "Vanilla Latte", "plant": "Mixed Berry Greens", "aw": ["Soy", "Tree nut"], "ap": [], "ok": false}], "Tue": [{"team": "Men", "whey": "Creamsicle", "plant": "Mango Turmeric", "aw": ["Dairy"], "ap": ["Soy"], "ok": false}], "Wed": [{"team": "Women", "whey": "Creamsicle", "plant": "Mango Turmeric", "aw": ["Dairy"], "ap": ["Soy"], "ok": false}], "Thu": [{"team": "Men", "whey": "Strawberry Ginger", "plant": "Chocolate PB", "aw": [], "ap": ["Soy", "Peanut"], "ok": false}], "Fri": [{"team": "Women", "whey": "Strawberry Ginger", "plant": "Chocolate PB", "aw": [], "ap": ["Soy", "Peanut"], "ok": false}]}, {"Mon": [{"team": "Both", "whey": "Pineapple Greens", "plant": "Cherry Almond", "aw": [], "ap": ["Soy", "Tree nut"], "ok": false}], "Tue": [{"team": "Men", "whey": "PB&J", "plant": "Blueberry", "aw": ["Soy", "Peanut"], "ap": ["Soy"], "ok": false}], "Wed": [{"team": "Women", "whey": "PB&J", "plant": "Blueberry", "aw": ["Soy", "Peanut"], "ap": ["Soy"], "ok": false}], "Thu": [{"team": "Men", "whey": "Tropical", "plant": "Chocolate Covered Strawberry", "aw": ["Soy"], "ap": ["Soy"], "ok": false}], "Fri": [{"team": "Women", "whey": "Tropical", "plant": "Chocolate Covered Strawberry", "aw": ["Soy"], "ap": ["Soy"], "ok": false}]}, {"Mon": [{"team": "Both", "whey": "Mixed Berry Greens", "plant": "Vanilla Latte", "aw": [], "ap": ["Soy", "Tree nut"], "ok": false}], "Tue": [{"team": "Men", "whey": "Mango Turmeric", "plant": "Creamsicle", "aw": ["Soy"], "ap": ["Soy"], "ok": false}], "Wed": [{"team": "Women", "whey": "Mango Turmeric", "plant": "Creamsicle", "aw": ["Soy"], "ap": ["Soy"], "ok": false}], "Thu": [{"team": "Men", "whey": "Chocolate PB", "plant": "Strawberry Ginger", "aw": ["Soy", "Peanut"], "ap": [], "ok": false}], "Fri": [{"team": "Women", "whey": "Chocolate PB", "plant": "Strawberry Ginger", "aw": ["Soy", "Peanut"], "ap": [], "ok": false}]}], "snackCycle": [{"Mon": [{"t": "Savory", "n": "Turkey + cheese wrap pinwheels (bite size)", "d": "", "a": ["Dairy", "Wheat/Gluten"], "ok": false}, {"t": "Pickled", "n": "Pickle spear cups", "d": "", "a": [], "ok": false}, {"t": "Sweeter", "n": "Doctor's Kitchen High-Protein Bars (in-house)", "d": "", "a": [], "ok": false}, {"t": "Vegan", "n": "Roasted salted edamame cups", "d": "", "a": ["Soy"], "ok": false}], "Tue": [{"t": "Savory", "n": "Chicken pesto pasta snack cups", "d": "", "a": ["Wheat/Gluten", "Dairy", "Tree nut"], "ok": false}, {"t": "Pickled", "n": "Pickled red onion cups", "d": "", "a": [], "ok": false}, {"t": "Sweeter", "n": "Cinnamon applesauce cups", "d": "", "a": [], "ok": false}, {"t": "Vegan", "n": "Hummus + pretzel thins", "d": "", "a": ["Sesame", "Wheat/Gluten"], "ok": false}], "Wed": [{"t": "Savory", "n": "Greek chicken skewers (bite size)", "d": "", "a": [], "ok": false}, {"t": "Pickled", "n": "Pickled carrots + daikon cups", "d": "", "a": [], "ok": false}, {"t": "Sweeter", "n": "Dark chocolate squares + orange wedges", "d": "", "a": ["Dairy"], "ok": false}, {"t": "Vegan", "n": "Watermelon with Tajín cups", "d": "", "a": [], "ok": false}], "Thu": [{"t": "Savory", "n": "Beef jerky + cheese sticks (grab & go)", "d": "", "a": ["Dairy", "Soy"], "ok": false}, {"t": "Pickled", "n": "Mild kimchi cups", "d": "", "a": ["Fish", "Shellfish"], "ok": false}, {"t": "Sweeter", "n": "Yogurt + honey + granola parfait cups", "d": "", "a": ["Dairy", "Wheat/Gluten"], "ok": false}, {"t": "Vegan", "n": "PB banana tortilla roll-ups (no honey)", "d": "", "a": ["Peanut", "Wheat/Gluten"], "ok": false}], "Fri": [{"t": "Savory", "n": "Mini egg bites / frittatas", "d": "", "a": ["Egg", "Dairy"], "ok": false}, {"t": "Pickled", "n": "Pickled jalapeños + cucumbers", "d": "", "a": [], "ok": false}, {"t": "Sweeter", "n": "Doctor's Kitchen High-Protein Bars (in-house)", "d": "", "a": [], "ok": false}, {"t": "Vegan", "n": "Trail mix cups", "d": "", "a": ["Tree nut", "Peanut"], "ok": false}]}, {"Mon": [{"t": "Savory", "n": "Tuna salad cups + rice crackers", "d": "", "a": ["Fish", "Egg"], "ok": false}, {"t": "Pickled", "n": "Dill pickle chips cups", "d": "", "a": [], "ok": false}, {"t": "Sweeter", "n": "Berry chia pudding cups", "d": "", "a": ["Dairy"], "ok": false}, {"t": "Vegan", "n": "Guacamole + baked tortilla chips", "d": "", "a": [], "ok": false}], "Tue": [{"t": "Savory", "n": "Turkey meatball cups", "d": "", "a": ["Egg", "Wheat/Gluten"], "ok": false}, {"t": "Pickled", "n": "Pickled beet cups", "d": "", "a": [], "ok": false}, {"t": "Sweeter", "n": "Banana oat mini muffins", "d": "", "a": ["Egg", "Wheat/Gluten", "Dairy"], "ok": false}, {"t": "Vegan", "n": "Vegan protein pudding cups (ON Vegan)", "d": "", "a": [], "ok": false}], "Wed": [{"t": "Savory", "n": "Chicken quesadilla wedges (small triangles)", "d": "", "a": ["Dairy", "Wheat/Gluten"], "ok": false}, {"t": "Pickled", "n": "Pickled cucumber + onion cups", "d": "", "a": [], "ok": false}, {"t": "Sweeter", "n": "Fruit strips", "d": "", "a": [], "ok": false}, {"t": "Vegan", "n": "Roasted chickpea cups", "d": "", "a": [], "ok": false}], "Thu": [{"t": "Savory", "n": "Salmon rice bites (or chicken alternative)", "d": "", "a": ["Fish"], "ok": false}, {"t": "Pickled", "n": "Pickled ginger cups", "d": "", "a": [], "ok": false}, {"t": "Sweeter", "n": "Frozen grapes + dark chocolate chips", "d": "", "a": ["Dairy"], "ok": false}, {"t": "Vegan", "n": "Vegan sushi cups (rice, avocado, cucumber)", "d": "", "a": [], "ok": false}], "Fri": [{"t": "Savory", "n": "Ham + Swiss sliders (mini)", "d": "", "a": ["Dairy", "Wheat/Gluten"], "ok": false}, {"t": "Pickled", "n": "Pickled green beans", "d": "", "a": [], "ok": false}, {"t": "Sweeter", "n": "Doctor's Kitchen High-Protein Bars (in-house)", "d": "", "a": [], "ok": false}, {"t": "Vegan", "n": "Date + almond butter “snickers” bites", "d": "", "a": ["Tree nut"], "ok": false}]}], "plantProtein": "Optimum Nutrition Vegan protein", "wheyProtein": "Optimum Nutrition whey protein", "flavorNotes": {"Vanilla Latte": "Contains coffee (caffeine)"}, "smoothieRecipes": {"Cherry Almond": {"ing": ["3 cups soy milk", "3 cups frozen cherries", "2 cups greens", "3 tbsp almond butter", "2 scoops vanilla ON whey protein"], "y": "3 × 15 oz", "a": ["Soy", "Tree nut"], "est": false, "kcal": 343, "cho": 44, "pro": 18, "fat": 12}, "Pineapple Greens": {"ing": ["2 cups pineapple juice", "2 cups spinach", "2 cups frozen pineapple", "2 fresh bananas", "1 tbsp fresh ginger", "3 scoops vanilla ON whey protein"], "y": "3 × 15 oz", "a": [], "est": false, "kcal": 315, "cho": 53, "pro": 23, "fat": 0}, "Blueberry": {"ing": ["3 cups soy milk", "3 cups frozen blueberries", "2 scoops vanilla ON whey protein", "Lemon zest (optional)"], "y": "3 × 15 oz", "a": ["Soy"], "est": false, "kcal": 269, "cho": 38, "pro": 22, "fat": 3}, "PB&J": {"ing": ["3 cups vanilla soy milk", "3 cups blueberries", "2 tbsp peanut butter", "2 scoops vanilla ON whey protein"], "y": "3 × 15 oz", "a": ["Soy", "Peanut"], "est": false, "kcal": 302, "cho": 32, "pro": 22, "fat": 10}, "Chocolate Covered Strawberry": {"ing": ["3 cups soy milk", "2 cups baby spinach", "1 fresh banana", "3 cups frozen strawberries", "3 scoops chocolate ON whey protein"], "y": "4 × 15 oz", "a": ["Soy"], "est": true, "kcal": 240, "cho": 26, "pro": 25, "fat": 5}, "Tropical": {"ing": ["2 bananas", "2 cups frozen pineapple", "1 cup honeydew", "1 cup cantaloupe", "2 cups orange juice", "2 cups soy milk", "3 scoops vanilla ON whey protein"], "y": "about 4 × 15 oz", "a": ["Soy"], "est": true, "kcal": 323, "cho": 51, "pro": 25, "fat": 4}, "Vanilla Latte": {"ing": ["2 cups greens", "3 cups vanilla soy milk", "2 tbsp almond butter", "3 frozen bananas", "1 tbsp instant espresso", "2 scoops vanilla ON whey protein"], "y": "3 × 15 oz", "a": ["Soy", "Tree nut"], "est": false, "kcal": 340, "cho": 42, "pro": 23, "fat": 10}, "Mixed Berry Greens": {"ing": ["3 cups V8 Pom Blueberry juice", "3 cups frozen mixed berries", "1 fresh banana", "2 cups spinach", "3 scoops vanilla ON whey protein"], "y": "3 × 15 oz", "a": [], "est": false, "kcal": 271, "cho": 54, "pro": 15, "fat": 1}, "Creamsicle": {"ing": ["2.5 cups orange juice", "2 cups vanilla Greek yogurt (soy milk on plant days)", "3 frozen bananas", "2 cups greens", "3 scoops vanilla ON whey protein"], "y": "4 × 15 oz", "a": ["Soy"], "est": false, "kcal": 275, "cho": 51, "pro": 19, "fat": 1, "aw": ["Dairy"]}, "Mango Turmeric": {"ing": ["3 cups vanilla soy milk", "2 cups frozen mango", "2 fresh bananas", "2 cups greens", "1 tsp turmeric", "2 scoops vanilla ON whey protein"], "y": "4 × 15 oz", "a": ["Soy"], "est": false, "kcal": 252, "cho": 37, "pro": 20, "fat": 3}, "Strawberry Ginger": {"ing": ["3 cups orange juice", "2 cups frozen strawberries", "2 frozen bananas", "2 cups greens", "1 tbsp fresh ginger", "3 scoops vanilla ON whey protein"], "y": "4 × 15 oz", "a": [], "est": false, "kcal": 250, "cho": 45, "pro": 18, "fat": 0}, "Chocolate PB": {"ing": ["3 cups soy milk", "1 cup ice", "3 frozen bananas", "2 cups greens", "2 tbsp peanut butter", "3 scoops chocolate ON whey protein", "Ground flax (optional)"], "y": "4 × 15 oz", "a": ["Soy", "Peanut"], "est": true, "kcal": 302, "cho": 32, "pro": 28, "fat": 9}}}</script>
+<script type="application/json" id="af-data">{"updated": "2026-10-21", "start": "2026-10-05", "cycles": {"Breakfast": [{"Mon": [{"t": "", "n": "Scrambled Eggs & Turkey Sausage", "d": "Regular & sweet potatoes", "a": ["Egg"], "ok": false}], "Tue": [{"t": "", "n": "Breakfast Burritos", "d": "", "a": ["Egg", "Wheat/Gluten", "Dairy"], "ok": false}], "Wed": [{"t": "", "n": "Breakfast Sandwich", "d": "", "a": ["Egg", "Wheat/Gluten", "Dairy"], "ok": false}], "Thu": [{"t": "", "n": "French Toast, Scrambled Eggs & Turkey Sausage", "d": "", "a": ["Egg", "Wheat/Gluten", "Dairy"], "ok": false}], "Fri": [{"t": "", "n": "Pancakes, Scrambled Eggs & Turkey Sausage", "d": "", "a": ["Egg", "Wheat/Gluten", "Dairy"], "ok": false}]}, {"Mon": [{"t": "", "n": "Scrambled Eggs & Chicken Sausage", "d": "Regular & sweet potatoes", "a": ["Egg"], "ok": false}], "Tue": [{"t": "", "n": "Breakfast Tacos with Cotija", "d": "Pico de gallo, cilantro", "a": ["Egg", "Dairy"], "ok": false}], "Wed": [{"t": "", "n": "Breakfast Sandwich", "d": "", "a": ["Egg", "Wheat/Gluten", "Dairy"], "ok": false}], "Thu": [{"t": "", "n": "French Toast, Scrambled Eggs & Turkey Sausage", "d": "", "a": ["Egg", "Wheat/Gluten", "Dairy"], "ok": false}], "Fri": [{"t": "", "n": "Pancakes, Scrambled Eggs & Turkey Sausage", "d": "", "a": ["Egg", "Wheat/Gluten", "Dairy"], "ok": false}]}], "Lunch": [{"Mon": [{"t": "Italian Inspired", "n": "Chicken or Cod Piccata", "d": "Lemon caper sauce, Parmesan, lemon wedge. Base: linguine or gluten-free pasta. Sides: broccoli, butternut squash, red peppers.", "a": ["Fish", "Dairy", "Wheat/Gluten"], "ok": false}], "Tue": [{"t": "Mediterranean Day", "n": "Grilled Steak or Chicken", "d": "Chimichurri, hummus, crumbled feta. Base: pearled couscous. Sides: roasted zucchini & summer squash. Fruit: peaches, nectarines, plums.", "a": ["Dairy", "Wheat/Gluten", "Sesame"], "ok": false}], "Wed": [{"t": "Turkey Burgers", "n": "Turkey Burgers", "d": "Assorted cheese slices, lettuce, tomato, sliced avocado. Base: whole wheat or sourdough bun. Sides: roasted sweet potatoes & asparagus. Condiments: ketchup, mustard, garlic aioli. Fruit: watermelon.", "a": ["Dairy", "Wheat/Gluten", "Egg"], "ok": false}], "Thu": [{"t": "Sesame Stir Fry", "n": "Sweet Sesame Glazed Chicken & Miso Seared Salmon", "d": "Soy sauce, sesame seeds, scallions. Base: lo mein noodles. Sides: stir-fry sugar snap peas, red peppers, mushrooms, onion. Fruit: sliced apples.", "a": ["Sesame", "Soy", "Fish", "Wheat/Gluten", "Egg"], "ok": false}], "Fri": [{"t": "BYO Sweet Potato", "n": "Ground Turkey or Ground Beef", "d": "Base: baked sweet potato. Toppings: lime Greek yogurt sauce, tomato salsa, avocado, lime wedges, cilantro. Sides: roasted broccoli bits, roasted crispy chickpeas. Fruit: mixed berries.", "a": ["Dairy"], "ok": false}]}, {"Mon": [{"t": "Pasta Bar", "n": "Ground Beef & Turkey Meatballs", "d": "Base: penne or lentil pasta. Sauces: mushroom Bolognese, vegan cashew Alfredo, Parmesan, parsley. Sides: garlic sautéed broccoli. Fruit: mixed grapes.", "a": ["Wheat/Gluten", "Tree nut", "Dairy", "Egg"], "ok": false}], "Tue": [{"t": "Mexican Bowls", "n": "Grilled Chicken & Mahi Mahi", "d": "Base: Mexican rice. Sides: roasted corn, black beans, red pepper salad. Toppings: sliced avocado, Monterey Jack, shredded romaine, spiced yogurt sauce, cilantro, diced onion, diced tomato. Fruit: watermelon.", "a": ["Fish", "Dairy"], "ok": false}], "Wed": [{"t": "Teriyaki Bowls", "n": "Diced Chicken & Crispy Tofu", "d": "Peanut sauce, lime wedges, crushed peanuts, scallions. Base: fried quinoa rice with peas and edamame. Sides: stir-fry vegetable blend (snow peas, onions, broccoli, bell peppers, carrots). Fruit: mixed berries.", "a": ["Peanut", "Soy", "Wheat/Gluten", "Egg"], "ok": false}], "Thu": [{"t": "Greek Lemon Skewers", "n": "Marinated Chicken & Beef", "d": "Hummus, tzatziki, lemon garlic Greek yogurt sauce. Base: pearled couscous & pita halves. Sides: roasted rainbow cauliflower & rainbow carrots. Fruit: sliced mixed apples.", "a": ["Sesame", "Dairy", "Wheat/Gluten"], "ok": false}], "Fri": [{"t": "Poke Bowls", "n": "Hot Ginger Soy Chicken & Raw Cubed Salmon", "d": "Soy sauce, sesame seeds, green onions, teriyaki sauce, yuzu sauce, avocado, pickled ginger. Base: jasmine rice. Sides: edamame salad with corn, cucumbers & bell peppers. Fruit: sliced peaches, plums & nectarines.", "a": ["Fish", "Soy", "Sesame", "Wheat/Gluten"], "ok": false}]}, {"Mon": [{"t": "Korean Noodle Bowls", "n": "Bulgogi Marinated Chicken & Beef", "d": "Bulgogi sauce & green onion. Base: rice noodles & sweet potato glass noodles. Sides: roasted coined carrots, kale, shiitake mushrooms, marinated bean sprouts. Fruit: mixed grapes.", "a": ["Soy", "Sesame", "Wheat/Gluten"], "ok": false}], "Tue": [{"t": "Taco Tuesday", "n": "Grilled Mahi Mahi & Carne Asada", "d": "Base: flour tortillas, pinto beans, cilantro lime rice. Sides: fajita vegetables (green, red, orange & yellow bell peppers with onions). Toppings: mango pineapple salsa, sliced avocado, Monterey Jack, shredded romaine, spiced yogurt sauce, pepitas. Fruit: seasonal fruit.", "a": ["Fish", "Wheat/Gluten", "Dairy"], "ok": false}], "Wed": [{"t": "Indian Plate", "n": "Butter Chicken & Chickpeas", "d": "Greek yogurt, lemon wedges, cilantro, cashews. Base: white rice & naan. Sides: curry roasted cauliflower. Fruit: sliced peaches, plums & nectarines.", "a": ["Dairy", "Tree nut", "Wheat/Gluten"], "ok": false}], "Thu": [{"t": "BBQ Plate", "n": "Shredded Chicken & Pork", "d": "BBQ sauce, hot sauce, pickles, butter. Base: chia cornbread & mashed sweet potatoes. Sides: roasted balsamic Brussels sprouts. Fruit: sliced watermelon.", "a": ["Dairy", "Wheat/Gluten", "Egg"], "ok": false}], "Fri": [{"t": "Mediterranean Citrus Plate", "n": "Lemon Zest Garlic Chicken & Citrus Salmon", "d": "Base: lemon feta parsley potatoes. Sides: Greek salad (chopped tomato, cucumber, cannellini beans, lemon juice, salt & pepper). Toppings: Greek yogurt, lemon wedges, red onion, cilantro, pistachio, feta, avocado. Fruit: mixed citrus.", "a": ["Fish", "Dairy", "Tree nut"], "ok": false}]}], "Dinner": []}, "stations": [{"t": "", "n": "Oatmeal Bar", "d": "Brown sugar, cinnamon, honey, chia seeds, hemp seeds, granola, raisins, mixed berries, green apple.", "a": ["Wheat/Gluten"], "ok": false}, {"t": "", "n": "Yogurt Bar", "d": "Bases: plain non-fat, plain whole, vanilla, coconut. Toppings: granola, mixed berries, peaches, chocolate chips, mixed nuts, turmeric blend, almond butter, peanut butter, honey.", "a": ["Dairy", "Tree nut", "Peanut", "Wheat/Gluten"], "ok": false}, {"t": "", "n": "Toast Bar", "d": "Bases: bagels (plain, everything, sesame), rustico, whole wheat, sourdough, cornbread, biscuit, English muffin. Toppings: avocado, micro greens, pickled onion, cream cheese, almond butter, peanut butter, butter, EB seasoning.", "a": ["Wheat/Gluten", "Sesame", "Dairy", "Tree nut", "Peanut", "Egg"], "ok": false}, {"t": "", "n": "Grab & Go", "d": "Hard-boiled eggs, protein muffins, protein bites, chia pudding, overnight oats, granola bars, packaged yogurt, whole fruit.", "a": ["Egg", "Dairy", "Wheat/Gluten", "Tree nut", "Peanut"], "ok": false}], "announcements": [{"when": "2026-10-21", "tag": "USAV Nutrition", "t": "Welcome to USA Volleyball Nutrition 2027!", "d": ""}], "smoothieCycle": [{"Mon": [{"team": "Both", "whey": "Cherry Almond", "plant": "Pineapple Greens", "aw": ["Soy", "Tree nut"], "ap": [], "ok": false}], "Tue": [{"team": "Men", "whey": "Blueberry", "plant": "PB&J", "aw": ["Soy"], "ap": ["Soy", "Peanut"], "ok": false}], "Wed": [{"team": "Women", "whey": "Blueberry", "plant": "PB&J", "aw": ["Soy"], "ap": ["Soy", "Peanut"], "ok": false}], "Thu": [{"team": "Men", "whey": "Chocolate Covered Strawberry", "plant": "Tropical", "aw": ["Soy"], "ap": ["Soy"], "ok": false}], "Fri": [{"team": "Women", "whey": "Chocolate Covered Strawberry", "plant": "Tropical", "aw": ["Soy"], "ap": ["Soy"], "ok": false}]}, {"Mon": [{"team": "Both", "whey": "Vanilla Latte", "plant": "Mixed Berry Greens", "aw": ["Soy", "Tree nut"], "ap": [], "ok": false}], "Tue": [{"team": "Men", "whey": "Creamsicle", "plant": "Mango Turmeric", "aw": ["Dairy"], "ap": ["Soy"], "ok": false}], "Wed": [{"team": "Women", "whey": "Creamsicle", "plant": "Mango Turmeric", "aw": ["Dairy"], "ap": ["Soy"], "ok": false}], "Thu": [{"team": "Men", "whey": "Strawberry Ginger", "plant": "Chocolate PB", "aw": [], "ap": ["Soy", "Peanut"], "ok": false}], "Fri": [{"team": "Women", "whey": "Strawberry Ginger", "plant": "Chocolate PB", "aw": [], "ap": ["Soy", "Peanut"], "ok": false}]}, {"Mon": [{"team": "Both", "whey": "Pineapple Greens", "plant": "Cherry Almond", "aw": [], "ap": ["Soy", "Tree nut"], "ok": false}], "Tue": [{"team": "Men", "whey": "PB&J", "plant": "Blueberry", "aw": ["Soy", "Peanut"], "ap": ["Soy"], "ok": false}], "Wed": [{"team": "Women", "whey": "PB&J", "plant": "Blueberry", "aw": ["Soy", "Peanut"], "ap": ["Soy"], "ok": false}], "Thu": [{"team": "Men", "whey": "Tropical", "plant": "Chocolate Covered Strawberry", "aw": ["Soy"], "ap": ["Soy"], "ok": false}], "Fri": [{"team": "Women", "whey": "Tropical", "plant": "Chocolate Covered Strawberry", "aw": ["Soy"], "ap": ["Soy"], "ok": false}]}, {"Mon": [{"team": "Both", "whey": "Mixed Berry Greens", "plant": "Vanilla Latte", "aw": [], "ap": ["Soy", "Tree nut"], "ok": false}], "Tue": [{"team": "Men", "whey": "Mango Turmeric", "plant": "Creamsicle", "aw": ["Soy"], "ap": ["Soy"], "ok": false}], "Wed": [{"team": "Women", "whey": "Mango Turmeric", "plant": "Creamsicle", "aw": ["Soy"], "ap": ["Soy"], "ok": false}], "Thu": [{"team": "Men", "whey": "Chocolate PB", "plant": "Strawberry Ginger", "aw": ["Soy", "Peanut"], "ap": [], "ok": false}], "Fri": [{"team": "Women", "whey": "Chocolate PB", "plant": "Strawberry Ginger", "aw": ["Soy", "Peanut"], "ap": [], "ok": false}]}], "snackCycle": [{"Mon": [{"t": "Savory", "n": "Turkey + cheese wrap pinwheels (bite size)", "d": "", "a": ["Dairy", "Wheat/Gluten"], "ok": false}, {"t": "Pickled", "n": "Pickle spear cups", "d": "", "a": [], "ok": false}, {"t": "Sweeter", "n": "Doctor's Kitchen High-Protein Bars (in-house)", "d": "", "a": [], "ok": false}, {"t": "Vegan", "n": "Roasted salted edamame cups", "d": "", "a": ["Soy"], "ok": false}], "Tue": [{"t": "Savory", "n": "Chicken pesto pasta snack cups", "d": "", "a": ["Wheat/Gluten", "Dairy", "Tree nut"], "ok": false}, {"t": "Pickled", "n": "Pickled red onion cups", "d": "", "a": [], "ok": false}, {"t": "Sweeter", "n": "Cinnamon applesauce cups", "d": "", "a": [], "ok": false}, {"t": "Vegan", "n": "Hummus + pretzel thins", "d": "", "a": ["Sesame", "Wheat/Gluten"], "ok": false}], "Wed": [{"t": "Savory", "n": "Greek chicken skewers (bite size)", "d": "", "a": [], "ok": false}, {"t": "Pickled", "n": "Pickled carrots + daikon cups", "d": "", "a": [], "ok": false}, {"t": "Sweeter", "n": "Dark chocolate squares + orange wedges", "d": "", "a": ["Dairy"], "ok": false}, {"t": "Vegan", "n": "Watermelon with Tajín cups", "d": "", "a": [], "ok": false}], "Thu": [{"t": "Savory", "n": "Beef jerky + cheese sticks (grab & go)", "d": "", "a": ["Dairy", "Soy"], "ok": false}, {"t": "Pickled", "n": "Mild kimchi cups", "d": "", "a": ["Fish", "Shellfish"], "ok": false}, {"t": "Sweeter", "n": "Yogurt + honey + granola parfait cups", "d": "", "a": ["Dairy", "Wheat/Gluten"], "ok": false}, {"t": "Vegan", "n": "PB banana tortilla roll-ups (no honey)", "d": "", "a": ["Peanut", "Wheat/Gluten"], "ok": false}], "Fri": [{"t": "Savory", "n": "Mini egg bites / frittatas", "d": "", "a": ["Egg", "Dairy"], "ok": false}, {"t": "Pickled", "n": "Pickled jalapeños + cucumbers", "d": "", "a": [], "ok": false}, {"t": "Sweeter", "n": "Doctor's Kitchen High-Protein Bars (in-house)", "d": "", "a": [], "ok": false}, {"t": "Vegan", "n": "Trail mix cups", "d": "", "a": ["Tree nut", "Peanut"], "ok": false}]}, {"Mon": [{"t": "Savory", "n": "Tuna salad cups + rice crackers", "d": "", "a": ["Fish", "Egg"], "ok": false}, {"t": "Pickled", "n": "Dill pickle chips cups", "d": "", "a": [], "ok": false}, {"t": "Sweeter", "n": "Berry chia pudding cups", "d": "", "a": ["Dairy"], "ok": false}, {"t": "Vegan", "n": "Guacamole + baked tortilla chips", "d": "", "a": [], "ok": false}], "Tue": [{"t": "Savory", "n": "Turkey meatball cups", "d": "", "a": ["Egg", "Wheat/Gluten"], "ok": false}, {"t": "Pickled", "n": "Pickled beet cups", "d": "", "a": [], "ok": false}, {"t": "Sweeter", "n": "Banana oat mini muffins", "d": "", "a": ["Egg", "Wheat/Gluten", "Dairy"], "ok": false}, {"t": "Vegan", "n": "Vegan protein pudding cups (ON Vegan)", "d": "", "a": [], "ok": false}], "Wed": [{"t": "Savory", "n": "Chicken quesadilla wedges (small triangles)", "d": "", "a": ["Dairy", "Wheat/Gluten"], "ok": false}, {"t": "Pickled", "n": "Pickled cucumber + onion cups", "d": "", "a": [], "ok": false}, {"t": "Sweeter", "n": "Fruit strips", "d": "", "a": [], "ok": false}, {"t": "Vegan", "n": "Roasted chickpea cups", "d": "", "a": [], "ok": false}], "Thu": [{"t": "Savory", "n": "Salmon rice bites (or chicken alternative)", "d": "", "a": ["Fish"], "ok": false}, {"t": "Pickled", "n": "Pickled ginger cups", "d": "", "a": [], "ok": false}, {"t": "Sweeter", "n": "Frozen grapes + dark chocolate chips", "d": "", "a": ["Dairy"], "ok": false}, {"t": "Vegan", "n": "Vegan sushi cups (rice, avocado, cucumber)", "d": "", "a": [], "ok": false}], "Fri": [{"t": "Savory", "n": "Ham + Swiss sliders (mini)", "d": "", "a": ["Dairy", "Wheat/Gluten"], "ok": false}, {"t": "Pickled", "n": "Pickled green beans", "d": "", "a": [], "ok": false}, {"t": "Sweeter", "n": "Doctor's Kitchen High-Protein Bars (in-house)", "d": "", "a": [], "ok": false}, {"t": "Vegan", "n": "Date + almond butter “snickers” bites", "d": "", "a": ["Tree nut"], "ok": false}]}], "plantProtein": "Optimum Nutrition Vegan protein", "wheyProtein": "Optimum Nutrition whey protein", "flavorNotes": {"Vanilla Latte": "Contains coffee (caffeine)"}, "smoothieRecipes": {"Cherry Almond": {"ing": ["3 cups soy milk", "3 cups frozen cherries", "2 cups greens", "3 tbsp almond butter", "2 scoops vanilla ON whey protein"], "y": "3 × 15 oz", "a": ["Soy", "Tree nut"], "est": false, "kcal": 343, "cho": 44, "pro": 18, "fat": 12}, "Pineapple Greens": {"ing": ["2 cups pineapple juice", "2 cups spinach", "2 cups frozen pineapple", "2 fresh bananas", "1 tbsp fresh ginger", "3 scoops vanilla ON whey protein"], "y": "3 × 15 oz", "a": [], "est": false, "kcal": 315, "cho": 53, "pro": 23, "fat": 0}, "Blueberry": {"ing": ["3 cups soy milk", "3 cups frozen blueberries", "2 scoops vanilla ON whey protein", "Lemon zest (optional)"], "y": "3 × 15 oz", "a": ["Soy"], "est": false, "kcal": 269, "cho": 38, "pro": 22, "fat": 3}, "PB&J": {"ing": ["3 cups vanilla soy milk", "3 cups blueberries", "2 tbsp peanut butter", "2 scoops vanilla ON whey protein"], "y": "3 × 15 oz", "a": ["Soy", "Peanut"], "est": false, "kcal": 302, "cho": 32, "pro": 22, "fat": 10}, "Chocolate Covered Strawberry": {"ing": ["3 cups soy milk", "2 cups baby spinach", "1 fresh banana", "3 cups frozen strawberries", "3 scoops chocolate ON whey protein"], "y": "4 × 15 oz", "a": ["Soy"], "est": true, "kcal": 240, "cho": 26, "pro": 25, "fat": 5}, "Tropical": {"ing": ["2 bananas", "2 cups frozen pineapple", "1 cup honeydew", "1 cup cantaloupe", "2 cups orange juice", "2 cups soy milk", "3 scoops vanilla ON whey protein"], "y": "about 4 × 15 oz", "a": ["Soy"], "est": true, "kcal": 323, "cho": 51, "pro": 25, "fat": 4}, "Vanilla Latte": {"ing": ["2 cups greens", "3 cups vanilla soy milk", "2 tbsp almond butter", "3 frozen bananas", "1 tbsp instant espresso", "2 scoops vanilla ON whey protein"], "y": "3 × 15 oz", "a": ["Soy", "Tree nut"], "est": false, "kcal": 340, "cho": 42, "pro": 23, "fat": 10}, "Mixed Berry Greens": {"ing": ["3 cups V8 Pom Blueberry juice", "3 cups frozen mixed berries", "1 fresh banana", "2 cups spinach", "3 scoops vanilla ON whey protein"], "y": "3 × 15 oz", "a": [], "est": false, "kcal": 271, "cho": 54, "pro": 15, "fat": 1}, "Creamsicle": {"ing": ["2.5 cups orange juice", "2 cups vanilla Greek yogurt (soy milk on plant days)", "3 frozen bananas", "2 cups greens", "3 scoops vanilla ON whey protein"], "y": "4 × 15 oz", "a": ["Soy"], "est": false, "kcal": 275, "cho": 51, "pro": 19, "fat": 1, "aw": ["Dairy"]}, "Mango Turmeric": {"ing": ["3 cups vanilla soy milk", "2 cups frozen mango", "2 fresh bananas", "2 cups greens", "1 tsp turmeric", "2 scoops vanilla ON whey protein"], "y": "4 × 15 oz", "a": ["Soy"], "est": false, "kcal": 252, "cho": 37, "pro": 20, "fat": 3}, "Strawberry Ginger": {"ing": ["3 cups orange juice", "2 cups frozen strawberries", "2 frozen bananas", "2 cups greens", "1 tbsp fresh ginger", "3 scoops vanilla ON whey protein"], "y": "4 × 15 oz", "a": [], "est": false, "kcal": 250, "cho": 45, "pro": 18, "fat": 0}, "Chocolate PB": {"ing": ["3 cups soy milk", "1 cup ice", "3 frozen bananas", "2 cups greens", "2 tbsp peanut butter", "3 scoops chocolate ON whey protein", "Ground flax (optional)"], "y": "4 × 15 oz", "a": ["Soy", "Peanut"], "est": true, "kcal": 302, "cho": 32, "pro": 28, "fat": 9}}, "matches": []}</script>
 <script type="text/plain" id="af-headbits">
 <title>USA Volleyball Nutrition</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700;800&family=JetBrains+Mono:wght@400;600&family=Share+Tech+Mono&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Graduate&family=Saira+Condensed:wght@500;700;800&family=JetBrains+Mono:wght@400;600&family=Share+Tech+Mono&display=swap">
 </script>
 <script id="af-main">
 /* ===== EDIT THESE before you share the app ===== */
@@ -763,7 +863,7 @@ function vOnboard(){
    <form id="onb" class="stack card">
     <div class="namerow"><label for="f-first">First name<input id="f-first" required value="${esc(p.first??(p.name||"").split(" ")[0]??"")}" placeholder="First Name" autocomplete="given-name"></label><label for="f-last">Last name<input id="f-last" required value="${esc(p.last??(p.name||"").split(" ").slice(1).join(" "))}" placeholder="Last Name" autocomplete="family-name"></label></div>
     <div class="stack" style="gap:6px"><span class="eyebrow">Team</span><div class="choice" data-pick="team">${["WNT","MNT"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${p.team===t}">${t}</button>`).join("")}</div></div>
-    <label for="f-pos">Position<select id="f-pos"><option value="">Select</option>${POSITIONS.map(x=>`<option ${p.position===x?"selected":""}>${x}</option>`).join("")}</select></label>
+    <div class="namerow"><label for="f-pos">Position<select id="f-pos"><option value="">Select</option>${POSITIONS.map(x=>`<option ${p.position===x?"selected":""}>${x}</option>`).join("")}</select></label><label for="f-num">Jersey # <span class="muted" style="font-weight:400">(optional)</span><input id="f-num" inputmode="numeric" maxlength="2" value="${esc(p.num||"")}" placeholder="12"></label></div>
     <label for="f-pro">Pro team<input id="f-pro" value="${esc(p.pro||"")}" placeholder="Club and country"></label>
     <div class="stack" style="gap:6px"><span class="eyebrow">Food allergies</span><div class="choice" data-pick="allergies" data-multi="1">${ALLERGENS.map(a=>`<button type="button" data-v="${a}" aria-pressed="${p.allergies.includes(a)}">${a}</button>`).join("")}</div>
      <label for="f-other">Other allergy or medical diet<input id="f-other" value="${esc(p.other||"")}" placeholder="e.g. celiac, kiwi, low-FODMAP"></label></div>
@@ -780,6 +880,55 @@ function vStop(){
    <p>Meet with the dietitian so foodservice can set up safe options for you.</p>
    <button class="btn block" data-go="rd" data-session="Onboarding HHQ">Request allergy review</button>
    <button class="btn ghost block" data-ack="1">I've already met with the RD</button></div></div>`;
+}
+
+/* ===== Brand details: countdown, empty states, match day, passport, motion ===== */
+const LA_OPENING="2028-07-14"; // LA28 Olympic Games opening day
+function daysTo(iso){return Math.round((new Date(iso+"T12:00:00")-new Date(isoToday()+"T12:00:00"))/864e5)}
+const COURT_EMPTY=`<svg class="emptycourt" viewBox="0 0 120 60" aria-hidden="true"><rect x="4" y="6" width="112" height="50" rx="2"/><path d="M60 2v58M41 6v50M79 6v50"/><circle cx="94" cy="22" r="7"/><path d="M89 19c3 2 7 3 11 2M90 27c1-4 5-6 10-6M94 15c-2 4-2 9 1 14"/></svg>`;
+function emptyState(line,sub){return `<div class="card empty">${COURT_EMPTY}<b>${line}</b>${sub?`<p class="muted" style="font-size:.88rem">${sub}</p>`:""}</div>`}
+function reduceMotion(){try{return matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){return false}}
+function ballArc(){if(reduceMotion())return;const el=document.createElement("div");el.className="ballarc";el.setAttribute("aria-hidden","true");el.innerHTML=`<i>${IC.ball}</i>`;document.body.appendChild(el);setTimeout(()=>el.remove(),1150)}
+function parseHM(t){t=String(t||"").trim().toLowerCase();const m=t.match(/^(\d{1,2})(?::(\d{2}))?\s*(a|p)?/);if(!m)return null;let h=+m[1],mi=+(m[2]||0);if(m[3]){if(h===12)h=0;if(m[3]==="p")h+=12}return h<24&&mi<60?h*60+mi:null}
+function fmtMin(x){x=((x%1440)+1440)%1440;return jTime(String(Math.floor(x/60)).padStart(2,"0")+":"+String(x%60).padStart(2,"0"))}
+function myMatches(){return (DATA.matches||[]).filter(x=>x.date&&(x.team==="Both"||x.team===profile.team))}
+function matchBoard(){
+  const today=isoToday(),ms=myMatches();
+  const m=ms.find(x=>x.date===today)||ms.find(x=>x.date===jShift(today,1));
+  if(!m)return "";
+  const isToday=m.date===today,start=parseHM(m.time);
+  let clock="",sub="",step,tip;
+  if(!isToday){clock="TMRW";sub=m.time?`First serve ${esc(m.time)}`:"";step="Tonight: carb-rich dinner";tip=MATCH[0][1]}
+  else if(start==null){clock="TODAY";step="Match day";tip=MATCH[1][1]}
+  else{const n=new Date(),d=start-(n.getHours()*60+n.getMinutes());
+    if(d>240){step=`Up next: main meal, ${fmtMin(start-240)}–${fmtMin(start-180)}`;tip=MATCH[1][1]}
+    else if(d>180){step="Now: main meal window";tip=MATCH[1][1]}
+    else if(d>60){step="Now: top off fluids, keep food light";tip="Your main meal should be in by now. Keep sipping fluid, and save food for a small carb snack 30–60 minutes out if you're hungry."}
+    else if(d>0){step="Now: "+MATCH[2][0].replace("before","out");tip=MATCH[2][1]}
+    else if(d>-150){step="Now: "+MATCH[3][0].toLowerCase();tip=MATCH[3][1]}
+    else{step="Now: "+MATCH[5][0].toLowerCase();tip=MATCH[5][1]}
+    clock=d>0?`${Math.floor(d/60)}:${String(d%60).padStart(2,"0")}`:d>-150?"LIVE":"FINAL";
+    sub=d>0?`to first serve · ${fmtMin(start)}`:d>-150?`First serve was ${fmtMin(start)}`:"Recovery window"}
+  return `<section class="board" id="board" aria-label="Match day">
+   <div class="board-top"><span class="eyebrow">${isToday?"Match day":"Match tomorrow"} · ${profile.team}</span><span class="eyebrow">${esc(m.loc||"")}</span></div>
+   <div class="board-teams"><b>USA</b><span class="vs">VS</span><b>${esc(m.opp||"TBA")}</b></div>
+   <div class="board-clock"><span class="num">${clock}</span><span>${sub}</span></div>
+   <div class="board-now"><span class="eyebrow">What to eat</span><b>${step}</b><p>${tip}</p></div>
+   <button class="linkbtn" data-go="match">Full match-day plan</button></section>`;
+}
+setInterval(()=>{const b=document.getElementById("board");if(b&&tab==="home"&&profile){const h=matchBoard();if(h)b.outerHTML=h}},60000);
+function hashStr(t){let h=0;for(const c of t)h=(h*31+c.charCodeAt(0))>>>0;return h}
+function passportHTML(){
+  const seen={};Object.keys(J.days).sort().forEach(iso=>{const d=J.days[iso];if(d&&d.training&&d.training.includes("Travel")&&d.city){const k=d.city.trim().toLowerCase();if(k&&!seen[k])seen[k]={c:d.city.trim(),iso}}});
+  const list=Object.values(seen);
+  return `<section><div class="sec-head"><h2>Nutrition passport</h2><span class="stamp">${list.length} ${list.length===1?"city":"cities"}</span></div>
+   ${list.length?`<div class="passport">${list.map(x=>{const h=hashStr(x.c.toLowerCase());return `<div class="pstamp s${h%4}" style="--rot:${(h%15)-7}deg;--ink:${["#A6192E","#2F5DB8","#071D49","#8A6400"][(h>>3)%4]}"><i>USAV · Nutrition</i><b>${esc(x.c.toUpperCase())}</b><span class="num">${mmdd(x.iso)}.${x.iso.slice(2,4)}</span></div>`}).join("")}</div>`
+   :emptyState("Your passport is empty.","Log a Travel day in your journal and add the city to earn your first stamp.")}</section>`;
+}
+function stampFor(e){
+  if(e.gut==="Upset"||(e.energy&&+e.energy<=2))return ["DIG","Logged on a tough day. That counts."];
+  if(/training/i.test(e.occ||""))return ["ACE","Fuel timed around training"];
+  return ["SPIKE","Logged to your scorebook"];
 }
 function vHome(){
   const first=profile.first||profile.name.split(" ")[0];
@@ -798,13 +947,14 @@ function vHome(){
    ["rank","","World rankings","Men's and women's national teams",IC.ball]
   ];
   return `<div class="view home">
-   <header class="hero court">${COURT_SVG}
+   <header class="hero court">${COURT_SVG}${profile.num?`<span class="jersey num" aria-hidden="true">${esc(profile.num)}</span>`:""}
     <div class="hero-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><div style="text-align:right;display:flex;flex-direction:column;gap:6px"><span class="eyebrow">Team USA · ${profile.team}</span><span class="eyebrow">${dateLine}</span></div></div>
     ${STARS5}<p class="wordmark"><span>Nutrition</span></p>
-    <p class="hello">Welcome back, ${esc(first)}.</p>
+    <p class="hello">Welcome back, ${esc(first)}.</p>${daysTo(LA_OPENING)>0?`<p class="la"><span class="num">${daysTo(LA_OPENING)}</span> days to LA</p>`:""}
     <div class="meta"><span class="chip blue">${noPref()?"Any protein":profile.protein+" protein"}</span>${myAllergens().length?`<span class="chip stop">${myAllergens().length} allergen${myAllergens().length>1?"s":""} flagged</span>`:`<span class="chip ok">No allergens listed</span>`}${esc(profile.position)?`<span class="chip">${esc(profile.position)}</span>`:""}</div>
    </header>
 
+   ${matchBoard()}
    ${feat?`<section><div class="sec-head"><h2>Announcements</h2><span class="stamp">Updated ${fmtDate(DATA.updated)}</span></div>
     <article class="feature"><div class="row" style="justify-content:space-between"><span class="chip accent">${esc(feat.tag)}</span><span class="stamp">${fmtDate(feat.when)}</span></div><h3>${esc(feat.t)}</h3>${feat.d?`<p>${esc(feat.d)}</p>`:""}</article>
     ${rest.length?`<div class="card" style="padding-block:2px">${rest.map(a=>`<div class="ann"><div class="row"><span class="chip">${esc(a.tag)}</span><span class="stamp">${fmtDate(a.when)}</span></div><b style="margin-top:6px">${esc(a.t)}</b><p class="muted" style="font-size:.88rem">${esc(a.d)}</p></div>`).join("")}</div>`:""}</section>`:""}
@@ -813,7 +963,7 @@ function vHome(){
    <section><div class="sec-head"><h2>${weekend?"Monday's menu":"Today's menu"}</h2><span class="row" style="gap:14px"><button class="linkbtn" data-go="food" data-seg="menu">Full week</button></span></div>
     ${meals.length?`<div class="lineup">${luHead(weekend?"Monday's lineup":"Today's lineup",todayIso,"")}${meals.map(x=>mealHTML(x)).join("")}</div>
     ${(()=>{const x=smoothieFor(todayIso);if(!x||!(x.team==="Both"||x.team===teamOf()))return "";const me=mySmoothie(x);return `<button class="tile" data-go="food" data-seg="smoothie" style="min-height:0"><span>${weekend?"Monday's":"Today's"} smoothie</span><b>${esc(me.n)}</b><span>${noPref()?`Whey · or plant: ${esc(me.other)}`:esc(me.prot)}${hits(me.a)?" · may contain your allergen":""}</span></button>`})()}
-    ${flagged?`<p class="stamp">${flagged} of ${meals.length} meals may contain something you listed. Ask foodservice for your safe option.</p>`:""}`:`<div class="card muted">This week's menu isn't posted yet.</div>`}</section>
+    ${flagged?`<p class="stamp">${flagged} of ${meals.length} meals may contain something you listed. Ask foodservice for your safe option.</p>`:""}`:emptyState("Menu's warming up.","This week's menu isn't posted yet. Check back soon.")}</section>
 
    <section><h2>More</h2><div class="nav-grid">
     ${go.map(([t,seg,l,d,ic])=>t==="wa"?`<a class="ng" href="${CONFIG.whatsappLink}" target="_blank" rel="noopener">${ic}<b>${l}</b><span>${d}</span></a>`:`<button class="ng" ${t==="learn"?'data-tab="learn"':`data-go="${t}"${seg?` data-seg="${seg}"`:""}`}>${ic}<b>${l}</b><span>${d}</span></button>`).join("")}
@@ -984,18 +1134,21 @@ function faqTopicOf(f){const t=f.q.toLowerCase();
 function faqHTML(){
   const q=(draft.q||"").toLowerCase();
   const list=FAQ.filter(f=>(faqTopic==="All"||q||faqTopicOf(f)===faqTopic)&&(!q||(f.q+f.a.join(" ")).toLowerCase().includes(q)));
-  return list.length?list.map(f=>`<details><summary>${f.q}</summary><div class="ans">${f.a.map(p=>`<p>${p}</p>`).join("")}<p class="src">Source: ${f.s}</p></div></details>`).join(""):`<p class="muted">No answers match "${esc(draft.q)}" yet.</p>`;
+  return list.length?list.map(f=>`<details><summary>${f.q}</summary><div class="ans">${f.a.map(p=>`<p>${p}</p>`).join("")}<p class="src">Source: ${f.s}</p></div></details>`).join(""):emptyState(`No answers for "${esc(draft.q)}" yet.`,"Ask Nick below. Good questions end up here for the whole team.");
 }
 function vMe(){
   loadFontCSS(Object.values(FONTS).map(f=>f.u).filter(Boolean).join("&"),"fontpreview");
-  return `<div class="view"><div><p class="eyebrow">Profile · Look</p><h1 style="margin-top:6px">${esc(profile.name)}</h1></div>
-   <div class="card stack">
-    <div class="row"><span class="grow muted">Team</span><b>${profile.team}</b></div>
-    <div class="row"><span class="grow muted">Position</span><b>${esc(profile.position||"—")}</b></div>
-    <div class="row"><span class="grow muted">Pro team</span><b>${esc(profile.pro||"—")}</b></div>
-    <div class="row"><span class="grow muted">Protein</span><b>${profile.protein}</b></div>
-    <div class="row" style="align-items:flex-start"><span class="grow muted">Allergies</span><div class="tags" style="justify-content:flex-end">${[...myAllergens(),profile.other].filter(Boolean).map(a=>`<span class="chip stop">${esc(a)}</span>`).join("")||"<b>None</b>"}</div></div>
-    <button class="btn ghost block" data-edit="1">Edit profile</button></div>
+  const al=[...myAllergens(),profile.other].filter(Boolean);
+  return `<div class="view"><div><p class="eyebrow">Profile · Look</p><h1 style="margin-top:6px">Me</h1></div>
+   <div class="credwrap"><div class="cred" role="group" aria-label="Athlete credential">
+    <div class="cred-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><span class="cred-org">USA Volleyball<b>Nutrition</b></span>${profile.num?`<span class="cred-num num">${esc(profile.num)}</span>`:""}</div>
+    <p class="cred-name">${esc(profile.first||"")}<b>${esc(profile.last||profile.name)}</b></p>
+    <div class="cred-grid"><div><i>Team</i><b>${profile.team}</b></div><div><i>Position</i><b>${esc(profile.position||"—")}</b></div><div><i>Pro team</i><b>${esc(profile.pro||"—")}</b></div><div><i>Protein</i><b>${profile.protein}</b></div></div>
+    ${al.length?`<div class="cred-alert"><span>Allergy alert</span><b>${al.map(esc).join(" · ")}</b></div>`:`<div class="cred-ok">No food allergies listed</div>`}
+    <div class="cred-strip">All access · Nutrition</div>
+   </div></div>
+   <button class="btn ghost block" data-edit="1">Edit profile</button>
+   ${passportHTML()}
    ${canEdit?`<div class="card stack"><span class="eyebrow">Share with athletes · editors only</span><img src="qr-code.png" alt="QR code that opens this app" style="width:180px;align-self:center;border-radius:8px"><div class="row"><span class="copybox grow" id="app-link">${CONFIG.appLink}</span><button class="btn ghost sm" data-copy="app-link">Copy</button></div><p class="stamp">Athletes can open this without a Claude account once link sharing is on in the Share menu.</p></div>`:""}
    ${canEdit?`<button class="tile editlink" data-tab="edit"><b>Edit menus & announcements</b><span>Only you and other editors see this. Last published ${fmtDate(DATA.updated)}.</span></button>`:""}
    ${isInstalled()?"":`<section><h2>Install the app</h2>${installCard("me")}</section>`}
@@ -1172,15 +1325,17 @@ function vJournal(){
    <div class="card stack">
     <span class="eyebrow">Training this day</span>
     <div class="choice mini">${TRAIN.map(t=>`<button type="button" data-jtrain="${t}" aria-pressed="${d.training.includes(t)}">${t}</button>`).join("")}</div>
+    ${d.training.includes("Travel")?`<label for="j-city">Where are you? <span class="muted" style="font-weight:400">Earns a passport stamp</span><input id="j-city" value="${esc(d.city||"")}" placeholder="City, e.g. Tokyo" autocomplete="off"></label>`:""}
     <div class="row" style="margin-top:4px"><span class="grow"><span class="eyebrow">Water bottles</span><br><span class="muted" style="font-size:.8rem">Count the bottles you finished</span></span>
      <button class="btn ghost sm" data-jwater="-1" aria-label="One less bottle">−</button>${sb(String(d.water).padStart(2,"0"),1)}<button class="btn ghost sm" data-jwater="1" aria-label="One more bottle">+</button></div>
    </div>
-   <section><div class="sec-head"><h2>Meals & drinks</h2><span class="stamp">${sb(String(list.length).padStart(2,"0"))} logged</span></div>
-    ${list.length?`<div class="card" style="padding-block:2px">${list.map(e=>`<button class="jentry" data-jedit="${e.id}">
+   <section><div class="sec-head"><h2>Scoresheet</h2><span class="stamp">${sb(String(list.length).padStart(2,"0"))} logged</span></div>
+    <div class="lineup sheet"><div class="sheet-head"><div><i>Set</i><b class="num">${mmdd(jDate)}</b></div><div><i>Team</i><b>${profile.team}</b></div><div><i>Training</i><b>${esc(d.training.map(t=>t==="Travel"&&d.city?d.city:t).join(", "))||"—"}</b></div><div><i>Bottles</i><b class="num">${d.water}</b></div></div>
+    ${list.length?list.map((e,i)=>`<button class="jentry" data-jedit="${e.id}"><span class="rno num">${i+1}</span><div class="grow stack" style="gap:6px">
       <div class="meal-top"><span class="eyebrow">${jTime(e.time)} · ${esc(e.occ)}</span>${e.gut?`<span class="chip ${e.gut==="Upset"?"stop":""}">Stomach: ${esc(e.gut)}</span>`:""}</div>
       <div class="row" style="align-items:flex-start">${e.photo?`<img src="${e.photo}" alt="" class="jthumb">`:""}<p class="grow">${esc(e.what)||'<span class="muted">No description</span>'}</p></div>
       ${e.energy||e.notes?`<p class="muted" style="font-size:.82rem">${e.energy?`Energy ${e.energy}/5`:""}${e.energy&&e.notes?" · ":""}${esc(e.notes||"")}</p>`:""}
-     </button>`).join("")}</div>`:`<div class="card stack"><p>Nothing logged for ${jLabel(jDate).toLowerCase()==="today"?"today":jLabel(jDate)} yet.</p><p class="muted" style="font-size:.88rem">Log meals, snacks and drinks as you go. A quick photo plus a few words is enough.</p></div>`}
+     </div></button>`).join(""):`<div class="sheet-empty">${COURT_EMPTY}<b>Serve's in your hand.</b><span>Nothing logged for ${jLabel(jDate).toLowerCase()==="today"?"today":jLabel(jDate)} yet. A quick photo plus a few words is enough.</span></div>`}</div>
     <button class="btn block" data-jnew="1">Log a meal or drink</button></section>
    <section><h2>Send your journal to the RD</h2><div class="card stack">
     <p class="muted" style="font-size:.88rem">Goes straight to Nick's inbox. Photos stay on your phone.</p>
@@ -1216,7 +1371,7 @@ function jSummary(){
   for(let i=jRange-1;i>=0;i--){
     const iso=jShift(jDate,-i), d=jGet(iso);
     if(!d.entries.length&&!d.training.length&&!d.water)continue;
-    lines.push("",`${fmtDate(iso)}${d.training.length?" · "+d.training.join(", "):""}${d.water?` · Water: ${d.water} bottle${d.water>1?"s":""}`:""}`);
+    lines.push("",`${fmtDate(iso)}${d.training.length?" · "+d.training.map(t=>t==="Travel"&&d.city?`Travel (${d.city})`:t).join(", "):""}${d.water?` · Water: ${d.water} bottle${d.water>1?"s":""}`:""}`);
     [...d.entries].sort((a,b)=>(a.time||"").localeCompare(b.time||"")).forEach(e=>{
       const extra=[e.energy?`energy ${e.energy}/5`:"",e.gut?`stomach ${e.gut.toLowerCase()}`:"",e.photo?"photo on phone":""].filter(Boolean).join(", ");
       lines.push(`- ${jTime(e.time)} ${e.occ}: ${e.what||"(no description)"}${extra?` (${extra})`:""}${e.notes?` — ${e.notes}`:""}`);
@@ -1237,7 +1392,7 @@ function jPhoto(file){
 function jClick(b){
   const ds=b.dataset;
   if(ds.jday){const n=jShift(jDate,+ds.jday);if(n<=isoToday()){jDate=n;jShareText="";jSent="";render()}return true}
-  if(ds.jtrain){const d=jGet(jDate);d.training=d.training.includes(ds.jtrain)?d.training.filter(x=>x!==ds.jtrain):[...d.training,ds.jtrain];jPut(jDate,d);b.setAttribute("aria-pressed",d.training.includes(ds.jtrain));return true}
+  if(ds.jtrain){const d=jGet(jDate);d.training=d.training.includes(ds.jtrain)?d.training.filter(x=>x!==ds.jtrain):[...d.training,ds.jtrain];jPut(jDate,d);render();if(ds.jtrain==="Travel"&&d.training.includes("Travel")){const c=document.getElementById("j-city");if(c&&!c.value)c.focus()}return true}
   if(ds.jwater){const d=jGet(jDate);d.water=Math.max(0,Math.min(20,d.water+ +ds.jwater));jPut(jDate,d);render();return true}
   if(ds.jnew){jEdit={id:Date.now().toString(36),occ:"",time:jDate===isoToday()?nowHM():"",what:"",photo:"",energy:"",gut:"",notes:""};jDelAsk=false;render();scrollTo({top:0});return true}
   if(ds.jedit){const e=jGet(jDate).entries.find(x=>x.id===ds.jedit);if(e){jEdit={...e};jDelAsk=false;render();scrollTo({top:0})}return true}
@@ -1250,15 +1405,15 @@ function jClick(b){
   if(ds.jdelyes){const d=jGet(jDate);d.entries=d.entries.filter(x=>x.id!==jEdit.id);jPut(jDate,d);jEdit=null;render();toast("Entry deleted");return true}
   if(ds.jrange){jRange=+ds.jrange;jShareText="";jSent="";render();return true}
   if(ds.jsend){const txt=jSummary();if(/^Nothing logged/.test(txt)){toast("Nothing logged in this range yet");return true}
-    b.disabled=true;sendInbox({...profileRecord("Food journal"),Details:txt}).then(ok=>{jSent=ok?"Nick will see it in his inbox.":"You're offline. It will send automatically when you reconnect.";render()});return true}
+    b.disabled=true;sendInbox({...profileRecord("Food journal"),Details:txt}).then(ok=>{jSent=ok?"Nick will see it in his inbox.":"You're offline. It will send automatically when you reconnect.";render();ballArc()});return true}
   if(ds.jshare){jShareText=jSummary();render();return true}
   return false;
 }
-function killStamp(){
-  let rm=false;try{rm=matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){}
-  if(rm){toast("Logged to your scorebook");return}
-  const el=document.createElement("div");el.className="killstamp";el.setAttribute("aria-hidden","true");el.innerHTML="<b>SPIKE</b><span>Logged to your scorebook</span>";
-  document.body.appendChild(el);toast("Logged to your scorebook");setTimeout(()=>el.remove(),1300);
+function killStamp(st){
+  st=st||["SPIKE","Logged to your scorebook"];
+  if(reduceMotion()){toast(st[1]);return}
+  const el=document.createElement("div");el.className="killstamp k-"+st[0].toLowerCase();el.setAttribute("aria-hidden","true");el.innerHTML=`<b>${st[0]}</b><span>${st[1]}</span>`;
+  document.body.appendChild(el);toast(st[1]);setTimeout(()=>el.remove(),1300);
 }
 function jSubmit(){
   jSync();
@@ -1266,7 +1421,7 @@ function jSubmit(){
   if(!jEdit.what.trim()&&!jEdit.photo){toast("Add a few words or a photo");return}
   const d=jGet(jDate),i=d.entries.findIndex(x=>x.id===jEdit.id);
   if(i>=0)d.entries[i]={...jEdit};else d.entries.push({...jEdit});
-  if(jPut(jDate,d)){jEdit=null;jShareText="";render();killStamp()}
+  if(jPut(jDate,d)){const st=stampFor(jEdit);jEdit=null;jShareText="";render();killStamp(st)}
 }
 
 /* ===== Render & events ===== */
@@ -1337,7 +1492,7 @@ document.addEventListener("submit",e=>{
     const first=$("#f-first").value.trim(),last=$("#f-last").value.trim(),name=(first+" "+last).trim();
     if(!first||!last||!draft.team||!draft.protein){toast("Add your first and last name, team and protein preference");return}
     const prevAllergy=profile?JSON.stringify([profile.allergies,profile.other]):"";
-    profile={name,first,last,team:draft.team,position:$("#f-pos").value,pro:$("#f-pro").value.trim(),allergies:draft.allergies||[],other:$("#f-other").value.trim(),protein:draft.protein,ack:profile?profile.ack:false};
+    profile={name,first,last,team:draft.team,position:$("#f-pos").value,pro:$("#f-pro").value.trim(),allergies:draft.allergies||[],other:$("#f-other").value.trim(),protein:draft.protein,num:($("#f-num").value||"").replace(/\D/g,"").slice(0,2),ack:profile?profile.ack:false};
     if(prevAllergy!==JSON.stringify([profile.allergies,profile.other]))profile.ack=false;
     const isNew=!draft.editing;
     store.set("profile",profile);draft={};tab="home";render();toast("Profile saved");
@@ -1346,12 +1501,12 @@ document.addEventListener("submit",e=>{
     if(!draft.session){toast("Pick a session type");return}
     draft.sessionSent=`Session heads-up for Nick\n${profile.name} · ${profile.team} · ${profile.position||"—"}\nType: ${draft.session}${$("#rd-note").value.trim()?"\nNotes: "+$("#rd-note").value.trim():""}`;
     sendInbox({...profileRecord("Session request"),Details:`${draft.session}${$("#rd-note").value.trim()?" · "+$("#rd-note").value.trim():""}`});
-    render();toast("Sent to Nick");return}
+    render();toast("Sent to Nick");ballArc();return}
   if(f.id==="form-ask"){
     const q=$("#ask-q").value.trim();if(!q){toast("Type your question first");return}
     draft.askSent=`Nutrition 411 question\n${profile.name} · ${profile.team}\n${q}`;
     sendInbox({...profileRecord("Nutrition 411 question"),Details:q});
-    render();toast("Sent to Nick");return}
+    render();toast("Sent to Nick");ballArc();return}
   if(f.id==="form-feedback"){
     if(!draft.fbType){toast("Pick a feedback type");return}
     draft.feedbackSent=`Food feedback · ${draft.fbType}\n${profile.name} · ${profile.team}\nItem: ${$("#fb-meal").value.trim()||"—"}${draft.fbRate?"\nRating: "+draft.fbRate+"/5":""}${$("#fb-note").value.trim()?"\n"+$("#fb-note").value.trim():""}`;
@@ -1359,10 +1514,15 @@ document.addEventListener("submit",e=>{
     render();toast("Feedback sent");return}
 });
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){const lb=$("#lightbox");if(lb&&!lb.hidden)lb.hidden=true}});
-document.addEventListener("change",e=>{if(e.target.id==="j-photo"&&e.target.files&&e.target.files[0])jPhoto(e.target.files[0])});
+document.addEventListener("change",e=>{if(e.target.id==="j-photo"&&e.target.files&&e.target.files[0])jPhoto(e.target.files[0]);
+  if(e.target.id==="j-city"){const d=jGet(jDate),v=e.target.value.trim().slice(0,40),had=Object.values(J.days).some(x=>x&&x.city&&x.city.trim().toLowerCase()===v.toLowerCase());d.city=v;if(jPut(jDate,d)){render();if(v&&!had)toast(`${v} stamped in your passport`)}}});
 document.addEventListener("input",e=>{const t=e.target;if(t.dataset&&t.dataset.ed&&ED){setPath(ED,t.dataset.ed,t.dataset.num?(t.value===""?"":Number(t.value)):t.value);edStatus();return}if(e.target.id==="q"){draft.q=e.target.value;const f=$("#faq"),g=$("#guides"),h=$("#guidehint");if(f)f.innerHTML=faqHTML();if(g)g.innerHTML=guidesHTML();if(h)h.innerHTML=guideHint()}});
 
 render();
+(()=>{const sp=document.getElementById("splash");if(!sp)return;let seen=false;try{seen=sessionStorage.getItem("af_splash")}catch(e){}
+  const standalone=(()=>{try{return matchMedia("(display-mode: standalone)").matches||navigator.standalone}catch(e){return false}})();
+  if(!standalone||seen||reduceMotion()){sp.remove();return}try{sessionStorage.setItem("af_splash","1")}catch(e){}
+  setTimeout(()=>{sp.classList.add("out");setTimeout(()=>sp.remove(),500)},650)})();
 flushInbox();
 if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
 
@@ -1400,7 +1560,7 @@ async function loadSheet(){
   if(!CONFIG.sheetId)return;
   const tabs=["Settings","Announcements","Breakfast","Lunch","Stations","Smoothies","Recipes","Snacks"];
   const T={};
-  try{await Promise.all(tabs.map(async t=>{T[t]=await gvizTab(t).catch(()=>csvTab(t))}))}catch(e){console.warn("Sheet not loaded",e);return}
+  try{await Promise.all([...tabs.map(async t=>{T[t]=await gvizTab(t).catch(()=>csvTab(t))}),(async()=>{T.Matches=await gvizTab("Matches").catch(()=>csvTab("Matches")).catch(()=>[])})()])}catch(e){console.warn("Sheet not loaded",e);return}
   const set=Object.fromEntries(T.Settings.map(r=>[r.Setting,r.Value]));
   const recipes={},notes={};
   T.Recipes.forEach(r=>{if(!r.Flavor)return;const x={ing:r.Ingredients.split(/\n|;/).map(s=>s.trim()).filter(Boolean),y:r.Makes||"",a:parseAl(r.Allergens),est:yesv(r.Estimated)};
@@ -1416,6 +1576,7 @@ async function loadSheet(){
     smoothieCycle:weeks(T.Smoothies,r=>({team:/^m/i.test(r.Team)?"Men":/^w/i.test(r.Team)?"Women":"Both",whey:r["Whey flavor"],plant:r["Plant flavor"],
       aw:rec(r["Whey flavor"]).aw||rec(r["Whey flavor"]).a,ap:rec(r["Plant flavor"]).a,ok:yesv(r.Confirmed)})),
     smoothieRecipes:recipes,flavorNotes:notes,
+    matches:(T.Matches||[]).filter(r=>r.Date).map(r=>({date:toISO(r.Date),time:r["Start time"]||"",opp:r.Opponent||"",team:/^m/i.test(r.Team||"")?"MNT":/^w/i.test(r.Team||"")?"WNT":"Both",loc:r.Location||""})),
     snackCycle:weeks(T.Snacks,r=>({t:r.Category,n:r.Snack,d:"",a:parseAl(r.Allergens),ok:yesv(r.Confirmed)}))};
   DATA=Object.assign({},DATA,NEW);
   try{localStorage.setItem("af_sheet",JSON.stringify(DATA))}catch(e){}
