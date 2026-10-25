@@ -630,6 +630,9 @@ h2::before{width:.6em;height:.6em}
 #splash .logo-badge{width:150px}
 #splash i{width:66px;height:5px;border-radius:3px;background:linear-gradient(90deg,#A6192E 0 33.3%,#fff 33.3% 66.6%,#5A78BE 66.6%)}
 #splash.out{opacity:0}
+.clubchip{display:inline-flex!important;width:max-content;max-width:100%;padding:4px 10px 5px;border-radius:10px;background:color-mix(in srgb,var(--surface) 80%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);position:relative;z-index:1;font-size:.62rem!important;line-height:1.35}
+.clubchip::before{display:none!important}
+#onb.staff .athlete-only{display:none}
 
 
 /* Heat check */
@@ -1061,14 +1064,14 @@ function vOnboard(){
   return `<div class="view">
    <div class="court hero">${COURT_SVG}<div class="hero-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><span class="eyebrow">Athlete setup</span></div>${STARS5}<p class="wordmark"><span>Nutrition</span></p><p class="hello">${draft.editing?"Update your profile.":"Welcome. Takes about a minute."}</p><p class="muted" style="margin-top:6px">Your answers flag your allergens on every menu and set the protein in your smoothies.</p></div>
    ${draft.editing?"":installCard("setup")}
-   <form id="onb" class="stack card">
+   <form id="onb" class="stack card${STAFF_ROLES.includes(p.position)?" staff":""}">
     <div class="namerow"><label for="f-first">First name<input id="f-first" required value="${esc(p.first??(p.name||"").split(" ")[0]??"")}" placeholder="First Name" autocomplete="given-name"></label><label for="f-last">Last name<input id="f-last" required value="${esc(p.last??(p.name||"").split(" ").slice(1).join(" "))}" placeholder="Last Name" autocomplete="family-name"></label></div>
     <div class="stack" style="gap:6px"><span class="eyebrow">Team</span><div class="choice" data-pick="team">${["WNT","MNT"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${p.team===t}">${t}</button>`).join("")}</div></div>
-    <div class="namerow"><label for="f-pos">Position<select id="f-pos"><option value="">Select</option><optgroup label="Athlete">${POSITIONS.map(x=>`<option ${p.position===x?"selected":""}>${x}</option>`).join("")}</optgroup><optgroup label="Staff">${STAFF_ROLES.map(x=>`<option ${p.position===x?"selected":""}>${x}</option>`).join("")}</optgroup></select></label><label for="f-num">Jersey # <span class="muted" style="font-weight:400">(optional)</span><input id="f-num" inputmode="numeric" maxlength="2" value="${esc(p.num||"")}" placeholder="12"></label></div>
+    <div class="namerow"><label for="f-pos">Position<select id="f-pos"><option value="">Select</option><optgroup label="Athlete">${POSITIONS.map(x=>`<option ${p.position===x?"selected":""}>${x}</option>`).join("")}</optgroup><optgroup label="Staff">${STAFF_ROLES.map(x=>`<option ${p.position===x?"selected":""}>${x}</option>`).join("")}</optgroup></select></label><label for="f-num" class="athlete-only">Jersey # <span class="muted" style="font-weight:400">(optional)</span><input id="f-num" inputmode="numeric" maxlength="2" value="${esc(p.num||"")}" placeholder="12"></label></div>
     <label for="f-pro">Pro team<input id="f-pro" value="${esc(p.pro||"")}" placeholder="Club and country"></label>
     <div class="stack" style="gap:6px"><span class="eyebrow">Food allergies</span><div class="choice" data-pick="allergies" data-multi="1">${ALLERGENS.map(a=>`<button type="button" data-v="${a}" aria-pressed="${p.allergies.includes(a)}">${a}</button>`).join("")}</div>
      <label for="f-other">Other allergy or medical diet<input id="f-other" value="${esc(p.other||"")}" placeholder="e.g. celiac, kiwi, low-FODMAP"></label></div>
-    <div class="stack" style="gap:6px"><span class="eyebrow">Protein preference</span><div class="choice" data-pick="protein">${["Whey","Plant","No preference"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${p.protein===t}">${t}</button>`).join("")}</div></div>
+    <div class="stack athlete-only" style="gap:6px"><span class="eyebrow">Protein preference</span><div class="choice" data-pick="protein">${["Whey","Plant","No preference"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${p.protein===t}">${t}</button>`).join("")}</div></div>
     <button class="btn block" type="submit">${draft.editing?"Save changes":"Get started"}</button>${draft.editing?`<button type="button" class="btn ghost block" data-cancel="1">Cancel</button>`:""}
     <p class="muted" style="font-size:.78rem">Your profile, including allergies, is shared with the USAV sports dietitian so foodservice can keep you safe. Your food journal stays on your phone.</p>
    </form><div class="usa-mark" role="img" aria-label="USA"></div></div>`;
@@ -1252,7 +1255,8 @@ const CLUBS=[
  ["LOVB Austin","Austin","USA"],["LOVB Houston","Houston","USA"],["LOVB Atlanta","Atlanta","USA"],["LOVB Salt Lake","Salt Lake City","USA"],["LOVB Madison","Madison","USA"],["LOVB Nebraska","Omaha","USA"],["LOVB Los Angeles Orbit","Los Angeles","USA"],["LOVB San Francisco Signal","San Francisco","USA"],
  ["MLV Omaha Supernovas","Omaha","USA"],["MLV Grand Rapids Rise","Grand Rapids","USA"],["MLV Orlando Valkyries","Orlando","USA"],["MLV Los Angeles Thunder","Los Angeles","USA"],["MLV Minnesota Forge","Minnesota","USA",44.98,-93.27],["MLV Indy Ignite","Indianapolis","USA"]
 ];
-function clubMode(){const p=profile||{};if(!p.clubCity&&!p.clubCountry)return false;if(p.season==="club")return true;if(p.season==="team")return false;return /off/i.test(chapterName())}
+function isStaff(){return !!profile&&STAFF_ROLES.includes(profile.position)}
+function clubMode(){if(isStaff())return false;const p=profile||{};if(!p.clubCity&&!p.clubCountry)return false;if(p.season==="club")return true;if(p.season==="team")return false;return /off/i.test(chapterName())}
 function clubPlace(){const p=profile||{};return [p.clubCity,p.clubCountry&&p.clubCountry!=="Other"?p.clubCountry:""].filter(Boolean).join(", ")}
 function clubLabel(){const p=profile||{};return [p.club,clubPlace()].filter(Boolean).join(" · ")}
 /* Allergy cards. Every language must be checked by a native speaker before CARD_REVIEWED is set to true for it. */
@@ -1360,8 +1364,13 @@ function vHome(){
   const flagged=meals.filter(x=>hits(x.a)).length;
   const [feat,...rest]=DATA.announcements;
   const dateLine=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
-  const club=clubMode();
-  const go=club?[
+  const club=clubMode(),staff=isStaff();
+  const go=staff?[
+   ["food","menu","Weekly menu","The full lineup",IC.plate],
+   ["rd","","Ask the RD","Nutrition 411 and booking",IC.chat],
+   ["learn","","Learn","Answers with sources",IC.book],
+   ["food","feedback","Food feedback","Rate a meal or request one",IC.cart]
+  ]:club?[
    ["acard","","Allergy card","Show it at restaurants",IC.card],
    ["cguide","","Food guide","Staples and orders where you play",IC.globe],
    ["match","","Match-day plan","What to eat from wake-up to recovery",IC.cal],
@@ -1379,14 +1388,14 @@ function vHome(){
   return `<div class="view home">
    <header class="hero court" style="${chapterTint()?`--chapter:${chapterTint()}`:""}">${COURT_SVG}${profile.num?`<span class="jersey num" aria-hidden="true">${esc(profile.num)}</span>`:""}
     <div class="hero-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><div style="text-align:right;display:flex;flex-direction:column;gap:6px"><span class="eyebrow">${club?"Club season":"Team USA · "+profile.team}</span><span class="eyebrow">${dateLine}</span></div></div>
-    ${STARS5}<p class="wordmark"><span>Nutrition</span></p>${club?`<p class="chapter" style="--chapter:var(--accent-text)">Club season · ${esc(clubLabel())}</p>`:""}
+    ${STARS5}<p class="wordmark"><span>Nutrition</span></p>${club?`<p class="chapter clubchip">Club season · ${esc(clubLabel())}</p>`:""}
     ${!club&&chapterName()?`<p class="chapter" style="--chapter:${chapterTint()||"var(--accent-text)"}">${esc(chapterName())}</p>`:""}${daysTo(LA_OPENING)>0?`<button class="la" data-go="rank" aria-label="${daysTo(LA_OPENING)} days to LA. See world rankings"><span class="num">${daysTo(LA_OPENING)}</span> days to LA</button>`:""}
-    <div class="meta"><span class="chip blue">${noPref()?"Any protein":profile.protein+" protein"}</span>${myAllergens().length?`<span class="chip stop">${myAllergens().length} allergen${myAllergens().length>1?"s":""} flagged</span>`:`<span class="chip ok">No allergens listed</span>`}${esc(profile.position)?`<span class="chip">${esc(profile.position)}</span>`:""}</div>
+    <div class="meta">${staff?"":`<span class="chip blue">${noPref()?"Any protein":profile.protein+" protein"}</span>`}${myAllergens().length?`<span class="chip stop">${myAllergens().length} allergen${myAllergens().length>1?"s":""} flagged</span>`:`<span class="chip ok">No allergens listed</span>`}${esc(profile.position)?`<span class="chip">${esc(profile.position)}</span>`:""}</div>
    </header>
 
    ${club?"":matchBoard()}
    ${heatHTML()}
-   ${feat?`<section><div class="sec-head"><h2>Announcements</h2><span class="stamp">Updated ${fmtDate(DATA.updated)}</span></div>
+   ${feat?`<section><div class="sec-head"><h2>Announcements</h2></div>
     <article class="feature${/^win/i.test(feat.tag||"")?" win":""}"><div class="row" style="justify-content:space-between"><span class="chip accent">${esc(feat.tag)}</span><span class="stamp">${fmtDate(feat.when)}</span></div><h3>${esc(feat.t)}</h3>${feat.d?`<p>${esc(feat.d)}</p>`:""}</article>
     ${rest.length?`<div class="card" style="padding-block:2px">${rest.map(a=>`<div class="ann"><div class="row"><span class="chip">${esc(a.tag)}</span><span class="stamp">${fmtDate(a.when)}</span></div><b style="margin-top:6px">${esc(a.t)}</b><p class="muted" style="font-size:.88rem">${esc(a.d)}</p></div>`).join("")}</div>`:""}</section>`:""}
 
@@ -1449,7 +1458,7 @@ function vFood(){
       body=nav(n?`Smoothie week ${wi+1} of ${n}${flip?" · protein flip week":""}`:"")+
       `      <div class="lineup">${luHead("Smoothie card",null,`<span class="rot"><b>${profile.team}</b></span>`)}${rows.length?rows.flatMap(r=>noPref()?[{...r,side:"whey"},{...r,side:"plant"}]:[{...r,side:null}]).map(({d,iso,x,side})=>{const me=mySmoothie(x,side),hit=hits(me.a),mine=myAllergens().length||profile.other;
         return `<div class="meal ${hit?"flag":""}"><div class="meal-top"><span class="eyebrow">${fmtDate(iso)} · ${x.team==="Both"?"Men + Women":x.team}${side?` · ${side==="plant"?"Plant":"Whey"} option`:""}</span>${hit?`<span class="chip stop">May contain your allergen</span>`:(!x.ok&&mine?`<span class="chip warn">Confirm allergens</span>`:"")}</div>
-        <b>${esc(me.n)}</b><p class="muted" style="font-size:.86rem">Made with ${esc(me.prot)}.${side?"":` The ${me.side==="plant"?"whey":"plant"} option that day is ${esc(me.other)}.`}</p>${recipeHTML(me.n,me.prot)}
+        <b>${esc(me.n)}</b>${side?"":`<p class="muted" style="font-size:.86rem">${me.side==="plant"?"Whey":"Plant"} option that day: ${esc(me.other)}</p>`}${recipeHTML(me.n,me.prot)}
         ${(DATA.flavorNotes||{})[me.n]||(DATA.fans||[]).includes(me.n)?`<div class="tags">${(DATA.fans||[]).includes(me.n)?`<span class="chip fan">★ Fan favorite</span>`:""}${(DATA.flavorNotes||{})[me.n]?`<span class="chip warn">${esc(DATA.flavorNotes[me.n])}</span>`:""}</div>`:""}${allergenLine(me.a)}</div>`}).join(""):'<p class="muted" style="padding:12px 0">No smoothie days posted for your team this week.</p>'}</div>
       <p class="stamp">Full ingredients and macros are on the Smoothie Recipe Sheet. Ask foodservice if you need a swap.</p>${voteHTML()}`;
     }else{
@@ -1582,7 +1591,7 @@ function faqHTML(){
   const q=(draft.q||"").toLowerCase();
   const list=FAQ.filter(f=>(faqTopic==="All"||q||faqTopicOf(f)===faqTopic)&&(!q||(f.q+f.a.join(" ")).toLowerCase().includes(q)));
   const seen=seenSet();
-  return list.length?list.map(f=>{const i=FAQ.indexOf(f);return `<details class="play${seen.has(i)?" seen":""}" data-idx="${i}" data-play="${String(i+1).padStart(2,"0")}"><summary>${f.q}</summary><div class="ans">${f.a.map(p=>`<p>${p}</p>`).join("")}<p class="src">Source: ${f.s}</p></div></details>`}).join(""):emptyState(`No answers for "${esc(draft.q)}" yet.`,"Ask the RD below. Good questions end up here for the whole team.");
+  return list.length?list.map(f=>{const i=FAQ.indexOf(f);return `<details class="play" data-idx="${i}" data-play="${String(i+1).padStart(2,"0")}"><summary>${f.q}</summary><div class="ans">${f.a.map(p=>`<p>${p}</p>`).join("")}<p class="src">Source: ${f.s}</p></div></details>`}).join(""):emptyState(`No answers for "${esc(draft.q)}" yet.`,"Ask the RD below. Good questions end up here for the whole team.");
 }
 let wear={punches:[],stickers:[]};
 function vMe(){
@@ -1592,22 +1601,21 @@ function vMe(){
    ${(()=>{wear=wearData();return ""})()}<div class="credwrap"><div class="cred" role="group" aria-label="Athlete credential">${wear.punches.length?`<div class="cred-wear" aria-label="${wear.punches.length} months logged">${wear.punches.map(m=>`<i title="${m}"></i>`).join("")}</div>`:""}
     <div class="cred-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><span class="cred-org">USA Volleyball<b>Nutrition</b></span>${profile.num?`<span class="cred-num num">${esc(profile.num)}</span>`:""}</div>
     <p class="cred-name">${esc(profile.first||"")}<b>${esc(profile.last||profile.name)}</b></p>
-    <div class="cred-grid"><div><i>Team</i><b>${profile.team}</b></div><div><i>Position</i><b>${esc(profile.position||"—")}</b></div><div><i>Pro team</i><b>${esc(profile.club||profile.pro||"—")}</b></div><div><i>Protein</i><b>${profile.protein}</b></div></div>
+    <div class="cred-grid"><div><i>Team</i><b>${profile.team}</b></div><div><i>Position</i><b>${esc(profile.position||"—")}</b></div><div><i>Pro team</i><b>${esc(profile.club||profile.pro||"—")}</b></div>${isStaff()?"":`<div><i>Protein</i><b>${profile.protein}</b></div>`}</div>
     ${wear.stickers.length?`<div class="stickers" aria-label="Season stickers">${wear.stickers.map((c,i)=>`<span class="sticker" style="background:${CHAPTER_TINTS[c.toLowerCase()]||"#A6192E"};--rot:${[-5,4,-2,6,-7][i%5]}deg">${esc(c)}</span>`).join("")}</div>`:""}
     ${al.length?`<div class="cred-alert"><span>Allergy alert</span><b>${al.map(esc).join(" · ")}</b></div>`:`<div class="cred-ok">No food allergies listed</div>`}
    </div></div>
    <p class="wear-note">Your badge earns a punch for each month with 3+ days logged${chapterName()?`, and a sticker for each season chapter`:""}.</p>
    <button class="btn ghost block" data-edit="1">Edit profile</button>
-   <section><h2>Season</h2><div class="card stack">
+   ${isStaff()?"":`<section><h2>Season</h2><div class="card stack">
     <div class="choice" data-seasonset="1">${[["team","With the national team"],["club","With my club"]].map(([k,l])=>`<button type="button" data-seasonv="${k}" aria-pressed="${(profile.season||"team")===k}">${l}</button>`).join("")}</div>
     ${(profile.season==="club")?`<label for="club-pick">Your club<select id="club-pick"><option value="">Select your club</option>${CLUB_COUNTRIES.filter(c=>c!=="Other").map(c=>`<optgroup label="${c}">${CLUBS.filter(x=>x[2]===c).map(x=>`<option ${profile.club===x[0]?"selected":""}>${esc(x[0])}</option>`).join("")}</optgroup>`).join("")}<option value="__other" ${profile.club===""&&profile.clubCity?"selected":""}>My club isn't listed</option></select></label>
     <div class="namerow"><label for="club-city">Club city<input id="club-city" value="${esc(profile.clubCity||"")}" placeholder="e.g. Istanbul" autocomplete="off"></label><label for="club-country">Country<select id="club-country"><option value="">Select</option>${CLUB_COUNTRIES.map(c=>`<option ${profile.clubCountry===c?"selected":""}>${c}</option>`).join("")}</select></label></div>
     <p class="muted" style="font-size:.8rem">Home switches to your club city: allergy card in the local language, a food guide, heat checks and a monthly check-in with Nick. Your city stays on this phone.</p>`:`<p class="muted" style="font-size:.8rem">Playing club volleyball abroad? Switch to "With my club" for a version of the app built for your city.</p>`}
-   </div></section>
+   </div></section>`}
    ${passportHTML()}
    ${canEdit?`<div class="card stack"><span class="eyebrow">Share with athletes · editors only</span><img src="qr-code.png" alt="QR code that opens this app" style="width:180px;align-self:center;border-radius:8px"><div class="row"><span class="copybox grow" id="app-link">${CONFIG.appLink}</span><button class="btn ghost sm" data-copy="app-link">Copy</button></div><p class="stamp">Athletes can open this without a Claude account once link sharing is on in the Share menu.</p></div>`:""}
    ${canEdit?`<button class="tile editlink" data-tab="edit"><b>Edit menus & announcements</b><span>Only you and other editors see this. Last published ${fmtDate(DATA.updated)}.</span></button>`:""}
-   ${isInstalled()?"":`<section><h2>Install the app</h2>${installCard("me")}</section>`}
    <section><h2>Customize</h2><div class="card custom">
     <div><h3>Style</h3><div class="choice" data-pref="style">${[["soft","Simple"],["gameday","Game day"]].map(([k,l])=>`<button type="button" data-v="${k}" aria-pressed="${prefs.style===k}">${l}</button>`).join("")}</div></div>
     <div><h3>Color theme</h3><div class="pals">${PALETTES.map(p=>`<button class="pal" data-palette="${p.k}" aria-pressed="${prefs.palette===p.k}"><i style="background:linear-gradient(135deg,${p.a} 0 50%,${p.b} 50%)"></i>${p.n}</button>`).join("")}</div></div>
@@ -1953,12 +1961,13 @@ document.addEventListener("submit",e=>{
   if(f.id==="j-form"){jSubmit();return}
   if(f.id==="onb"){
     const first=$("#f-first").value.trim(),last=$("#f-last").value.trim(),name=(first+" "+last).trim();
+    if(STAFF_ROLES.includes($("#f-pos").value)&&!draft.protein)draft.protein="No preference";
     if(!first||!last||!draft.team||!draft.protein){toast("Add your first and last name, team and protein preference");return}
     const prevAllergy=profile?JSON.stringify([profile.allergies,profile.other]):"";
     profile={...(profile||{}),name,first,last,team:draft.team,position:$("#f-pos").value,pro:$("#f-pro").value.trim(),allergies:draft.allergies||[],other:$("#f-other").value.trim(),protein:draft.protein,num:($("#f-num").value||"").replace(/\D/g,"").slice(0,2),ack:profile?profile.ack:false};
     if(prevAllergy!==JSON.stringify([profile.allergies,profile.other]))profile.ack=false;
     const isNew=!draft.editing;
-    store.set("profile",profile);draft={};tab="home";render();if(isNew)walkOut();else toast("Profile saved");
+    store.set("profile",profile);draft={};tab="home";render();if(isNew&&!STAFF_ROLES.includes(profile.position))walkOut();else toast(isNew?"Welcome to the staff view":"Profile saved");
     sendInbox(profileRecord(isNew?"Profile":"Profile update"));return}
   if(f.id==="form-session"){
     if(!draft.session){toast("Pick a session type");return}
@@ -1973,7 +1982,7 @@ document.addEventListener("submit",e=>{
   if(f.id==="form-checkin"){
     if(!draft.ciFood||!draft.ciEnergy||!draft.ciGut){toast("Answer the three quick questions");return}
     const note=$("#ci-note").value.trim();
-    sendInbox({...profileRecord("Club check-in"),Details:`${ciMonth()} · ${clubLabel()} · Food: ${draft.ciFood} · Energy: ${draft.ciEnergy} · Stomach: ${draft.ciGut}${note?" · "+note:""}`});
+    sendInbox({...profileRecord("Club check-in"),Details:`${ciMonth()} · ${clubLabel()} · Local time ${new Date().toLocaleString("en-US",{weekday:"short",hour:"numeric",minute:"2-digit"})} (${(()=>{try{return Intl.DateTimeFormat().resolvedOptions().timeZone}catch(e){return "unknown"}})()}) · Food: ${draft.ciFood} · Energy: ${draft.ciEnergy} · Stomach: ${draft.ciGut}${note?" · "+note:""}`});
     try{localStorage.setItem("af_checkin",ciMonth())}catch(e){}draft.ciFood=draft.ciEnergy=draft.ciGut="";render();toast("Check-in sent");ballArc();return}
   if(f.id==="form-feedback"){
     if(!draft.fbType){toast("Pick a feedback type");return}
@@ -1982,7 +1991,8 @@ document.addEventListener("submit",e=>{
     render();toast("Ticket sent");ballArc();return}
 });
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){const lb=$("#lightbox");if(lb&&!lb.hidden)lb.hidden=true}});
-document.addEventListener("change",e=>{if(e.target.id==="j-photo"&&e.target.files&&e.target.files[0])jPhoto(e.target.files[0]);
+document.addEventListener("change",e=>{if(e.target.id==="f-pos"){const f=$("#onb");if(f)f.classList.toggle("staff",STAFF_ROLES.includes(e.target.value))}
+  if(e.target.id==="j-photo"&&e.target.files&&e.target.files[0])jPhoto(e.target.files[0]);
   if(e.target.id==="club-pick"){const v=e.target.value,c=CLUBS.find(x=>x[0]===v);if(c){profile.club=c[0];profile.clubCity=c[1];profile.clubCountry=c[2];profile.clubGeo=c[3]!=null?[c[3],c[4]]:null}else{profile.club=""}store.set("profile",profile);HEAT=null;heatTried=false;try{localStorage.removeItem("af_heat3")}catch(e){}cardLang=null;guideC=null;setTimeout(()=>{render();if(c&&!c[1]){const i=document.getElementById("club-city");if(i)i.focus();toast("Add your club's city")}else if(c)toast(`Club season set: ${clubLabel()}`)},0);return}
   if(e.target.id==="club-city"||e.target.id==="club-country"){profile.clubGeo=null;profile.clubCity=($("#club-city")||{}).value?.trim().slice(0,40)||"";profile.clubCountry=($("#club-country")||{}).value||"";store.set("profile",profile);HEAT=null;heatTried=false;try{localStorage.removeItem("af_heat3")}catch(e){}cardLang=null;guideC=null;setTimeout(render,0);if(profile.clubCity&&profile.clubCountry)toast(`Club season set: ${clubPlace()}`);return}
   if(e.target.id==="j-city"){const d=jGet(jDate),v=e.target.value.trim().slice(0,40),had=Object.values(J.days).some(x=>x&&x.city&&x.city.trim().toLowerCase()===v.toLowerCase());d.city=v;if(jPut(jDate,d)){setTimeout(render,0);if(v&&!had)toast(`${v} stamped in your passport`)}}});
