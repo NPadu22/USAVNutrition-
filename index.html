@@ -761,6 +761,20 @@ const DINNERS={
   {n:"Tacos & Mexican",t:"Taquerias across LA & OC",d:"Grilled proteins on corn tortillas with rice, beans and salsa. Go easy on fried items the night before a heavy session."},
   {n:"Japanese & sushi",d:"Rice-based rolls plus sashimi or a teriyaki bowl gives you carbs and protein together. Add miso or edamame."}
  ],
+ delivery:[
+  {n:"Chipotle",t:"Burrito bowl",d:"Rice (white or brown), chicken or steak, black or pinto beans, fajita veggies, salsa. Heavy day: double rice. Night before a match: skip the queso and keep it mild."},
+  {n:"CAVA",t:"Grains + greens bowl",d:"Saffron rice or RightRice base, grilled chicken or steak, then vegetables and a dip. Hummus and tahini sauces contain sesame."},
+  {n:"Sweetgreen",t:"Warm bowl, not just salad",d:"Pick a bowl with a grain base (rice or quinoa) or add one, plus chicken, salmon or tofu. A salad alone is too light after practice."},
+  {n:"El Pollo Loco",t:"Fire-grilled chicken meal",d:"Chicken with rice, beans and a tortilla. Add corn or fruit. Skip the creamy sides the night before a match."},
+  {n:"Panda Express",t:"Plate or bigger plate",d:"Steamed rice base with grilled teriyaki chicken or a wok-tossed protein, plus super greens. Some entrées contain peanuts, so check if that's your allergen."},
+  {n:"Flame Broiler · Waba Grill",t:"Chicken rice bowl",d:"Simple grilled chicken and rice, with vegetables on the side. Ask for sauce on the side so you control it. Easy on the stomach before training."},
+  {n:"Pokéworks",t:"Poke bowl",d:"Rice base, salmon, tuna or tofu, edamame, cucumber and avocado. Choose cooked protein if raw fish doesn't sit well before a match."},
+  {n:"Mendocino Farms",t:"Sandwich + side",d:"Pick a chicken, turkey or steak sandwich and pair it with a grain salad or fruit. Good for a lighter dinner on rest days."},
+  {n:"Zankou Chicken",t:"Chicken plate",d:"Rotisserie or tarna chicken with rice or pita, hummus and salad. The garlic sauce is rich, so use a little. Hummus contains sesame."},
+  {n:"Chick-fil-A",t:"Grilled, not fried",d:"Grilled nuggets or a grilled chicken sandwich, plus fruit cup and a milk or lemonade. Fried is fine on a heavy day, but not the night before a match."},
+  {n:"Jersey Mike's",t:"Sub on a regular roll",d:"Turkey, chicken or roast beef with veggies. Add a fruit or baked chips for carbs. Good to order ahead for a team travel day."},
+  {n:"Veggie Grill",t:"Plant-based plates",d:"For plant-based athletes: pick a bowl or plate with a grain plus tofu, tempeh or a plant protein. Add a side to get enough total protein."}
+ ],
  weekend:[
   {n:"Keep the rhythm",d:"Eat three meals and a snack or two, even on rest days. Rest days still need carbs and protein; portions can be a little smaller than on training days."},
   {n:"Grocery-run staples",t:"Trader Joe's · Sprouts · Ralphs · Costco",d:"Microwave rice, rotisserie chicken, eggs, Greek yogurt, tortillas, pre-washed greens, frozen fruit and frozen vegetables. Enough for fast meals all weekend."},
@@ -1126,8 +1140,14 @@ function vFood(){
       <div class="lineup">${luHead("Court snacks",dIso,"")}${L.length?L.map(x=>mealHTML(x,x.t)).join(""):'<p class="muted" style="padding:12px 0">No court snacks posted for this day.</p>'}</div>`;
     }
   }else if(foodSeg==="dinner"){
-    body=`<div class="seg" data-segset="dinner">${[["out","Eating out"],["weekend","Weekends"],["recipes","Recipes"]].map(([k,l])=>`<button data-v="${k}" aria-pressed="${dinnerSeg===k}">${l}</button>`).join("")}</div>
-    <p class="muted">${dinnerSeg==="weekend"?"Weekends are on you. Here's how to keep fueling well in LA and Orange County.":"Tips for the one meal away from the facility, for athletes around LA and Orange County."}</p>
+    body=`<div class="seg" data-segset="dinner">${[["out","Eating out"],["delivery","Delivery"],["weekend","Weekends"],["recipes","Recipes"]].map(([k,l])=>`<button data-v="${k}" aria-pressed="${dinnerSeg===k}">${l}</button>`).join("")}</div>
+    <p class="muted">${dinnerSeg==="weekend"?"Weekends are on you. Here's how to keep fueling well in LA and Orange County.":dinnerSeg==="delivery"?"What to order from chains you'll find on DoorDash around LA and Orange County. Menus and availability vary by store.":"Tips for the one meal away from the facility, for athletes around LA and Orange County."}</p>
+    ${dinnerSeg==="delivery"?`<div class="card stack"><span class="eyebrow">Before you tap Order</span><ul class="steps">
+     <li><b>Order before you're starving.</b> Delivery takes 30–60 minutes, so order right after practice or schedule it ahead.</li>
+     <li><b>Build the plate:</b> a carb base (rice, tortilla, pasta, bread), a palm or two of protein, something colorful, and a drink. Add fruit or milk if the meal looks small.</li>
+     <li><b>Allergies:</b> order notes in the app aren't a safety check. Look at the chain's allergen menu and call the store if it matters.</li>
+     <li><b>Food safety:</b> eat it within 2 hours and refrigerate leftovers right away.</li>
+     <li><b>Split the fee:</b> order with teammates who live nearby.</li></ul></div>`:""}
     <div class="card" style="padding-block:2px">${DINNERS[dinnerSeg].map(x=>`<div class="item"><div class="meal-top"><h3>${x.n}</h3>${x.t?`<span class="nums">${x.t}</span>`:""}</div><p class="muted" style="font-size:.9rem">${x.d}</p></div>`).join("")}</div>`;
   }else{
     body=`<div class="rail"><div class="ticket">${draft.feedbackSent?"":`<div class="ticket-head"><span>Kitchen ticket</span><span>${profile.team} · ${new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"})}</span></div>`}`+formBlock("feedback",[
