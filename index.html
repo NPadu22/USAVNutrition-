@@ -669,6 +669,55 @@ h2::before{width:.6em;height:.6em}
 *,*::before,*::after{touch-action:manipulation}
 input,select,textarea{font-size:max(16px,1em)!important}
 .ng-sub{font-size:.78rem;line-height:1.25;color:var(--muted);margin-top:-2px}
+
+/* ===== Rooms: each tab is a place in the facility ===== */
+#room{position:fixed;inset:0;z-index:-1;pointer-events:none;transition:background .5s,opacity .5s}
+:root{--room:var(--fg)}
+:root[data-room="food"]{--room:#E8A33D}
+:root[data-room="journal"]{--room:#D2334A}
+:root[data-room="rd"]{--room:#4FA89A}
+:root[data-room="learn"]{--room:#8DB38B}
+:root[data-room="me"]{--room:#6F8FD6}
+:root[data-room="food"] #room{background:radial-gradient(120% 60% at 50% 0,color-mix(in srgb,#E8A33D 16%,transparent),transparent 70%),var(--noise)}
+:root[data-room="journal"] #room{background:linear-gradient(90deg,transparent 22px,color-mix(in srgb,#D2334A 22%,transparent) 22px 23px,transparent 23px),repeating-linear-gradient(transparent 0 31px,color-mix(in srgb,var(--fg) 6%,transparent) 31px 32px)}
+:root[data-room="rd"] #room{background:radial-gradient(90% 55% at 85% 0,color-mix(in srgb,#4FA89A 15%,transparent),transparent 70%)}
+:root[data-room="learn"] #room{background:var(--noise),linear-gradient(color-mix(in srgb,#1E3A2A 34%,transparent),color-mix(in srgb,#1E3A2A 14%,transparent))}
+:root[data-room="me"] #room{background:repeating-linear-gradient(90deg,transparent 0 62px,color-mix(in srgb,var(--fg) 5%,transparent) 62px 64px),radial-gradient(80% 50% at 50% 0,color-mix(in srgb,#6F8FD6 12%,transparent),transparent 70%)}
+.tab-pill{background:color-mix(in srgb,var(--room) 26%,transparent)!important;transition:transform .42s cubic-bezier(.3,1.25,.45,1),background .45s,opacity .2s!important}
+/* ===== Walk-out (one time, after setup) ===== */
+#walkout{position:fixed;inset:0;z-index:150;background:#000;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;overflow:hidden;cursor:pointer;animation:wo-out .6s ease 3.9s forwards}
+#walkout .wo-court{position:absolute;inset:auto -20% -10% -20%;height:60%;background:linear-gradient(#0B2A66,#071D49);transform:perspective(500px) rotateX(58deg);transform-origin:bottom;opacity:0;animation:wo-court 1.4s ease .5s forwards;
+  background-image:linear-gradient(90deg,transparent 49.6%,rgb(255 255 255 / .8) 49.6% 50.4%,transparent 50.4%),linear-gradient(transparent 33%,rgb(255 255 255 / .5) 33% 34%,transparent 34% 66%,rgb(255 255 255 / .5) 66% 67%,transparent 67%),linear-gradient(#0B2A66,#071D49)}
+#walkout .wo-beam{position:absolute;top:-10%;width:40%;height:120%;background:linear-gradient(rgb(255 255 255 / .55),transparent 70%);filter:blur(18px);opacity:0;animation:wo-beam 1.2s ease forwards}
+#walkout .wo-beam.l{left:-6%;transform:rotate(18deg);animation-delay:.3s}
+#walkout .wo-beam.r{right:-6%;transform:rotate(-18deg);animation-delay:.55s}
+#walkout p{position:relative;margin:0;text-align:center;opacity:0;transform:translateY(10px);animation:wo-in .6s ease forwards}
+#walkout .wo-1{font:700 .78rem var(--mono);letter-spacing:.24em;text-transform:uppercase;color:#C9CBD0;animation-delay:1.1s}
+#walkout .wo-2{font-size:5.5rem;line-height:.9;color:#FFB81C;text-shadow:0 0 30px rgb(255 184 28 / .5);animation-delay:1.6s}
+#walkout .wo-3{font:800 2.3rem/1 var(--display);text-transform:uppercase;letter-spacing:.02em;animation-delay:2.1s}
+#walkout .wo-4{font:600 .8rem var(--body);color:#A7A8AA;animation-delay:2.9s}
+@keyframes wo-court{to{opacity:1}}
+@keyframes wo-beam{to{opacity:1}}
+@keyframes wo-in{to{opacity:1;transform:none}}
+@keyframes wo-out{to{opacity:0;visibility:hidden}}
+/* ===== Credential wear: month punches + season stickers ===== */
+.cred-wear{position:absolute;top:14px;right:14px;display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;max-width:120px}
+.cred-wear i{width:11px;height:11px;border-radius:50%;background:var(--bg);box-shadow:inset 0 1px 2px rgb(0 0 0 / .5)}
+.cred-top{position:relative}
+.cred .cred-num{margin-top:14px}
+.stickers{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 14px;pointer-events:none}
+.sticker{font:800 .72rem/1 var(--display);letter-spacing:.08em;text-transform:uppercase;padding:5px 9px;border-radius:7px;color:#fff;transform:rotate(var(--rot,-4deg));box-shadow:0 2px 0 rgb(0 0 0 / .15),0 0 0 2px #fff;opacity:.95}
+.cred-grid{position:relative}
+.wear-note{font-size:.78rem;color:var(--muted);text-align:center;margin:-6px 0 0}
+/* ===== Archive note + chapter ===== */
+.board-archive{border-top:1px dashed rgb(255 255 255 / .18);padding-top:10px;font-size:.8rem;color:#C9CBD0}
+.board-archive i{font-style:normal;font:700 .62rem var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#FFB81C;display:block;margin-bottom:3px}
+.board-archive small{display:block;color:#8E9094;margin-top:3px;font-size:.68rem}
+.hero .chapter{font:700 .74rem var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--chapter,var(--accent-text));margin-top:10px;display:flex;align-items:center;gap:6px}
+.hero .chapter::before{content:"";width:16px;height:2px;background:currentColor}
+.hero.court{box-shadow:inset 0 -3px 0 color-mix(in srgb,var(--chapter,transparent) 70%,transparent)}
+.la{border:0;cursor:pointer;font:inherit;color:var(--muted)}
+.la::after{content:"›";margin-left:2px;opacity:.7}
 /* Sliding tab bubble */
 nav.tabs .in{position:relative}
 nav.tabs button{position:relative;z-index:1}
@@ -681,6 +730,7 @@ nav.tabs button[aria-current="page"]{background:transparent;box-shadow:none}
 </style>
 
 <div class="pagebg" aria-hidden="true"><svg viewBox="0 0 150 240" preserveAspectRatio="xMidYMid slice"><rect width="150" height="240" class="pz"/><rect x="30" y="30" width="90" height="180" class="pc"/><g class="pl"><rect x="30" y="30" width="90" height="180"/><line x1="30" y1="90" x2="120" y2="90"/><line x1="30" y1="150" x2="120" y2="150"/></g><line x1="22" y1="120" x2="128" y2="120" class="pn"/></svg></div>
+<div id="room" aria-hidden="true"></div>
 <div class="app" id="app"></div>
 <nav class="tabs" aria-label="Main"><div class="in" id="tabs"></div></nav>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -983,7 +1033,8 @@ function matchBoard(){
    <div class="board-teams"><b>USA</b><span class="vs">VS</span><b>${esc(m.opp||"TBA")}</b></div>
    <div class="board-clock"><span class="num">${clock}</span><span>${sub}</span></div>
    <div class="board-now"><span class="eyebrow">What to eat</span><b>${step}</b><p>${tip}</p></div>
-   <button class="linkbtn" data-go="match">Full match-day plan</button></section>`;
+   <div class="row" style="justify-content:center;gap:18px"><button class="linkbtn" data-go="match">Full match-day plan</button><button class="linkbtn" data-go="rank">World rankings</button></div>
+   ${archiveNote()}</section>`;
 }
 setInterval(()=>{const b=document.getElementById("board");if(b&&tab==="home"&&profile){const h=matchBoard();if(h)b.outerHTML=h}},60000);
 function hashStr(t){let h=0;for(const c of t)h=(h*31+c.charCodeAt(0))>>>0;return h}
@@ -1047,6 +1098,45 @@ function voteHTML(){
    <button class="btn block" data-castvote="1">Cast my vote</button>`}</div></section>`;
 }
 let smTile=null;
+
+/* ===== Rooms, walk-out, wear, archive, chapters ===== */
+const ARCHIVE=[
+ ["Feb 9, 1895","William G. Morgan invents \"Mintonette\" at the YMCA in Holyoke, Massachusetts. We call it volleyball.","Mass Moments"],
+ ["1984 · Los Angeles","The U.S. men win their first Olympic gold. The women take silver.","USA Volleyball Olympic history"],
+ ["1988 · Seoul","The U.S. men win Olympic gold again, back to back.","USA Volleyball Olympic history"],
+ ["1992 · Barcelona","Both U.S. teams leave with Olympic bronze.","USA Volleyball Olympic history"],
+ ["2008 · Beijing","The U.S. men win Olympic gold. The women win silver.","USA Volleyball Olympic history"],
+ ["2014 · World Championship","The U.S. women beat China 3–1 for their first world title.","NORCECA"],
+ ["2016 · Rio","Both U.S. teams win Olympic bronze.","USA Volleyball Olympic history"],
+ ["Tokyo 2020 · played 2021","The U.S. women win their first Olympic gold, beating Brazil in the final.","USA Volleyball; CBC"],
+ ["2024 · Paris","The U.S. women win silver. The men beat Italy 3–0 for bronze.","NBC; Volleyball World"]
+];
+function archiveNote(){const d=new Date(),i=(d.getFullYear()*372+d.getMonth()*31+d.getDate())%ARCHIVE.length,a=ARCHIVE[i];
+  return `<div class="board-archive"><i>From the archive · ${a[0]}</i>${a[1]}<small>Source: ${a[2]}</small></div>`}
+const CHAPTER_TINTS={"preseason":"#4FA89A","vnl":"#5A78BE","nations league":"#5A78BE","worlds":"#C99700","world championship":"#C99700","olympics":"#C8102E","road to la":"#C8102E","qualifiers":"#E8A33D","off-season":"#8E9094","offseason":"#8E9094"};
+function chapterName(){return String(DATA.chapter||"").trim()}
+function chapterTint(){const c=chapterName().toLowerCase();return CHAPTER_TINTS[c]||""}
+/* Season wear: months with 3+ logged days earn a punch; chapters with 3+ logged days earn a sticker */
+function wearData(){
+  const months={};Object.entries(J.days).forEach(([iso,d])=>{if(d&&d.entries&&d.entries.length){const m=iso.slice(0,7);months[m]=(months[m]||0)+1}});
+  const punches=Object.keys(months).filter(m=>months[m]>=3).sort().slice(-12);
+  let ch={};try{ch=JSON.parse(localStorage.getItem("af_chapters")||"{}")}catch(e){}
+  const stickers=Object.keys(ch).filter(k=>(ch[k]||[]).length>=3);
+  return {punches,stickers};
+}
+function noteChapterLog(iso){const c=chapterName();if(!c)return;let ch={};try{ch=JSON.parse(localStorage.getItem("af_chapters")||"{}")}catch(e){}
+  const L=ch[c]||[];if(!L.includes(iso)){L.push(iso);ch[c]=L.slice(-60);try{localStorage.setItem("af_chapters",JSON.stringify(ch))}catch(e){}}}
+function walkOut(){
+  if(reduceMotion())return;
+  const staff=STAFF_ROLES.includes(profile.position);
+  const el=document.createElement("div");el.id="walkout";el.setAttribute("role","dialog");el.setAttribute("aria-label","Welcome");
+  el.innerHTML=`<div class="wo-beam l"></div><div class="wo-beam r"></div><div class="wo-court"></div>
+   <p class="wo-1">${staff?"Joining the staff":"Starting for Team USA"}</p>
+   ${profile.num&&!staff?`<p class="wo-2 num">${esc(profile.num)}</p>`:""}
+   <p class="wo-3">${esc(profile.first||"")} ${esc(profile.last||"")}</p>
+   <p class="wo-4">${esc(profile.position||profile.team)} · USA Volleyball Nutrition</p>`;
+  const done=()=>el.remove();el.addEventListener("click",done);setTimeout(done,4600);document.body.appendChild(el);
+}
 function vHome(){
   const first=profile.first||profile.name.split(" ")[0];
   const wd=new Date().getDay(), weekend=wd===0||wd===6;
@@ -1061,13 +1151,13 @@ function vHome(){
    ["match","","Match-day plan","What to eat from wake-up to recovery",IC.cal],
    ["food","dinner","Away meals","Dinners, delivery and weekends",IC.moon],
    ["food","feedback","Food feedback","Rate a meal or request one",IC.chat],
-   ["rank","","World rankings","Men's and women's national teams",IC.ball]
+   ["food","dinner","Delivery picks","What to order from LA & OC chains",IC.plate,"delivery"]
   ];
   return `<div class="view home">
-   <header class="hero court">${COURT_SVG}${profile.num?`<span class="jersey num" aria-hidden="true">${esc(profile.num)}</span>`:""}
+   <header class="hero court" style="${chapterTint()?`--chapter:${chapterTint()}`:""}">${COURT_SVG}${profile.num?`<span class="jersey num" aria-hidden="true">${esc(profile.num)}</span>`:""}
     <div class="hero-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><div style="text-align:right;display:flex;flex-direction:column;gap:6px"><span class="eyebrow">Team USA · ${profile.team}</span><span class="eyebrow">${dateLine}</span></div></div>
     ${STARS5}<p class="wordmark"><span>Nutrition</span></p>
-    ${daysTo(LA_OPENING)>0?`<p class="la"><span class="num">${daysTo(LA_OPENING)}</span> days to LA</p>`:""}
+    ${chapterName()?`<p class="chapter" style="--chapter:${chapterTint()||"var(--accent-text)"}">${esc(chapterName())}</p>`:""}${daysTo(LA_OPENING)>0?`<button class="la" data-go="rank" aria-label="${daysTo(LA_OPENING)} days to LA. See world rankings"><span class="num">${daysTo(LA_OPENING)}</span> days to LA</button>`:""}
     <div class="meta"><span class="chip blue">${noPref()?"Any protein":profile.protein+" protein"}</span>${myAllergens().length?`<span class="chip stop">${myAllergens().length} allergen${myAllergens().length>1?"s":""} flagged</span>`:`<span class="chip ok">No allergens listed</span>`}${esc(profile.position)?`<span class="chip">${esc(profile.position)}</span>`:""}</div>
    </header>
 
@@ -1084,7 +1174,7 @@ function vHome(){
     ${flagged?`<p class="stamp">${flagged} of ${meals.length} meals may contain something you listed. Ask foodservice for your safe option.</p>`:""}`:emptyState("Menu's warming up.","This week's menu isn't posted yet. Check back soon.")}</section>
 
    <section><h2>More</h2><div class="nav-grid">
-    ${(()=>{const x=smoothieFor(todayIso);smTile=x&&(x.team==="Both"||x.team===teamOf())?mySmoothie(x):null;return ""})()}${go.map(([t,seg,l,d,ic])=>t==="wa"?`<a class="ng" href="${CONFIG.whatsappLink}" target="_blank" rel="noopener">${ic}<b>${l}</b><span>${d}</span></a>`:`<button class="ng" ${t==="learn"?'data-tab="learn"':`data-go="${t}"${seg?` data-seg="${seg}"`:""}`}>${ic}<b>${l}</b><span>${d}</span>${seg==="smoothie"&&smTile?`<small class="ng-sub">${weekend?"Mon":"Today"}: ${esc(smTile.n)}${hits(smTile.a)?" · check allergens":""}</small>`:""}</button>`).join("")}
+    ${(()=>{const x=smoothieFor(todayIso);smTile=x&&(x.team==="Both"||x.team===teamOf())?mySmoothie(x):null;return ""})()}${go.map(([t,seg,l,d,ic,dseg])=>t==="wa"?`<a class="ng" href="${CONFIG.whatsappLink}" target="_blank" rel="noopener">${ic}<b>${l}</b><span>${d}</span></a>`:`<button class="ng" ${t==="learn"?'data-tab="learn"':`data-go="${t}"${seg?` data-seg="${seg}"`:""}${dseg?` data-dseg="${dseg}"`:""}`}>${ic}<b>${l}</b><span>${d}</span>${seg==="smoothie"&&smTile?`<small class="ng-sub">${weekend?"Mon":"Today"}: ${esc(smTile.n)}${hits(smTile.a)?" · check allergens":""}</small>`:""}</button>`).join("")}
    </div></section>
    <div class="usa-mark" role="img" aria-label="USA"></div>
 </div>`;
@@ -1223,7 +1313,7 @@ function vMatch(){
 }
 function vRank(){
   const r=RANKINGS[rankSeg];
-  return `<div class="view"><div><p class="eyebrow">FIVB world ranking · indoor</p><h1 style="margin-top:6px">World rankings</h1></div>
+  return `<div class="view"><div><p class="eyebrow">Road to LA · FIVB world ranking</p><h1 style="margin-top:6px">World rankings</h1></div>
    <div class="seg" data-rankseg="1"><button data-rseg="women" aria-pressed="${rankSeg==="women"}">Women</button><button data-rseg="men" aria-pressed="${rankSeg==="men"}">Men</button></div>
    <div class="lineup rank">${luHead(rankSeg==="women"?"Women's national teams":"Men's national teams",null,"")}
     ${r.teams.map(([c,p],i)=>`<div class="rk ${c==="United States"?"usa":""}">${sb(String(i+1).padStart(2,"0"))}<b>${esc(c)}</b><span class="pts">${p.toFixed(2)}</span></div>`).join("")}</div>
@@ -1260,16 +1350,19 @@ function faqHTML(){
   const list=FAQ.filter(f=>(faqTopic==="All"||q||faqTopicOf(f)===faqTopic)&&(!q||(f.q+f.a.join(" ")).toLowerCase().includes(q)));
   return list.length?list.map(f=>`<details><summary>${f.q}</summary><div class="ans">${f.a.map(p=>`<p>${p}</p>`).join("")}<p class="src">Source: ${f.s}</p></div></details>`).join(""):emptyState(`No answers for "${esc(draft.q)}" yet.`,"Ask Nick below. Good questions end up here for the whole team.");
 }
+let wear={punches:[],stickers:[]};
 function vMe(){
   loadFontCSS(Object.values(FONTS).map(f=>f.u).filter(Boolean).join("&"),"fontpreview");
   const al=[...myAllergens(),profile.other].filter(Boolean);
   return `<div class="view"><div><p class="eyebrow">Profile · Look</p><h1 style="margin-top:6px">Me</h1></div>
-   <div class="credwrap"><div class="cred" role="group" aria-label="Athlete credential">
+   ${(()=>{wear=wearData();return ""})()}<div class="credwrap"><div class="cred" role="group" aria-label="Athlete credential">${wear.punches.length?`<div class="cred-wear" aria-label="${wear.punches.length} months logged">${wear.punches.map(m=>`<i title="${m}"></i>`).join("")}</div>`:""}
     <div class="cred-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><span class="cred-org">USA Volleyball<b>Nutrition</b></span>${profile.num?`<span class="cred-num num">${esc(profile.num)}</span>`:""}</div>
     <p class="cred-name">${esc(profile.first||"")}<b>${esc(profile.last||profile.name)}</b></p>
     <div class="cred-grid"><div><i>Team</i><b>${profile.team}</b></div><div><i>Position</i><b>${esc(profile.position||"—")}</b></div><div><i>Pro team</i><b>${esc(profile.pro||"—")}</b></div><div><i>Protein</i><b>${profile.protein}</b></div></div>
+    ${wear.stickers.length?`<div class="stickers" aria-label="Season stickers">${wear.stickers.map((c,i)=>`<span class="sticker" style="background:${CHAPTER_TINTS[c.toLowerCase()]||"#A6192E"};--rot:${[-5,4,-2,6,-7][i%5]}deg">${esc(c)}</span>`).join("")}</div>`:""}
     ${al.length?`<div class="cred-alert"><span>Allergy alert</span><b>${al.map(esc).join(" · ")}</b></div>`:`<div class="cred-ok">No food allergies listed</div>`}
    </div></div>
+   <p class="wear-note">Your badge earns a punch for each month with 3+ days logged${chapterName()?`, and a sticker for each season chapter`:""}.</p>
    <button class="btn ghost block" data-edit="1">Edit profile</button>
    ${passportHTML()}
    ${canEdit?`<div class="card stack"><span class="eyebrow">Share with athletes · editors only</span><img src="qr-code.png" alt="QR code that opens this app" style="width:180px;align-self:center;border-radius:8px"><div class="row"><span class="copybox grow" id="app-link">${CONFIG.appLink}</span><button class="btn ghost sm" data-copy="app-link">Copy</button></div><p class="stamp">Athletes can open this without a Claude account once link sharing is on in the Share menu.</p></div>`:""}
@@ -1544,7 +1637,7 @@ function jSubmit(){
   if(!jEdit.what.trim()&&!jEdit.photo){toast("Add a few words or a photo");return}
   const d=jGet(jDate),i=d.entries.findIndex(x=>x.id===jEdit.id);
   if(i>=0)d.entries[i]={...jEdit};else d.entries.push({...jEdit});
-  if(jPut(jDate,d)){const st=stampFor(jEdit);jEdit=null;jShareText="";render();killStamp(st)}
+  if(jPut(jDate,d)){noteChapterLog(jDate);const st=stampFor(jEdit);jEdit=null;jShareText="";render();killStamp(st)}
 }
 
 /* ===== Render & events ===== */
@@ -1556,6 +1649,7 @@ function render(){
   if((myAllergens().length||profile.other)&&!profile.ack&&tab!=="rd"&&tab!=="edit"){app.innerHTML=vStop();renderTabs();return}
   if(tab==="edit"&&!canEdit)tab="me";
   if(tab==="home"&&profile){setTimeout(checkWin,0);loadHeat()}
+  document.documentElement.setAttribute("data-room",{food:"food",journal:"journal",rd:"rd",learn:"learn",me:"me"}[tab]||"home");
   app.innerHTML={home:vHome,food:vFood,journal:vJournal,rd:vRD,learn:vLearn,me:vMe,edit:vEdit,rank:vRank,match:vMatch}[tab]();
   renderTabs();
 }
@@ -1565,7 +1659,7 @@ document.addEventListener("click",e=>{
   if(b.dataset.castvote){if(!draft.vote){toast("Pick a flavor first");return}const v={month:voteMonth(),flavor:draft.vote};try{localStorage.setItem("af_vote",JSON.stringify(v))}catch(e){}
     sendInbox({...profileRecord("Smoothie vote"),Details:`${draft.vote} for ${v.month}`});draft.vote="";render();toast("Vote cast");ballArc();return}
   if(b.dataset.tab){tab=b.dataset.tab;render();scrollTo({top:0});return}
-  if(b.dataset.go){e.preventDefault();tab=b.dataset.go;if(b.dataset.seg)foodSeg=b.dataset.seg;if(b.dataset.session)draft.session=b.dataset.session;render();scrollTo({top:0});return}
+  if(b.dataset.go){e.preventDefault();tab=b.dataset.go;if(b.dataset.seg)foodSeg=b.dataset.seg;if(b.dataset.seg==="dinner")dinnerSeg=b.dataset.dseg||"out";if(b.dataset.session)draft.session=b.dataset.session;render();scrollTo({top:0});return}
   const edseg=b.closest("[data-edseg]");
   if(edseg){const k=edseg.dataset.edseg,v=b.dataset.v;if(b.dataset.edweekadd){const W=getPath(ED,edBase());W.push({});edWk=W.length-1;render();return}
     if(k==="sec")edSeg=v;else if(k==="day")edDay=v;else if(k==="meal"){edMeal=v;edWk=0;edWkRm=false}else if(k==="wk"){edWk=+v;edWkRm=false}render();return}
@@ -1621,7 +1715,7 @@ document.addEventListener("submit",e=>{
     profile={name,first,last,team:draft.team,position:$("#f-pos").value,pro:$("#f-pro").value.trim(),allergies:draft.allergies||[],other:$("#f-other").value.trim(),protein:draft.protein,num:($("#f-num").value||"").replace(/\D/g,"").slice(0,2),ack:profile?profile.ack:false};
     if(prevAllergy!==JSON.stringify([profile.allergies,profile.other]))profile.ack=false;
     const isNew=!draft.editing;
-    store.set("profile",profile);draft={};tab="home";render();toast("Profile saved");
+    store.set("profile",profile);draft={};tab="home";render();if(isNew)walkOut();else toast("Profile saved");
     sendInbox(profileRecord(isNew?"Profile":"Profile update"));return}
   if(f.id==="form-session"){
     if(!draft.session){toast("Pick a session type");return}
@@ -1705,6 +1799,7 @@ async function loadSheet(){
     smoothieCycle:weeks(T.Smoothies,r=>({team:/^m/i.test(r.Team)?"Men":/^w/i.test(r.Team)?"Women":"Both",whey:r["Whey flavor"],plant:r["Plant flavor"],
       aw:rec(r["Whey flavor"]).aw||rec(r["Whey flavor"]).a,ap:rec(r["Plant flavor"]).a,ok:yesv(r.Confirmed)})),
     smoothieRecipes:recipes,flavorNotes:notes,
+    chapter:set["Season chapter"]||"",
     voteOptions:String(set["Smoothie vote options"]||"").split(",").map(x=>x.trim()).filter(Boolean),
     fans:T.Recipes.filter(r=>r.Flavor&&yesv(r["Fan favorite"])).map(r=>r.Flavor),
     matches:(T.Matches||[]).filter(r=>r.Date).map(r=>({date:toISO(r.Date),time:r["Start time"]||"",opp:r.Opponent||"",team:/^m/i.test(r.Team||"")?"MNT":/^w/i.test(r.Team||"")?"WNT":"Both",loc:r.Location||""})),
