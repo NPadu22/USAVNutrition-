@@ -718,6 +718,52 @@ input,select,textarea{font-size:max(16px,1em)!important}
 .hero.court{box-shadow:inset 0 -3px 0 color-mix(in srgb,var(--chapter,transparent) 70%,transparent)}
 .la{border:0;cursor:pointer;font:inherit;color:var(--muted)}
 .la::after{content:"›";margin-left:2px;opacity:.7}
+
+/* ===== Learn: the film room ===== */
+.board-chalk{position:relative;overflow:hidden;border-radius:var(--r);padding:18px 18px 16px;color:#EDEFE9;
+  background:var(--noise),radial-gradient(120% 90% at 30% 0,#2E4A3A,#1B2C23 70%,#14211A);box-shadow:inset 0 0 0 6px #6B4A2B,inset 0 0 0 7px rgb(0 0 0 / .4),0 10px 26px rgb(0 0 0 / .3)}
+.board-chalk svg.play{position:absolute;right:-6px;top:6px;width:170px;height:110px;opacity:.55;fill:none;stroke:#EDEFE9;stroke-width:1.6;stroke-linecap:round}
+.board-chalk .eyebrow{color:#C9D3C6;display:block!important}
+.board-chalk h1{color:#F4F6F0;font-family:var(--display);letter-spacing:.01em;text-shadow:0 0 1px rgb(255 255 255 / .5)}
+.board-chalk p{margin:6px 0 0;max-width:62%;font-size:.86rem;color:#C9D3C6}
+.tally{display:flex;align-items:center;gap:10px;margin-top:12px;font:700 .7rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#C9D3C6}
+.tally .marks{display:flex;gap:3px;align-items:flex-end}
+.tally .marks i{display:block;width:2px;height:14px;background:#EDEFE9;border-radius:1px;opacity:.85}
+.tally .marks i:nth-child(5n){width:20px;height:2px;margin:0 4px 6px -18px;transform:rotate(-28deg)}
+.tally .marks i:nth-child(5n+1):not(:first-child){margin-left:6px}
+.tally b{font:400 1rem var(--num);color:#fff;letter-spacing:0}
+.chapters button .num{font-size:.78rem;margin-right:6px;opacity:.7}
+#faq details.play{position:relative;padding-left:58px;background:var(--surface)}
+#faq details.play::before{content:attr(data-play);position:absolute;left:14px;top:14px;width:32px;height:32px;display:grid;place-items:center;border:1.5px solid color-mix(in srgb,var(--room) 70%,var(--fg));border-radius:50%;font:400 .78rem var(--num);color:var(--fg);opacity:.85}
+#faq details.play.seen::before{content:"✓";font:700 .95rem var(--body);background:color-mix(in srgb,var(--room) 30%,transparent);border-color:transparent}
+#faq details.play[open]{background:var(--noise),var(--paper);color:var(--ink)}
+#faq details.play[open] summary{color:var(--ink)}
+#faq details.play[open] summary::after{color:var(--ink-muted)}
+#faq details.play[open] .src{color:var(--ink-muted);border-top:1px dashed rgb(7 29 73 / .2);padding-top:8px}
+#faq details.play[open] .src::before{content:"🎞 ";}
+#faq details.play[open]::before{color:var(--ink);border-color:var(--ink)}
+.guides.wall{gap:18px 14px;padding-top:8px}
+.guides.wall .guide{position:relative;overflow:visible;border-radius:4px;transform:rotate(var(--tilt,0deg));box-shadow:0 8px 18px rgb(0 0 0 / .28)}
+.guides.wall .guide img{border-radius:4px 4px 0 0}
+.guides.wall .guide::before{content:"";position:absolute;top:-8px;left:50%;width:54px;height:18px;margin-left:-27px;background:color-mix(in srgb,#F3E7B3 75%,transparent);transform:rotate(-3deg);box-shadow:0 1px 2px rgb(0 0 0 / .15);z-index:1}
+.guides.wall .guide:nth-child(even)::before{transform:rotate(4deg)}
+
+/* ===== Road to LA: LA sunset look (no LA28 or Olympic marks) ===== */
+:root{--la-sun:linear-gradient(100deg,#FFB547 0%,#FF6B4A 35%,#E8457A 65%,#6B3FA0 100%)}
+.hero .la{background:linear-gradient(var(--surface),var(--surface)) padding-box,var(--la-sun) border-box;border:1.5px solid transparent!important;color:var(--fg)}
+.hero .la .num{background:var(--la-sun);-webkit-background-clip:text;background-clip:text;color:transparent}
+.la-hero{position:relative;overflow:hidden;border-radius:var(--r);padding:20px 18px 18px;color:#fff;background:linear-gradient(180deg,#FFB547 0%,#FF6B4A 32%,#E8457A 62%,#3B2266 100%)}
+.la-hero::before{content:"";position:absolute;left:50%;bottom:-70px;width:220px;height:220px;margin-left:-110px;border-radius:50%;background:radial-gradient(circle,#FFE29A,#FFB547 60%,transparent 62%);opacity:.75}
+.la-hero::after{content:"";position:absolute;inset:auto 0 0 0;height:46px;background:#1E1238;clip-path:polygon(0 70%,6% 60%,9% 64%,13% 40%,15% 62%,22% 58%,30% 66%,38% 48%,41% 50%,44% 30%,46% 52%,55% 56%,63% 44%,66% 47%,69% 36%,71% 50%,80% 58%,86% 52%,90% 20%,92% 54%,100% 60%,100% 100%,0 100%)}
+.la-hero .palm{position:absolute;bottom:30px;width:34px;height:96px;fill:#1E1238}
+.la-hero .palm.l{left:8%}.la-hero .palm.r{right:10%;transform:scaleX(-1) scale(.8);transform-origin:bottom}
+.la-hero>*{position:relative;z-index:1}
+.la-hero .eyebrow{color:rgb(255 255 255 / .9);display:block!important;margin:0}
+.la-hero h1{color:#fff;margin-top:4px}
+.la-hero .la-count{display:flex;align-items:baseline;gap:8px;margin-top:10px}
+.la-hero .la-count .num{font-size:3.4rem;line-height:.9;text-shadow:0 2px 0 rgb(0 0 0 / .15)}
+.la-hero .la-count span:last-child{font-weight:700}
+.la-hero .la-date{font:700 .66rem var(--mono);letter-spacing:.16em;text-transform:uppercase;margin:6px 0 64px;color:rgb(255 255 255 / .85)}
 /* Sliding tab bubble */
 nav.tabs .in{position:relative}
 nav.tabs button{position:relative;z-index:1}
@@ -1314,30 +1360,36 @@ function vMatch(){
 }
 function vRank(){
   const r=RANKINGS[rankSeg];
-  return `<div class="view"><div><p class="eyebrow">Road to LA · FIVB world ranking</p><h1 style="margin-top:6px">World rankings</h1></div>
+  return `<div class="view"><div class="la-hero"><svg class="palm l" viewBox="0 0 34 96" aria-hidden="true"><path d="M16 96c2-24 3-46 1-68l2 0c3 22 2 44 0 68z"/><path d="M18 28c-6-8-14-10-18-8 6 0 12 4 16 10zM18 28c4-10 12-14 16-12-6 1-11 6-14 13zM18 28c-2-10-8-16-14-16 5 3 9 9 12 17zM18 28c6-6 12-6 16-3-6-1-11 1-15 5zM18 28c0-10 4-18 9-20-3 5-5 12-7 20z"/></svg><svg class="palm r" viewBox="0 0 34 96" aria-hidden="true"><path d="M16 96c2-24 3-46 1-68l2 0c3 22 2 44 0 68z"/><path d="M18 28c-6-8-14-10-18-8 6 0 12 4 16 10zM18 28c4-10 12-14 16-12-6 1-11 6-14 13zM18 28c-2-10-8-16-14-16 5 3 9 9 12 17zM18 28c6-6 12-6 16-3-6-1-11 1-15 5zM18 28c0-10 4-18 9-20-3 5-5 12-7 20z"/></svg><p class="eyebrow">Road to LA</p><h1>World rankings</h1>${daysTo(LA_OPENING)>0?`<div class="la-count"><span class="num">${daysTo(LA_OPENING)}</span><span>days to LA</span></div>`:""}<p class="la-date">Los Angeles · Opening day July 14, 2028</p></div><p class="stamp" style="margin-top:-8px">FIVB world ranking, indoor.</p>
    <div class="seg" data-rankseg="1"><button data-rseg="women" aria-pressed="${rankSeg==="women"}">Women</button><button data-rseg="men" aria-pressed="${rankSeg==="men"}">Men</button></div>
    <div class="lineup rank">${luHead(rankSeg==="women"?"Women's national teams":"Men's national teams",null,"")}
     ${r.teams.map(([c,p],i)=>`<div class="rk ${c==="United States"?"usa":""}">${sb(String(i+1).padStart(2,"0"))}<b>${esc(c)}</b><span class="pts">${p.toFixed(2)}</span></div>`).join("")}</div>
    <p class="stamp">Standings as of ${r.asOf}. Rankings change after every official match.</p>
    <a class="btn ghost block" href="${r.link}" target="_blank" rel="noopener">See the official live ranking</a></div>`;
 }
+
+const CHALK_PLAY=`<svg class="play" viewBox="0 0 170 110" aria-hidden="true"><rect x="8" y="8" width="154" height="94" rx="2"/><path d="M85 4v102M58 8v94"/><path d="M22 28l8 8M30 28l-8 8M24 74l8 8M32 74l-8 8"/><circle cx="118" cy="34" r="6"/><circle cx="136" cy="74" r="6"/><circle cx="104" cy="88" r="5"/><path d="M34 40c18 6 30 18 40 30" stroke-dasharray="4 5"/><path d="M70 66l5 6-7 1"/><path d="M118 42c-4 14-2 22 10 28" stroke-dasharray="3 4"/></svg>`;
+function seenSet(){try{return new Set(JSON.parse(localStorage.getItem("af_seen")||"[]"))}catch(e){return new Set()}}
+function markSeen(i){const s=seenSet();if(s.has(i))return;s.add(i);try{localStorage.setItem("af_seen",JSON.stringify([...s]))}catch(e){};const t=$("#tally");if(t)t.outerHTML=tallyHTML()}
+function tallyHTML(){const n=[...seenSet()].filter(i=>i<FAQ.length).length;return `<div class="tally" id="tally"><span class="marks" aria-hidden="true">${Array.from({length:Math.min(n,20)},()=>"<i></i>").join("")}</span><span><b>${n}</b> of ${FAQ.length} plays reviewed</span></div>`}
+document.addEventListener("toggle",e=>{const d=e.target;if(d.matches&&d.matches("#faq details.play")&&d.open){d.classList.add("seen");markSeen(+d.dataset.idx)}},true);
 let learnSeg="answers";
 function vLearn(){
-  return `<div class="view"><div><p class="eyebrow">Nutrition 411</p><h1 style="margin-top:6px">Your questions</h1></div>
-   <div class="searchbox"><input id="q" type="search" placeholder="Search: protein, hydration, iron, creatine…" value="${esc(draft.q||"")}" aria-label="Search quick answers and guides"></div>
-   <div class="seg" data-learnseg="1"><button data-lseg="answers" aria-pressed="${learnSeg==="answers"}">Quick answers</button><button data-lseg="guides" aria-pressed="${learnSeg==="guides"}">Visual guides</button></div>
-   ${learnSeg==="answers"?`<p class="muted" style="font-size:.86rem">Evidence-based answers, each with its source.</p><div class="seg">${["All","Fueling","Hydration","Recovery & health","Supplements","Travel"].map(k=>`<button data-faqtopic="${k}" aria-pressed="${faqTopic===k}">${k}</button>`).join("")}</div>
+  return `<div class="view"><div class="board-chalk">${CHALK_PLAY}<p class="eyebrow" style="margin:0;max-width:none">Nutrition 411</p><h1 style="margin-top:6px">Film room</h1><p>Every answer on the board comes with its source.</p>${tallyHTML()}</div>
+   <div class="searchbox"><input id="q" type="search" placeholder="Search the playbook: protein, iron, creatine…" value="${esc(draft.q||"")}" aria-label="Search answers and guides"></div>
+   <div class="seg" data-learnseg="1"><button data-lseg="answers" aria-pressed="${learnSeg==="answers"}">Playbook</button><button data-lseg="guides" aria-pressed="${learnSeg==="guides"}">Poster wall</button></div>
+   ${learnSeg==="answers"?`<p class="muted" style="font-size:.86rem">Quick answers, numbered like plays. Open one to review it.</p><div class="seg chapters">${["All","Fueling","Hydration","Recovery & health","Supplements","Travel"].map((k,i)=>`<button data-faqtopic="${k}" aria-pressed="${faqTopic===k}">${i?`<span class="num">${String(i).padStart(2,"0")}</span>`:""}${k}</button>`).join("")}</div>
     <div class="stack" id="faq">${faqHTML()}</div><p class="stamp" id="guidehint">${guideHint()}</p>`
    :`<div class="seg" data-gtopics="1">${["All",...new Set(GUIDES.map(g=>g.k))].map(k=>`<button data-gtopic="${k}" aria-pressed="${gTopic===k}">${k}</button>`).join("")}</div>
-    <div class="guides" id="guides">${guidesHTML()}</div>`}
-   <section><h2>Didn't find it?</h2><p class="muted" style="font-size:.88rem">Ask Nick. Good questions end up here for the whole team.</p>${formBlock("ask",[`<label for="ask-q">Your question<textarea id="ask-q" placeholder="e.g. What should I eat before a 6 am lift?"></textarea></label>`],"Send Message to RD")}</section></div>`;
+    <p class="muted" style="font-size:.86rem">The visual guides, pinned up. Tap one to see it full size.</p><div class="guides wall" id="guides">${guidesHTML()}</div>`}
+   <section><h2>Didn't see it on film?</h2><p class="muted" style="font-size:.88rem">Ask Nick. Good questions get added to the playbook for the whole team.</p>${formBlock("ask",[`<label for="ask-q">Your question<textarea id="ask-q" placeholder="e.g. What should I eat before a 6 am lift?"></textarea></label>`],"Send Message to RD")}</section></div>`;
 }
 function guideHint(){const q=(draft.q||"").toLowerCase();if(!q)return "";const n=GUIDES.filter(g=>(g.t+" "+g.d+" "+g.alt+" "+g.k).toLowerCase().includes(q)).length;return n?`${n} visual guide${n>1?"s also match":" also matches"}. <button class="linkbtn" data-lseg="guides">View guides</button>`:""}
 let gTopic="All";
 function guidesHTML(){
   const q=(draft.q||"").toLowerCase();
   const list=GUIDES.map((g,i)=>({g,i})).filter(({g})=>(gTopic==="All"||g.k===gTopic)&&(!q||(g.t+" "+g.d+" "+g.alt+" "+g.k).toLowerCase().includes(q)));
-  return list.length?list.map(({g,i})=>`<button class="guide" data-guide="${i}" aria-label="Open ${esc(g.t)} full size"><img src="${g.img}" alt="${esc(g.alt)}" loading="lazy"><span class="eyebrow" style="padding:0 12px">${esc(g.k)}</span><b>${esc(g.t)}</b><span>${esc(g.d)}</span></button>`).join(""):`<p class="muted">No guides match.</p>`;
+  return list.length?list.map(({g,i},n)=>`<button class="guide" style="--tilt:${[-1.4,1.2,.6,-.8][n%4]}deg" data-guide="${i}" aria-label="Open ${esc(g.t)} full size"><img src="${g.img}" alt="${esc(g.alt)}" loading="lazy"><span class="eyebrow" style="padding:0 12px">${esc(g.k)}</span><b>${esc(g.t)}</b><span>${esc(g.d)}</span></button>`).join(""):`<p class="muted">No guides match.</p>`;
 }
 let faqTopic="All";
 function faqTopicOf(f){const t=f.q.toLowerCase();
@@ -1349,7 +1401,8 @@ function faqTopicOf(f){const t=f.q.toLowerCase();
 function faqHTML(){
   const q=(draft.q||"").toLowerCase();
   const list=FAQ.filter(f=>(faqTopic==="All"||q||faqTopicOf(f)===faqTopic)&&(!q||(f.q+f.a.join(" ")).toLowerCase().includes(q)));
-  return list.length?list.map(f=>`<details><summary>${f.q}</summary><div class="ans">${f.a.map(p=>`<p>${p}</p>`).join("")}<p class="src">Source: ${f.s}</p></div></details>`).join(""):emptyState(`No answers for "${esc(draft.q)}" yet.`,"Ask Nick below. Good questions end up here for the whole team.");
+  const seen=seenSet();
+  return list.length?list.map(f=>{const i=FAQ.indexOf(f);return `<details class="play${seen.has(i)?" seen":""}" data-idx="${i}" data-play="${String(i+1).padStart(2,"0")}"><summary>${f.q}</summary><div class="ans">${f.a.map(p=>`<p>${p}</p>`).join("")}<p class="src">Source: ${f.s}</p></div></details>`}).join(""):emptyState(`No answers for "${esc(draft.q)}" yet.`,"Ask Nick below. Good questions end up here for the whole team.");
 }
 let wear={punches:[],stickers:[]};
 function vMe(){
