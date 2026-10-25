@@ -1237,13 +1237,32 @@ function walkOut(force,who){
 }
 
 /* ===== Club season (off-season abroad) ===== */
-const CLUB_COUNTRIES=["Italy","Turkey","Poland","Brazil","Japan","France","Germany","Spain","Other"];
-function clubMode(){const p=profile||{};if(!p.clubCity)return false;if(p.season==="club")return true;if(p.season==="team")return false;return /off/i.test(chapterName())}
+const CLUB_COUNTRIES=["USA","Italy","Türkiye","Poland","France","Germany","Japan","Greece","Brazil","Spain","Other"];
+const CC={USA:"US",Italy:"IT","Türkiye":"TR",Poland:"PL",France:"FR",Germany:"DE",Japan:"JP",Greece:"GR",Brazil:"BR",Spain:"ES"};
+/* Clubs where USAV athletes play (from USAV's "pros around the world" posts). City left blank when unconfirmed: the athlete types it. */
+const CLUBS=[
+ ["Fenerbahçe Medicana","Istanbul","Türkiye"],["Galatasaray HDI Istanbul","Istanbul","Türkiye"],["Eczacıbaşı Istanbul","Istanbul","Türkiye"],["Zeren Spor Kulübü","","Türkiye"],["Altekma SK","Izmir","Türkiye"],["Sungurlu Belediyespor","Sungurlu","Türkiye"],
+ ["Il Bisonte Firenze","Florence","Italy"],["Savino Del Bene Scandicci","Scandicci","Italy"],["Reale Mutua Fenera Chieri '76","Chieri","Italy"],["Chorus Life Volley Bergamo","Bergamo","Italy"],["MA Acqua S.Bernardo Cuneo","Cuneo","Italy"],["Rana Verona","Verona","Italy"],["Gas Sales Bluenergy Piacenza","Piacenza","Italy"],["MINT Vero Volley Monza","Monza","Italy"],
+ ["Aluron CMC Warta Zawiercie","Zawiercie","Poland"],["GKS Katowice","Katowice","Poland"],
+ ["Berlin Recycling Volleys","Berlin","Germany"],["SWD Powervolleys Düren","Düren","Germany"],["Helios Grizzlys Giesen","Giesen","Germany"],["SVG Lüneburg","Lüneburg","Germany"],["Volley Goats","","Germany"],
+ ["Nice Volley-Ball","Nice","France"],["Arago de Sète","Sète","France"],["Chaumont Volley-Ball 52","Chaumont","France"],["Le Plessis-Robinson Volley-Ball","Le Plessis-Robinson","France"],
+ ["Toray Arrows Shizuoka","Shizuoka","Japan"],["JTEKT Stings Aichi","Kariya","Japan"],["Shinshu Matsumoto Tridents","Matsumoto","Japan"],
+ ["Olympiakós","Piraeus","Greece"],
+ ["Sesc-RJ/Flamengo","Rio de Janeiro","Brazil"],
+ ["LOVB Austin","Austin","USA"],["LOVB Houston","Houston","USA"],["LOVB Atlanta","Atlanta","USA"],["LOVB Salt Lake","Salt Lake City","USA"],["LOVB Madison","Madison","USA"],["LOVB Nebraska","Omaha","USA"],["LOVB Los Angeles Orbit","Los Angeles","USA"],["LOVB San Francisco Signal","San Francisco","USA"],
+ ["MLV Omaha Supernovas","Omaha","USA"],["MLV Grand Rapids Rise","Grand Rapids","USA"],["MLV Orlando Valkyries","Orlando","USA"],["MLV Los Angeles Thunder","Los Angeles","USA"],["MLV Minnesota Forge","","USA"],["MLV Indy Ignite","Indianapolis","USA"]
+];
+function clubMode(){const p=profile||{};if(!p.clubCity&&!p.clubCountry)return false;if(p.season==="club")return true;if(p.season==="team")return false;return /off/i.test(chapterName())}
 function clubPlace(){const p=profile||{};return [p.clubCity,p.clubCountry&&p.clubCountry!=="Other"?p.clubCountry:""].filter(Boolean).join(", ")}
+function clubLabel(){const p=profile||{};return [p.club,clubPlace()].filter(Boolean).join(" · ")}
 /* Allergy cards. Every language must be checked by a native speaker before CARD_REVIEWED is set to true for it. */
-const CARD_REVIEWED={it:false,tr:false,pl:false,pt:false,ja:false,fr:false,de:false,es:false};
-const CARD_LANGS=[["it","Italiano","Italy"],["tr","Türkçe","Turkey"],["pl","Polski","Poland"],["pt","Português (Brasil)","Brazil"],["ja","日本語","Japan"],["fr","Français","France"],["de","Deutsch","Germany"],["es","Español","Spain"]];
+const CARD_REVIEWED={en:true,el:false,it:false,tr:false,pl:false,pt:false,ja:false,fr:false,de:false,es:false};
+const CARD_LANGS=[["en","English","USA"],["el","Ελληνικά","Greece"],["it","Italiano","Italy"],["tr","Türkçe","Türkiye"],["pl","Polski","Poland"],["pt","Português (Brasil)","Brazil"],["ja","日本語","Japan"],["fr","Français","France"],["de","Deutsch","Germany"],["es","Español","Spain"]];
 const CARDS={
+ en:{h:"I have a severe food allergy.",l:"My food must not contain:",w:"Even small amounts or cross-contact can make me very sick.",o:"Other allergy or medical diet:",t:"Thank you!",
+  a:{"Dairy":"milk and dairy","Egg":"egg","Wheat/Gluten":"wheat and gluten","Peanut":"peanuts","Tree nut":"tree nuts (walnuts, almonds, cashews, pistachios…)","Soy":"soy","Fish":"fish","Shellfish":"shellfish","Sesame":"sesame"}},
+ el:{h:"Έχω σοβαρή τροφική αλλεργία.",l:"Το φαγητό μου δεν πρέπει να περιέχει:",w:"Ακόμα και μικρή ποσότητα ή επιμόλυνση μπορεί να με κάνει να αρρωστήσω σοβαρά.",o:"Άλλη αλλεργία ή ιατρική δίαιτα (στα αγγλικά παρακάτω):",t:"Ευχαριστώ!",
+  a:{"Dairy":"γάλα και γαλακτοκομικά","Egg":"αυγά","Wheat/Gluten":"σιτάρι και γλουτένη","Peanut":"αράπικα φιστίκια","Tree nut":"ξηροί καρποί (καρύδια, αμύγδαλα, φουντούκια, φιστίκια Αιγίνης…)","Soy":"σόγια","Fish":"ψάρι","Shellfish":"θαλασσινά (οστρακοειδή και μαλάκια)","Sesame":"σουσάμι"}},
  it:{h:"Ho una grave allergia alimentare.",l:"Il mio cibo non deve contenere:",w:"Anche piccole quantità o la contaminazione crociata possono farmi stare molto male.",o:"Altra allergia o dieta medica (vedi sotto in inglese):",t:"Grazie!",
   a:{"Dairy":"latte e latticini","Egg":"uova","Wheat/Gluten":"grano e glutine","Peanut":"arachidi","Tree nut":"frutta a guscio (noci, mandorle, nocciole, pistacchi…)","Soy":"soia","Fish":"pesce","Shellfish":"crostacei e molluschi","Sesame":"sesamo"}},
  tr:{h:"Ciddi bir gıda alerjim var.",l:"Yemeğimde aşağıdakiler kesinlikle olmamalı:",w:"Çok az miktar veya bulaşma bile beni ciddi şekilde hasta edebilir.",o:"Başka bir alerji veya tıbbi diyet (aşağıda İngilizce):",t:"Teşekkür ederim!",
@@ -1282,13 +1301,15 @@ function vCard(){
 /* Country food guides */
 const GUIDE_C={
  Italy:{s:"Pasta, rice, bread and focaccia, potatoes, legumes (ceci, lenticchie), canned tuna, bresaola and prosciutto cotto, eggs, Greek yogurt, ricotta, fresh fruit. Big chains: Esselunga, Coop, Conad.",e:"Pasta with tomato or ragù sauce plus a grilled protein (pollo or pesce alla griglia) is a near-perfect training plate. Pizza is a fine rest-day dinner. Before a match, plain pasta (in bianco) or rice sits easily.",w:"Dinners often start at 9 pm or later, so have a solid snack after practice. Aperitivo spreads are mostly fried snacks, not a meal. Count espresso as caffeine before evening matches."},
- Turkey:{s:"Bulgur and rice pilaf, lavash and pide bread, lentils and chickpeas, eggs, white cheese, yogurt and ayran, chicken, fruit and dried fruit. Big chains: Migros, CarrefourSA, BİM, A101.",e:"Tavuk şiş or köfte with pilav and salad, or lentil soup (mercimek çorbası) with bread, are reliable training meals. Döner in lavash works well after a match.",w:"Pistachios and walnuts are everywhere, especially in desserts like baklava, so watch them if you have a tree nut allergy. Ayran is salty, which helps after sweaty sessions."},
+ "Türkiye":{s:"Bulgur and rice pilaf, lavash and pide bread, lentils and chickpeas, eggs, white cheese, yogurt and ayran, chicken, fruit and dried fruit. Big chains: Migros, CarrefourSA, BİM, A101.",e:"Tavuk şiş or köfte with pilav and salad, or lentil soup (mercimek çorbası) with bread, are reliable training meals. Döner in lavash works well after a match.",w:"Pistachios and walnuts are everywhere, especially in desserts like baklava, so watch them if you have a tree nut allergy. Ayran is salty, which helps after sweaty sessions."},
  Poland:{s:"Oats (płatki owsiane), potatoes, buckwheat and barley (kasza), rye and whole-grain bread, twaróg, skyr and kefir, eggs, chicken, apples. Big chains: Biedronka, Lidl, Żabka for quick stops.",e:"Pierogi, soups like żurek, and kasza with chicken are good carb-and-protein meals. Milk bars (bar mleczny) serve cheap, simple plates.",w:"Many traditional dishes are fried or creamy (like schabowy), so keep those for rest days. Winters are dark, so ask Nick about checking vitamin D."},
  Brazil:{s:"Rice and beans, tapioca, pão francês, eggs, chicken, fruit (banana, papaya, mango), queijo minas, yogurt. Big chains: Pão de Açúcar, Carrefour, Assaí.",e:"A prato feito (rice, beans, protein and salad) is a textbook training plate. At comida por quilo buffets, build your plate first and weigh it after. Churrascaria nights are for rest days.",w:"Heat and humidity raise sweat losses, so carry water and electrolytes. Açaí bowls are a solid recovery snack, just a big one. Use filtered or bottled water where the tap water isn't trusted."},
  Japan:{s:"Rice, onigiri from convenience stores, udon and soba, tofu, natto, eggs, chicken, salmon, yogurt, bananas. 7-Eleven, Lawson and FamilyMart carry real meals.",e:"Teishoku set meals (rice, protein, soup, sides) and donburi bowls are ideal training plates. Ramen is a heavier choice, better after a match than before.",w:"Soy sauce contains soy and wheat, and dashi broth is usually made from fish, so check if those are your allergens. Portions run small, so add an extra onigiri or banana."},
  France:{s:"Baguette and pain complet, pasta, rice, lentils, eggs, chicken, yogurt and fromage blanc, fruit. Big chains: Carrefour, Monoprix, Leclerc, Intermarché.",e:"The plat du jour at a brasserie is usually a protein with a starch. A crêpe complète (ham, egg, cheese) is a quick meal. Steak-frites is a good rest-day choice.",w:"Dinner runs late, so have a snack after practice. Butter and cream sauces are heavy before matches, and the pastries are a treat rather than a recovery meal."},
  Germany:{s:"Oats, whole-grain bread, potatoes, pasta, lentils, eggs, chicken, quark and skyr, fruit. Big chains: Rewe, Edeka, Aldi, Lidl.",e:"A Döner or Dürüm makes a solid post-match meal. Turkish and Italian places are everywhere and easy to order from. Schnitzel is fried, so keep it for rest days.",w:"Bakery pastries look like breakfast but don't fuel much, so pick bread rolls with eggs, quark or meat instead. Cream sauces are heavy before matches."},
  Spain:{s:"Bread, rice, potatoes, pasta, chickpeas and lentils, eggs, canned fish, jamón, yogurt, fruit. Big chains: Mercadona, Carrefour, Lidl, Día.",e:"The menú del día (two courses plus bread) is great value and usually balanced. Paella and pasta dishes fuel well. A tortilla española is easy protein and carbs.",w:"Lunch is around 2 pm and dinner 9–10 pm, so plan snacks around practice. Tapas add up fast without much carbohydrate."},
+ Greece:{s:"Bread, rice, pasta, potatoes, Greek yogurt, eggs, chicken, feta, beans and lentils (gigantes, fava, fakes), fruit. Big chains: AB Vassilopoulos, Sklavenitis, Lidl.",e:"Souvlaki or gyros in pita is a great post-match meal. Grilled chicken or fish with rice or potatoes works any training day. Pastitsio and moussaka are rich, so keep them for rest days.",w:"Sesame shows up in koulouri bread, tahini and many dips, and nuts in desserts. Dinner runs late, so snack after practice. Olive oil-heavy and fried sides are fine, just not right before a match."},
+ USA:{s:"Rice, oats, bread and tortillas, pasta, potatoes, eggs, chicken, Greek yogurt, milk, fruit. Most cities have Costco, Trader Joe's, Whole Foods or a big regional chain.",e:"Fast-casual bowls (Chipotle, CAVA, Sweetgreen with a grain), grilled chicken plates and poke all build a training plate fast. The Delivery picks in Away meals work in any US city with the same chains.",w:"League travel means airports and hotel breakfasts, so pack oats, bars and electrolytes. Portions run big and sauces heavy, so order the bowl, not the fried combo, before matches."},
  Other:{s:"Find the local rice, bread, potatoes or noodles, a lean protein (chicken, fish, eggs, beans, tofu), yogurt or milk, and fruit you can carry.",e:"In any country, the best order is a carb base, a palm or two of protein, and something colorful. Simple grilled dishes are the safest bet before matches.",w:"Check water safety, learn the local word for your allergens, and send Nick a photo of anything you're unsure about."}
 };
 let guideC=null;
@@ -1322,7 +1343,7 @@ async function loadHeatClub(){
   try{
     let geo=null;try{geo=JSON.parse(localStorage.getItem("af_geo")||"null")}catch(e){}
     if(!geo||geo.q!==clubPlace()){const r=await (await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=10&language=en&format=json`)).json();
-      const list=r.results||[];const m=list.find(x=>!profile.clubCountry||profile.clubCountry==="Other"||x.country===profile.clubCountry)||list[0];if(!m)return;
+      const list=r.results||[];const code=CC[profile.clubCountry];const m=list.find(x=>!code||x.country_code===code)||list[0];if(!m)return;
       geo={q:clubPlace(),la:m.latitude,lo:m.longitude};try{localStorage.setItem("af_geo",JSON.stringify(geo))}catch(e){}}
     const f=await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${geo.la}&longitude=${geo.lo}&daily=apparent_temperature_max&temperature_unit=fahrenheit&timezone=auto&forecast_days=1`)).json();
     const v=f.daily&&f.daily.apparent_temperature_max&&f.daily.apparent_temperature_max[0];if(v==null)return;
@@ -1357,7 +1378,7 @@ function vHome(){
   return `<div class="view home">
    <header class="hero court" style="${chapterTint()?`--chapter:${chapterTint()}`:""}">${COURT_SVG}${profile.num?`<span class="jersey num" aria-hidden="true">${esc(profile.num)}</span>`:""}
     <div class="hero-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><div style="text-align:right;display:flex;flex-direction:column;gap:6px"><span class="eyebrow">${club?"Club season":"Team USA · "+profile.team}</span><span class="eyebrow">${dateLine}</span></div></div>
-    ${STARS5}<p class="wordmark"><span>Nutrition</span></p>${club?`<p class="chapter" style="--chapter:var(--accent-text)">Club season · ${esc(clubPlace())}</p>`:""}
+    ${STARS5}<p class="wordmark"><span>Nutrition</span></p>${club?`<p class="chapter" style="--chapter:var(--accent-text)">Club season · ${esc(clubLabel())}</p>`:""}
     ${!club&&chapterName()?`<p class="chapter" style="--chapter:${chapterTint()||"var(--accent-text)"}">${esc(chapterName())}</p>`:""}${daysTo(LA_OPENING)>0?`<button class="la" data-go="rank" aria-label="${daysTo(LA_OPENING)} days to LA. See world rankings"><span class="num">${daysTo(LA_OPENING)}</span> days to LA</button>`:""}
     <div class="meta"><span class="chip blue">${noPref()?"Any protein":profile.protein+" protein"}</span>${myAllergens().length?`<span class="chip stop">${myAllergens().length} allergen${myAllergens().length>1?"s":""} flagged</span>`:`<span class="chip ok">No allergens listed</span>`}${esc(profile.position)?`<span class="chip">${esc(profile.position)}</span>`:""}</div>
    </header>
@@ -1570,7 +1591,7 @@ function vMe(){
    ${(()=>{wear=wearData();return ""})()}<div class="credwrap"><div class="cred" role="group" aria-label="Athlete credential">${wear.punches.length?`<div class="cred-wear" aria-label="${wear.punches.length} months logged">${wear.punches.map(m=>`<i title="${m}"></i>`).join("")}</div>`:""}
     <div class="cred-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><span class="cred-org">USA Volleyball<b>Nutrition</b></span>${profile.num?`<span class="cred-num num">${esc(profile.num)}</span>`:""}</div>
     <p class="cred-name">${esc(profile.first||"")}<b>${esc(profile.last||profile.name)}</b></p>
-    <div class="cred-grid"><div><i>Team</i><b>${profile.team}</b></div><div><i>Position</i><b>${esc(profile.position||"—")}</b></div><div><i>Pro team</i><b>${esc(profile.pro||"—")}</b></div><div><i>Protein</i><b>${profile.protein}</b></div></div>
+    <div class="cred-grid"><div><i>Team</i><b>${profile.team}</b></div><div><i>Position</i><b>${esc(profile.position||"—")}</b></div><div><i>Pro team</i><b>${esc(profile.club||profile.pro||"—")}</b></div><div><i>Protein</i><b>${profile.protein}</b></div></div>
     ${wear.stickers.length?`<div class="stickers" aria-label="Season stickers">${wear.stickers.map((c,i)=>`<span class="sticker" style="background:${CHAPTER_TINTS[c.toLowerCase()]||"#A6192E"};--rot:${[-5,4,-2,6,-7][i%5]}deg">${esc(c)}</span>`).join("")}</div>`:""}
     ${al.length?`<div class="cred-alert"><span>Allergy alert</span><b>${al.map(esc).join(" · ")}</b></div>`:`<div class="cred-ok">No food allergies listed</div>`}
    </div></div>
@@ -1578,7 +1599,8 @@ function vMe(){
    <button class="btn ghost block" data-edit="1">Edit profile</button>
    <section><h2>Season</h2><div class="card stack">
     <div class="choice" data-seasonset="1">${[["team","With the national team"],["club","With my club"]].map(([k,l])=>`<button type="button" data-seasonv="${k}" aria-pressed="${(profile.season||"team")===k}">${l}</button>`).join("")}</div>
-    ${(profile.season==="club")?`<div class="namerow"><label for="club-city">Club city<input id="club-city" value="${esc(profile.clubCity||"")}" placeholder="e.g. Istanbul" autocomplete="off"></label><label for="club-country">Country<select id="club-country"><option value="">Select</option>${CLUB_COUNTRIES.map(c=>`<option ${profile.clubCountry===c?"selected":""}>${c}</option>`).join("")}</select></label></div>
+    ${(profile.season==="club")?`<label for="club-pick">Your club<select id="club-pick"><option value="">Select your club</option>${CLUB_COUNTRIES.filter(c=>c!=="Other").map(c=>`<optgroup label="${c}">${CLUBS.filter(x=>x[2]===c).map(x=>`<option ${profile.club===x[0]?"selected":""}>${esc(x[0])}</option>`).join("")}</optgroup>`).join("")}<option value="__other" ${profile.club===""&&profile.clubCity?"selected":""}>My club isn't listed</option></select></label>
+    <div class="namerow"><label for="club-city">Club city<input id="club-city" value="${esc(profile.clubCity||"")}" placeholder="e.g. Istanbul" autocomplete="off"></label><label for="club-country">Country<select id="club-country"><option value="">Select</option>${CLUB_COUNTRIES.map(c=>`<option ${profile.clubCountry===c?"selected":""}>${c}</option>`).join("")}</select></label></div>
     <p class="muted" style="font-size:.8rem">Home switches to your club city: allergy card in the local language, a food guide, heat checks and a monthly check-in with Nick. Your city stays on this phone.</p>`:`<p class="muted" style="font-size:.8rem">Playing club volleyball abroad? Switch to "With my club" for a version of the app built for your city.</p>`}
    </div></section>
    ${passportHTML()}
@@ -1950,7 +1972,7 @@ document.addEventListener("submit",e=>{
   if(f.id==="form-checkin"){
     if(!draft.ciFood||!draft.ciEnergy||!draft.ciGut){toast("Answer the three quick questions");return}
     const note=$("#ci-note").value.trim();
-    sendInbox({...profileRecord("Club check-in"),Details:`${ciMonth()} · ${clubPlace()} · Food: ${draft.ciFood} · Energy: ${draft.ciEnergy} · Stomach: ${draft.ciGut}${note?" · "+note:""}`});
+    sendInbox({...profileRecord("Club check-in"),Details:`${ciMonth()} · ${clubLabel()} · Food: ${draft.ciFood} · Energy: ${draft.ciEnergy} · Stomach: ${draft.ciGut}${note?" · "+note:""}`});
     try{localStorage.setItem("af_checkin",ciMonth())}catch(e){}draft.ciFood=draft.ciEnergy=draft.ciGut="";render();toast("Check-in sent");ballArc();return}
   if(f.id==="form-feedback"){
     if(!draft.fbType){toast("Pick a feedback type");return}
@@ -1960,6 +1982,7 @@ document.addEventListener("submit",e=>{
 });
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){const lb=$("#lightbox");if(lb&&!lb.hidden)lb.hidden=true}});
 document.addEventListener("change",e=>{if(e.target.id==="j-photo"&&e.target.files&&e.target.files[0])jPhoto(e.target.files[0]);
+  if(e.target.id==="club-pick"){const v=e.target.value,c=CLUBS.find(x=>x[0]===v);if(c){profile.club=c[0];profile.clubCity=c[1];profile.clubCountry=c[2]}else{profile.club=""}store.set("profile",profile);HEAT=null;heatTried=false;try{localStorage.removeItem("af_heat3")}catch(e){}cardLang=null;guideC=null;setTimeout(()=>{render();if(c&&!c[1]){const i=document.getElementById("club-city");if(i)i.focus();toast("Add your club's city")}else if(c)toast(`Club season set: ${clubLabel()}`)},0);return}
   if(e.target.id==="club-city"||e.target.id==="club-country"){profile.clubCity=($("#club-city")||{}).value?.trim().slice(0,40)||"";profile.clubCountry=($("#club-country")||{}).value||"";store.set("profile",profile);HEAT=null;heatTried=false;try{localStorage.removeItem("af_heat3")}catch(e){}cardLang=null;guideC=null;setTimeout(render,0);if(profile.clubCity&&profile.clubCountry)toast(`Club season set: ${clubPlace()}`);return}
   if(e.target.id==="j-city"){const d=jGet(jDate),v=e.target.value.trim().slice(0,40),had=Object.values(J.days).some(x=>x&&x.city&&x.city.trim().toLowerCase()===v.toLowerCase());d.city=v;if(jPut(jDate,d)){setTimeout(render,0);if(v&&!had)toast(`${v} stamped in your passport`)}}});
 document.addEventListener("input",e=>{const t=e.target;if(t.dataset&&t.dataset.ed&&ED){setPath(ED,t.dataset.ed,t.dataset.num?(t.value===""?"":Number(t.value)):t.value);edStatus();return}if(e.target.id==="q"){draft.q=e.target.value;const f=$("#faq"),g=$("#guides"),h=$("#guidehint");if(f)f.innerHTML=faqHTML();if(g)g.innerHTML=guidesHTML();if(h)h.innerHTML=guideHint()}});
