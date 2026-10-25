@@ -1375,14 +1375,14 @@ function tallyHTML(){const n=[...seenSet()].filter(i=>i<FAQ.length).length;retur
 document.addEventListener("toggle",e=>{const d=e.target;if(d.matches&&d.matches("#faq details.play")&&d.open){d.classList.add("seen");markSeen(+d.dataset.idx)}},true);
 let learnSeg="answers";
 function vLearn(){
-  return `<div class="view"><div class="board-chalk">${CHALK_PLAY}<p class="eyebrow" style="margin:0;max-width:none">Nutrition 411</p><h1 style="margin-top:6px">Film room</h1><p>Every answer on the board comes with its source.</p>${tallyHTML()}</div>
+  return `<div class="view"><div class="board-chalk">${CHALK_PLAY}<p class="eyebrow" style="margin:0;max-width:none">Nutrition 411</p><h1 style="margin-top:6px">Film room</h1><p>Every answer on the board comes with its source.</p></div>
    <div class="searchbox"><input id="q" type="search" placeholder="Search the playbook: protein, iron, creatine…" value="${esc(draft.q||"")}" aria-label="Search answers and guides"></div>
    <div class="seg" data-learnseg="1"><button data-lseg="answers" aria-pressed="${learnSeg==="answers"}">Playbook</button><button data-lseg="guides" aria-pressed="${learnSeg==="guides"}">Poster wall</button></div>
    ${learnSeg==="answers"?`<p class="muted" style="font-size:.86rem">Quick answers, numbered like plays. Open one to review it.</p><div class="seg chapters">${["All","Fueling","Hydration","Recovery & health","Supplements","Travel"].map((k,i)=>`<button data-faqtopic="${k}" aria-pressed="${faqTopic===k}">${i?`<span class="num">${String(i).padStart(2,"0")}</span>`:""}${k}</button>`).join("")}</div>
     <div class="stack" id="faq">${faqHTML()}</div><p class="stamp" id="guidehint">${guideHint()}</p>`
    :`<div class="seg" data-gtopics="1">${["All",...new Set(GUIDES.map(g=>g.k))].map(k=>`<button data-gtopic="${k}" aria-pressed="${gTopic===k}">${k}</button>`).join("")}</div>
     <p class="muted" style="font-size:.86rem">The visual guides, pinned up. Tap one to see it full size.</p><div class="guides wall" id="guides">${guidesHTML()}</div>`}
-   <section><h2>Didn't see it on film?</h2><p class="muted" style="font-size:.88rem">Ask Nick. Good questions get added to the playbook for the whole team.</p>${formBlock("ask",[`<label for="ask-q">Your question<textarea id="ask-q" placeholder="e.g. What should I eat before a 6 am lift?"></textarea></label>`],"Send Message to RD")}</section></div>`;
+   <section><h2>Ask the RD</h2><p class="muted" style="font-size:.88rem">Didn't see it on film? Send your question. Good ones get added to the playbook for the whole team.</p>${formBlock("ask",[`<label for="ask-q">Your question<textarea id="ask-q" placeholder="e.g. What should I eat before a 6 am lift?"></textarea></label>`],"Send Message to RD")}</section></div>`;
 }
 function guideHint(){const q=(draft.q||"").toLowerCase();if(!q)return "";const n=GUIDES.filter(g=>(g.t+" "+g.d+" "+g.alt+" "+g.k).toLowerCase().includes(q)).length;return n?`${n} visual guide${n>1?"s also match":" also matches"}. <button class="linkbtn" data-lseg="guides">View guides</button>`:""}
 let gTopic="All";
@@ -1402,7 +1402,7 @@ function faqHTML(){
   const q=(draft.q||"").toLowerCase();
   const list=FAQ.filter(f=>(faqTopic==="All"||q||faqTopicOf(f)===faqTopic)&&(!q||(f.q+f.a.join(" ")).toLowerCase().includes(q)));
   const seen=seenSet();
-  return list.length?list.map(f=>{const i=FAQ.indexOf(f);return `<details class="play${seen.has(i)?" seen":""}" data-idx="${i}" data-play="${String(i+1).padStart(2,"0")}"><summary>${f.q}</summary><div class="ans">${f.a.map(p=>`<p>${p}</p>`).join("")}<p class="src">Source: ${f.s}</p></div></details>`}).join(""):emptyState(`No answers for "${esc(draft.q)}" yet.`,"Ask Nick below. Good questions end up here for the whole team.");
+  return list.length?list.map(f=>{const i=FAQ.indexOf(f);return `<details class="play${seen.has(i)?" seen":""}" data-idx="${i}" data-play="${String(i+1).padStart(2,"0")}"><summary>${f.q}</summary><div class="ans">${f.a.map(p=>`<p>${p}</p>`).join("")}<p class="src">Source: ${f.s}</p></div></details>`}).join(""):emptyState(`No answers for "${esc(draft.q)}" yet.`,"Ask the RD below. Good questions end up here for the whole team.");
 }
 let wear={punches:[],stickers:[]};
 function vMe(){
