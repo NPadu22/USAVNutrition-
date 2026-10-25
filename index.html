@@ -769,6 +769,28 @@ input,select,textarea{font-size:max(16px,1em)!important}
 .wkend .grow>span{display:block;font-size:.84rem;color:var(--muted);margin-top:3px;line-height:1.35}
 .wkend .go{font-size:1.6rem;color:var(--muted)}
 .wkend:focus-visible{outline:2px solid var(--accent)}
+/* Weekend poster */
+.poster{all:unset;cursor:pointer;box-sizing:border-box;position:relative;display:flex;flex-direction:column;width:100%;padding:0 18px 16px;overflow:hidden;color:#0B1F4D;
+  background:radial-gradient(circle at 100% 100%,rgb(166 25 46 / .22) 1.2px,transparent 1.6px) 0 0/9px 9px,var(--noise),#F4EEE2;border-radius:6px;transform:rotate(-.6deg);box-shadow:0 14px 30px rgb(0 0 0 / .32)}
+.poster::before{content:"";position:absolute;top:-6px;left:50%;width:70px;height:20px;margin-left:-35px;background:rgb(243 231 179 / .85);transform:rotate(2deg);z-index:2}
+.poster-band{margin:0 -18px;padding:12px 0 8px;background:#A6192E;color:#fff;text-align:center;letter-spacing:.6em;font-size:.8rem}
+.poster-pre{margin-top:12px;text-align:center;font:700 .62rem var(--mono);letter-spacing:.2em;text-transform:uppercase;color:#4A5675}
+.poster-title{display:block;text-align:center;font:800 3.6rem/.9 var(--display);text-transform:uppercase;letter-spacing:.01em;color:#A6192E;text-shadow:3px 3px 0 #0B1F4D;margin-top:6px}
+.poster-dates{display:block;text-align:center;margin:8px 0 12px;font-size:1.05rem;color:#0B1F4D;letter-spacing:.08em}
+.poster-days{display:flex;flex-direction:column;border-top:3px double #0B1F4D;border-bottom:3px double #0B1F4D}
+.pday{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px dashed rgb(11 31 77 / .3)}
+.pday:last-child{border-bottom:0}
+.pday .pd{flex:none;width:52px;padding:4px 0;text-align:center;background:#0B1F4D;color:#F4EEE2;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase}
+.pday .pt{flex:1;min-width:0}
+.pday .pt b{display:block;font:800 1.08rem/1.1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.pday .pt i{display:block;font-style:normal;font-size:.76rem;color:#4A5675;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pflag{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#C8102E;color:#fff;font-weight:800;font-size:.8rem}
+.poster-foot{margin-top:12px;text-align:center;font:700 .7rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#A6192E}
+.poster-stub{position:relative;display:flex;justify-content:space-between;align-items:center;gap:10px;margin:14px -18px -16px;padding:11px 22px 12px;background:#EADFC9;border-top:2px dashed rgb(11 31 77 / .35);font:700 .68rem var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#A6192E}
+.poster-stub .num{color:#0B1F4D;font-size:.85rem;letter-spacing:.06em}
+.poster-stub::before,.poster-stub::after{content:"";position:absolute;top:-9px;width:16px;height:16px;border-radius:50%;background:var(--bg)}
+.poster-stub::before{left:-8px}.poster-stub::after{right:-8px}
+.poster:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 /* Sliding tab bubble */
 nav.tabs .in{position:relative}
 nav.tabs button{position:relative;z-index:1}
@@ -1148,6 +1170,19 @@ function voteHTML(){
    <div class="choice" data-pick="vote">${opts.map(o=>`<button type="button" data-v="${esc(o)}" aria-pressed="${draft.vote===o}">${esc(o)}</button>`).join("")}</div>
    <button class="btn block" data-castvote="1">Cast my vote</button>`}</div></section>`;
 }
+
+/* Weekend poster: next week's menu at a glance */
+function weekPoster(mon){
+  const days=DAYS.map((d,k)=>{const iso=jShift(mon,k),m=menuFor(iso),l=m.find(x=>x.m==="Lunch"),bf=m.find(x=>x.m==="Breakfast");return {d,iso,l,bf,hit:m.some(x=>hits(x.a))}});
+  if(!days.some(x=>x.l||x.bf))return `<section>${emptyState("Next week's menu is warming up.","It isn't posted yet. Check back soon.")}</section>`;
+  return `<section><button class="poster" data-go="food" data-seg="menu" data-wkoff="1" aria-label="Next week's menu. Open the full lineup">
+   <span class="poster-band" aria-hidden="true">★ ★ ★ ★ ★</span>
+   <span class="poster-pre">USA Volleyball Nutrition presents</span>
+   <span class="poster-title">Next week</span>
+   <span class="poster-dates num">${mmdd(days[0].iso)} – ${mmdd(days[4].iso)}</span>
+   <span class="poster-days">${days.map(x=>`<span class="pday${x.hit?" hit":""}"><span class="pd num">${x.d}</span><span class="pt"><b>${esc(x.l?(x.l.t||x.l.n):(x.bf?x.bf.n:"TBA"))}</b>${x.l?`<i>${esc(x.l.n)}${x.bf?` · AM: ${esc(x.bf.n)}`:""}</i>`:""}</span>${x.hit?`<span class="pflag" title="May contain your allergen">!</span>`:""}</span>`).join("")}</span>
+   <span class="poster-stub"><span class="num">No. ${mmdd(days[0].iso).replace(".","")}</span><span>Admit one · Full lineup ›</span></span></button></section>`;
+}
 let smTile=null;
 
 /* ===== Rooms, walk-out, wear, archive, chapters ===== */
@@ -1221,10 +1256,10 @@ function vHome(){
 
    ${installCard("home")}
    ${weekend?`<section><div class="sec-head"><h2>This weekend</h2></div><button class="wkend" data-go="food" data-seg="dinner" data-dseg="weekend">${IC.cart}<span class="grow"><b>Meals away from the facility</b><span>No team meals on weekends. Grocery staples, batch cooking, delivery picks, and recipes.</span></span><span class="go" aria-hidden="true">›</span></button></section>`:""}
-   <section><div class="sec-head"><h2>${weekend?"Monday's menu":"Today's menu"}</h2><span class="row" style="gap:14px"><button class="linkbtn" data-go="food" data-seg="menu">Full week</button></span></div>
+   ${weekend?weekPoster(todayIso):`<section><div class="sec-head"><h2>Today's menu</h2><span class="row" style="gap:14px"><button class="linkbtn" data-go="food" data-seg="menu">Full week</button></span></div>
     ${meals.length?`<div class="lineup">${luHead(weekend?"Monday's lineup":"Today's lineup",todayIso,"")}${meals.map(x=>mealHTML(x)).join("")}</div>
     
-    ${flagged?`<p class="stamp">${flagged} of ${meals.length} meals may contain something you listed. Ask foodservice for your safe option.</p>`:""}`:emptyState("Menu's warming up.","This week's menu isn't posted yet. Check back soon.")}</section>
+    ${flagged?`<p class="stamp">${flagged} of ${meals.length} meals may contain something you listed. Ask foodservice for your safe option.</p>`:""}`:emptyState("Menu's warming up.","This week's menu isn't posted yet. Check back soon.")}</section>`}
 
    <section><h2>More</h2><div class="nav-grid">
     ${(()=>{const x=smoothieFor(todayIso);smTile=x&&(x.team==="Both"||x.team===teamOf())?mySmoothie(x):null;return ""})()}${go.map(([t,seg,l,d,ic,dseg])=>t==="wa"?`<a class="ng" href="${CONFIG.whatsappLink}" target="_blank" rel="noopener">${ic}<b>${l}</b><span>${d}</span></a>`:`<button class="ng" ${t==="learn"?'data-tab="learn"':`data-go="${t}"${seg?` data-seg="${seg}"`:""}${dseg?` data-dseg="${dseg}"`:""}`}>${ic}<b>${l}</b><span>${d}</span>${seg==="smoothie"&&smTile?`<small class="ng-sub">${weekend?"Mon":"Today"}: ${esc(smTile.n)}${hits(smTile.a)?" · check allergens":""}</small>`:""}</button>`).join("")}
@@ -1720,7 +1755,7 @@ document.addEventListener("click",e=>{
   if(b.dataset.castvote){if(!draft.vote){toast("Pick a flavor first");return}const v={month:voteMonth(),flavor:draft.vote};try{localStorage.setItem("af_vote",JSON.stringify(v))}catch(e){}
     sendInbox({...profileRecord("Smoothie vote"),Details:`${draft.vote} for ${v.month}`});draft.vote="";render();toast("Vote cast");ballArc();return}
   if(b.dataset.tab){tab=b.dataset.tab;render();scrollTo({top:0});return}
-  if(b.dataset.go){e.preventDefault();tab=b.dataset.go;if(b.dataset.seg)foodSeg=b.dataset.seg;if(b.dataset.seg==="dinner")dinnerSeg=b.dataset.dseg||"out";if(b.dataset.session)draft.session=b.dataset.session;render();scrollTo({top:0});return}
+  if(b.dataset.go){e.preventDefault();tab=b.dataset.go;if(b.dataset.wkoff!=null){wkOff=+b.dataset.wkoff;day="Mon"}if(b.dataset.seg)foodSeg=b.dataset.seg;if(b.dataset.seg==="dinner")dinnerSeg=b.dataset.dseg||"out";if(b.dataset.session)draft.session=b.dataset.session;render();scrollTo({top:0});return}
   const edseg=b.closest("[data-edseg]");
   if(edseg){const k=edseg.dataset.edseg,v=b.dataset.v;if(b.dataset.edweekadd){const W=getPath(ED,edBase());W.push({});edWk=W.length-1;render();return}
     if(k==="sec")edSeg=v;else if(k==="day")edDay=v;else if(k==="meal"){edMeal=v;edWk=0;edWkRm=false}else if(k==="wk"){edWk=+v;edWkRm=false}render();return}
