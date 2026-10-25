@@ -631,6 +631,40 @@ h2::before{width:.6em;height:.6em}
 #splash i{width:66px;height:5px;border-radius:3px;background:linear-gradient(90deg,#A6192E 0 33.3%,#fff 33.3% 66.6%,#5A78BE 66.6%)}
 #splash.out{opacity:0}
 
+
+/* Heat check */
+.heat{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:var(--r);background:color-mix(in srgb,#F28C28 16%,var(--surface));border:1px solid color-mix(in srgb,#F28C28 40%,transparent)}
+.heat.hot2{background:color-mix(in srgb,#E0352B 18%,var(--surface));border-color:color-mix(in srgb,#E0352B 45%,transparent)}
+.heat .deg{flex:none;font-size:1.6rem;line-height:1;color:#F28C28}
+.heat.hot2 .deg{color:#FF5A4F}
+.heat b{display:block}
+.heat p{margin:2px 0 0;font-size:.86rem;color:var(--muted)}
+/* Kitchen ticket rail */
+.rail{position:relative;padding-top:16px}
+.rail::before{content:"";position:absolute;top:0;left:-6px;right:-6px;height:14px;border-radius:7px;background:linear-gradient(#E9EAEC,#A7A8AA 55%,#6E7074);box-shadow:0 3px 6px rgb(0 0 0 / .35)}
+.ticket{--fg:var(--ink);--muted:var(--ink-muted);--surface:rgb(7 29 73 / .05);--surface-2:rgb(7 29 73 / .08);--line:rgb(7 29 73 / .18);
+  position:relative;margin:0 6px;background:var(--noise),#FFFDF6;color:var(--ink);border-radius:0 0 4px 4px;padding:18px 16px 26px;transform:rotate(-.6deg);box-shadow:0 10px 22px rgb(0 0 0 / .28);
+  -webkit-mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/14px 100%;mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/14px 100%}
+.ticket::before{content:"";position:absolute;top:-6px;left:50%;width:54px;height:16px;margin-left:-27px;border-radius:3px;background:linear-gradient(#D9DADB,#8E9094);box-shadow:0 2px 3px rgb(0 0 0 / .3)}
+.ticket-head{display:flex;justify-content:space-between;gap:8px;font:700 .7rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);padding-bottom:10px;border-bottom:2px dashed rgb(7 29 73 / .25)}
+.ticket .card{background:transparent!important;box-shadow:none!important;border:0!important;padding:0!important}
+.ticket input,.ticket textarea{background:rgb(7 29 73 / .05)!important;color:var(--ink)!important}
+.ticket .choice button[aria-pressed="false"]{background:rgb(7 29 73 / .07);color:var(--ink)}
+/* Smoothie vote */
+.vote .choice{flex-wrap:wrap}
+.chip.fan{background:color-mix(in srgb,#C99700 22%,transparent);color:var(--ink)}
+/* Win mode */
+.feature.win{background:linear-gradient(135deg,#C99700,#FFD34D 45%,#C99700);color:#1A1300}
+.feature.win .chip,.feature.win .stamp{color:#1A1300}
+.feature.win .chip{background:rgb(0 0 0 / .12)}
+.feature.win h3{color:#1A1300}
+.confetti{position:fixed;top:-20px;z-index:70;width:9px;height:14px;border-radius:2px;pointer-events:none;animation:fall var(--t,2.4s) cubic-bezier(.3,.6,.5,1) var(--d,0s) forwards}
+@keyframes fall{to{transform:translate(var(--x,0),110vh) rotate(var(--r,540deg));opacity:.9}}
+/* Easter egg ball */
+.eggball{position:fixed;top:-60px;z-index:80;width:46px;height:46px;color:var(--accent-text);pointer-events:none;animation:drop 1.8s cubic-bezier(.33,0,.67,1) forwards}
+.eggball svg{width:100%;height:100%;animation:spin .6s linear infinite}
+@keyframes drop{0%{transform:translateY(0)}55%{transform:translateY(calc(100vh - 130px))}70%{transform:translateY(calc(100vh - 230px))}82%{transform:translateY(calc(100vh - 130px))}90%{transform:translateY(calc(100vh - 165px))}100%{transform:translateY(calc(100vh - 130px));opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
 /* Sliding tab bubble */
 nav.tabs .in{position:relative}
 nav.tabs button{position:relative;z-index:1}
@@ -666,7 +700,8 @@ const CONFIG = {
   bookingLink: "https://calendly.com/welcometolbc/usav-rd-meeting-with-nick",
   rdName: "Nick, USAV Sports Dietitian",
   appLink: "https://npadu22.github.io/USAVNutrition-/",
-  sheetId: "1c9JblGdCmb972_vX0yK2UJvCnv_kmc4JSpDwUYuFn9g",  // Google Sheet ID for menus and announcements (see README)
+  sheetId: "1c9JblGdCmb972_vX0yK2UJvCnv_kmc4JSpDwUYuFn9g",
+  heatPoint: [33.8155, -117.9107],            // Heat check: training center location (Anaheim). National Weather Service forecast, US only.  // Google Sheet ID for menus and announcements (see README)
   // RD inbox (Google Form). Profiles, session requests and feedback are sent here.
   inboxForm: "1FAIpQLSdW-2SWePfyArgLWH8_hUVcID3fX-ASAbdYT6XwMJKCsrtHxA",
   inboxFields: {Type:"entry.750054576",Name:"entry.263971746",Team:"entry.2052735913",Position:"entry.744514368","Pro team":"entry.657252409",
@@ -944,6 +979,56 @@ function stampFor(e){
   if(/training/i.test(e.occ||""))return ["ACE","Fuel timed around training"];
   return ["SPIKE","Logged to your scorebook"];
 }
+
+/* ===== Heat check (National Weather Service) ===== */
+function heatIndexF(T,RH){if(RH==null||T<80)return T;let hi=-42.379+2.04901523*T+10.14333127*RH-.22475541*T*RH-.00683783*T*T-.05481717*RH*RH+.00122874*T*T*RH+.00085282*T*RH*RH-.00000199*T*T*RH*RH;
+  if(RH<13&&T<=112)hi-=((13-RH)/4)*Math.sqrt((17-Math.abs(T-95))/17);else if(RH>85&&T<=87)hi+=((RH-85)/10)*((87-T)/5);return hi}
+let HEAT=(()=>{try{const h=JSON.parse(localStorage.getItem("af_heat")||"null");return h&&h.date===isoToday()?h:null}catch(e){return null}})();
+let heatTried=false;
+async function loadHeat(){
+  if(HEAT||heatTried||!CONFIG.heatPoint||!navigator.onLine)return;heatTried=true;
+  try{
+    const [la,lo]=CONFIG.heatPoint;
+    let url=null;try{url=localStorage.getItem("af_heaturl")}catch(e){}
+    if(!url){const p=await (await fetch(`https://api.weather.gov/points/${la},${lo}`)).json();url=p.properties&&p.properties.forecastHourly;if(!url)return;try{localStorage.setItem("af_heaturl",url)}catch(e){}}
+    const f=await (await fetch(url)).json(),today=isoToday();
+    let max=null;(f.properties&&f.properties.periods||[]).forEach(x=>{const st=String(x.startTime||"");if(st.slice(0,10)!==today)return;const hr=+st.slice(11,13);if(hr<8||hr>20)return;
+      let T=+x.temperature;if(x.temperatureUnit==="C")T=T*9/5+32;const RH=x.relativeHumidity&&x.relativeHumidity.value!=null?+x.relativeHumidity.value:null;const hi=heatIndexF(T,RH);if(max==null||hi>max)max=hi});
+    if(max==null)return;
+    HEAT={date:today,hi:Math.round(max)};try{localStorage.setItem("af_heat",JSON.stringify(HEAT))}catch(e){}
+    if(tab==="home"&&profile&&!(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)))render();
+  }catch(e){}
+}
+function heatHTML(){
+  if(!HEAT||HEAT.hi<90)return "";
+  const bad=HEAT.hi>=103;
+  return `<div class="heat ${bad?"hot2":""}" role="note"><span class="deg num">${HEAT.hi}°</span><div><b>${bad?"Dangerous heat today":"Hot one today"}</b>
+   <p>Feels like ${HEAT.hi}°F near the training center. Start practice hydrated, add a sports drink with sodium, and drink more if you're outside or a salty sweater.${bad?" Talk with athletic training before any outdoor session.":""}</p></div></div>`;
+}
+/* ===== Win mode + easter egg ===== */
+function winKey(a){return (a.when||"")+"|"+a.t}
+function confettiBurst(){if(reduceMotion())return;const cols=["#A6192E","#FFFFFF","#071D49","#5A78BE","#C99700"];
+  for(let i=0;i<60;i++){const c=document.createElement("i");c.className="confetti";c.style.left=Math.random()*100+"vw";c.style.background=cols[i%cols.length];
+    c.style.setProperty("--x",(Math.random()*40-20)+"vw");c.style.setProperty("--r",(Math.random()*900-450)+"deg");c.style.setProperty("--d",(Math.random()*.6)+"s");c.style.setProperty("--t",(2+Math.random()*1.4)+"s");
+    document.body.appendChild(c);setTimeout(()=>c.remove(),4200)}}
+function checkWin(){const w=(DATA.announcements||[]).find(a=>/^win/i.test(a.tag||""));if(!w)return;let seen=[];try{seen=JSON.parse(localStorage.getItem("af_wins")||"[]")}catch(e){}
+  if(seen.includes(winKey(w)))return;seen.push(winKey(w));try{localStorage.setItem("af_wins",JSON.stringify(seen.slice(-20)))}catch(e){}
+  setTimeout(()=>{confettiBurst();toast(w.t)},350)}
+let eggTaps=[];
+document.addEventListener("click",e=>{if(!e.target.closest(".hero .logo-badge"))return;const t=Date.now();eggTaps=eggTaps.filter(x=>t-x<2500);eggTaps.push(t);
+  if(eggTaps.length>=5){eggTaps=[];if(reduceMotion()){toast("🏐 Nice touch.");return}const el=document.createElement("div");el.className="eggball";el.style.left=(15+Math.random()*60)+"vw";el.innerHTML=IC.ball;document.body.appendChild(el);setTimeout(()=>el.remove(),1900)}});
+/* ===== Smoothie vote ===== */
+function voteMonth(){const d=new Date();d.setMonth(d.getMonth()+1);return d.toLocaleDateString("en-US",{month:"long",year:"numeric"})}
+function voteHTML(){
+  const opts=(DATA.voteOptions||[]);if(!opts.length)return "";
+  let v=null;try{v=JSON.parse(localStorage.getItem("af_vote")||"null")}catch(e){}
+  const done=v&&v.month===voteMonth();
+  return `<section class="vote"><h2>Vote: ${voteMonth().split(" ")[0]}'s guest smoothie</h2><div class="card stack">
+   ${done?`<p>Your vote: <b>${esc(v.flavor)}</b>. Nick announces the winner before the month starts.</p>`
+   :`<p class="muted" style="font-size:.88rem">Pick the flavor you want on the menu next month. One vote each.</p>
+   <div class="choice" data-pick="vote">${opts.map(o=>`<button type="button" data-v="${esc(o)}" aria-pressed="${draft.vote===o}">${esc(o)}</button>`).join("")}</div>
+   <button class="btn block" data-castvote="1">Cast my vote</button>`}</div></section>`;
+}
 function vHome(){
   const first=profile.first||profile.name.split(" ")[0];
   const wd=new Date().getDay(), weekend=wd===0||wd===6;
@@ -969,8 +1054,9 @@ function vHome(){
    </header>
 
    ${matchBoard()}
+   ${heatHTML()}
    ${feat?`<section><div class="sec-head"><h2>Announcements</h2><span class="stamp">Updated ${fmtDate(DATA.updated)}</span></div>
-    <article class="feature"><div class="row" style="justify-content:space-between"><span class="chip accent">${esc(feat.tag)}</span><span class="stamp">${fmtDate(feat.when)}</span></div><h3>${esc(feat.t)}</h3>${feat.d?`<p>${esc(feat.d)}</p>`:""}</article>
+    <article class="feature${/^win/i.test(feat.tag||"")?" win":""}"><div class="row" style="justify-content:space-between"><span class="chip accent">${esc(feat.tag)}</span><span class="stamp">${fmtDate(feat.when)}</span></div><h3>${esc(feat.t)}</h3>${feat.d?`<p>${esc(feat.d)}</p>`:""}</article>
     ${rest.length?`<div class="card" style="padding-block:2px">${rest.map(a=>`<div class="ann"><div class="row"><span class="chip">${esc(a.tag)}</span><span class="stamp">${fmtDate(a.when)}</span></div><b style="margin-top:6px">${esc(a.t)}</b><p class="muted" style="font-size:.88rem">${esc(a.d)}</p></div>`).join("")}</div>`:""}</section>`:""}
 
    ${installCard("home")}
@@ -1029,8 +1115,8 @@ function vFood(){
       <div class="lineup">${luHead("Smoothie card",null,`<span class="rot"><b>${profile.team}</b></span>`)}${rows.length?rows.flatMap(r=>noPref()?[{...r,side:"whey"},{...r,side:"plant"}]:[{...r,side:null}]).map(({d,iso,x,side})=>{const me=mySmoothie(x,side),hit=hits(me.a),mine=myAllergens().length||profile.other;
         return `<div class="meal ${hit?"flag":""}"><div class="meal-top"><span class="eyebrow">${fmtDate(iso)} · ${x.team==="Both"?"Men + Women":x.team}${side?` · ${side==="plant"?"Plant":"Whey"} option`:""}</span>${hit?`<span class="chip stop">May contain your allergen</span>`:(!x.ok&&mine?`<span class="chip warn">Confirm allergens</span>`:"")}</div>
         <b>${esc(me.n)}</b><p class="muted" style="font-size:.86rem">Made with ${esc(me.prot)}.${side?"":` The ${me.side==="plant"?"whey":"plant"} option that day is ${esc(me.other)}.`}</p>${recipeHTML(me.n,me.prot)}
-        ${(DATA.flavorNotes||{})[me.n]?`<div class="tags"><span class="chip warn">${esc(DATA.flavorNotes[me.n])}</span></div>`:""}${allergenLine(me.a)}</div>`}).join(""):'<p class="muted" style="padding:12px 0">No smoothie days posted for your team this week.</p>'}</div>
-      <p class="stamp">Full ingredients and macros are on the Smoothie Recipe Sheet. Ask foodservice if you need a swap.</p>`;
+        ${(DATA.flavorNotes||{})[me.n]||(DATA.fans||[]).includes(me.n)?`<div class="tags">${(DATA.fans||[]).includes(me.n)?`<span class="chip fan">★ Fan favorite</span>`:""}${(DATA.flavorNotes||{})[me.n]?`<span class="chip warn">${esc(DATA.flavorNotes[me.n])}</span>`:""}</div>`:""}${allergenLine(me.a)}</div>`}).join(""):'<p class="muted" style="padding:12px 0">No smoothie days posted for your team this week.</p>'}</div>
+      <p class="stamp">Full ingredients and macros are on the Smoothie Recipe Sheet. Ask foodservice if you need a swap.</p>${voteHTML()}`;
     }else{
       const n=DATA.snackCycle.length, dIso=jShift(mon,DAYS.indexOf(day)), L=snacksFor(dIso);
       body=nav(n?`Court snacks week ${rotIdx(n,mon)+1} of ${n}`:"")+
@@ -1043,12 +1129,12 @@ function vFood(){
     <p class="muted">${dinnerSeg==="weekend"?"Weekends are on you. Here's how to keep fueling well in LA and Orange County.":"Tips for the one meal away from the facility, for athletes around LA and Orange County."}</p>
     <div class="card" style="padding-block:2px">${DINNERS[dinnerSeg].map(x=>`<div class="item"><div class="meal-top"><h3>${x.n}</h3>${x.t?`<span class="nums">${x.t}</span>`:""}</div><p class="muted" style="font-size:.9rem">${x.d}</p></div>`).join("")}</div>`;
   }else{
-    body=formBlock("feedback",[
+    body=`<div class="rail"><div class="ticket">${draft.feedbackSent?"":`<div class="ticket-head"><span>Kitchen ticket</span><span>${profile.team} · ${new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"})}</span></div>`}`+formBlock("feedback",[
       `<div class="stack" style="gap:6px"><span class="eyebrow">Type</span><div class="choice" data-pick="fbType">${["Rate a meal","Request a food","Report an issue"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${draft.fbType===t}">${t}</button>`).join("")}</div></div>`,
       `<label for="fb-meal">Which meal or item<input id="fb-meal" placeholder="e.g. Tue poke bar"></label>`,
       `<div class="stack" style="gap:6px"><span class="eyebrow">Rating</span><div class="choice" data-pick="fbRate">${["1","2","3","4","5"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${draft.fbRate===t}" aria-label="${t} of 5">${t}</button>`).join("")}</div></div>`,
       `<label for="fb-note">Details<textarea id="fb-note" placeholder="What worked, what didn't, what you'd like to see"></textarea></label>`
-    ],"Send feedback");
+    ],"Send to the kitchen")+`<p class="stamp" style="margin-top:10px">Goes to Nick, who shares it with foodservice.</p></div></div>`;
   }
   return `<div class="view"><div><p class="eyebrow">Foodservice · updated ${fmtDate(DATA.updated)}</p><h1 style="margin-top:6px">Food</h1></div>
    <div class="seg" data-segset="food">${segs.map(([k,l])=>`<button data-v="${k}" aria-pressed="${foodSeg===k}">${l}</button>`).join("")}</div>${body}</div>`;
@@ -1445,12 +1531,15 @@ function render(){
   $("nav.tabs").hidden=false;
   if((myAllergens().length||profile.other)&&!profile.ack&&tab!=="rd"&&tab!=="edit"){app.innerHTML=vStop();renderTabs();return}
   if(tab==="edit"&&!canEdit)tab="me";
+  if(tab==="home"&&profile){setTimeout(checkWin,0);loadHeat()}
   app.innerHTML={home:vHome,food:vFood,journal:vJournal,rd:vRD,learn:vLearn,me:vMe,edit:vEdit,rank:vRank,match:vMatch}[tab]();
   renderTabs();
 }
 document.addEventListener("click",e=>{
   const b=e.target.closest("button,a");if(!b)return;
   if(jClick(b))return;
+  if(b.dataset.castvote){if(!draft.vote){toast("Pick a flavor first");return}const v={month:voteMonth(),flavor:draft.vote};try{localStorage.setItem("af_vote",JSON.stringify(v))}catch(e){}
+    sendInbox({...profileRecord("Smoothie vote"),Details:`${draft.vote} for ${v.month}`});draft.vote="";render();toast("Vote cast");ballArc();return}
   if(b.dataset.tab){tab=b.dataset.tab;render();scrollTo({top:0});return}
   if(b.dataset.go){e.preventDefault();tab=b.dataset.go;if(b.dataset.seg)foodSeg=b.dataset.seg;if(b.dataset.session)draft.session=b.dataset.session;render();scrollTo({top:0});return}
   const edseg=b.closest("[data-edseg]");
@@ -1524,7 +1613,7 @@ document.addEventListener("submit",e=>{
     if(!draft.fbType){toast("Pick a feedback type");return}
     draft.feedbackSent=`Food feedback · ${draft.fbType}\n${profile.name} · ${profile.team}\nItem: ${$("#fb-meal").value.trim()||"—"}${draft.fbRate?"\nRating: "+draft.fbRate+"/5":""}${$("#fb-note").value.trim()?"\n"+$("#fb-note").value.trim():""}`;
     sendInbox({Type:"Food feedback",Name:profile.name,Team:profile.team,Details:draft.feedbackSent.split("\n").slice(2).join(" · ")});
-    render();toast("Feedback sent");return}
+    render();toast("Ticket sent");ballArc();return}
 });
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){const lb=$("#lightbox");if(lb&&!lb.hidden)lb.hidden=true}});
 document.addEventListener("change",e=>{if(e.target.id==="j-photo"&&e.target.files&&e.target.files[0])jPhoto(e.target.files[0]);
@@ -1589,6 +1678,8 @@ async function loadSheet(){
     smoothieCycle:weeks(T.Smoothies,r=>({team:/^m/i.test(r.Team)?"Men":/^w/i.test(r.Team)?"Women":"Both",whey:r["Whey flavor"],plant:r["Plant flavor"],
       aw:rec(r["Whey flavor"]).aw||rec(r["Whey flavor"]).a,ap:rec(r["Plant flavor"]).a,ok:yesv(r.Confirmed)})),
     smoothieRecipes:recipes,flavorNotes:notes,
+    voteOptions:String(set["Smoothie vote options"]||"").split(",").map(x=>x.trim()).filter(Boolean),
+    fans:T.Recipes.filter(r=>r.Flavor&&yesv(r["Fan favorite"])).map(r=>r.Flavor),
     matches:(T.Matches||[]).filter(r=>r.Date).map(r=>({date:toISO(r.Date),time:r["Start time"]||"",opp:r.Opponent||"",team:/^m/i.test(r.Team||"")?"MNT":/^w/i.test(r.Team||"")?"WNT":"Both",loc:r.Location||""})),
     snackCycle:weeks(T.Snacks,r=>({t:r.Category,n:r.Snack,d:"",a:parseAl(r.Allergens),ok:yesv(r.Confirmed)}))};
   DATA=Object.assign({},DATA,NEW);
