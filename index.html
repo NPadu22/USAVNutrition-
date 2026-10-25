@@ -724,13 +724,13 @@ input,select,textarea{font-size:max(16px,1em)!important}
   background:linear-gradient(115deg,rgb(255 255 255 / 0) 30%,rgb(255 255 255 / .75) 42%,rgb(255 255 255 / 0) 54%),linear-gradient(#FBFCFD,#EEF1F4);
   box-shadow:inset 0 0 0 5px #C9CED6,inset 0 0 0 6px #9AA1AB,inset 0 0 0 7px rgb(255 255 255 / .8),0 10px 26px rgb(0 0 0 / .25)}
 .board-chalk::after{content:"";position:absolute;left:18px;right:18px;bottom:7px;height:7px;border-radius:2px;background:linear-gradient(#D5D9DF,#A9AFB8);box-shadow:0 1px 2px rgb(0 0 0 / .25)}
-.board-chalk svg.play{position:absolute;right:-6px;top:6px;width:170px;height:110px;opacity:.9;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.board-chalk svg.play{position:absolute;right:20px;top:50%;transform:translateY(-55%);width:150px;height:97px;opacity:.9;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .board-chalk svg.play .k{stroke:#1F2937}
 .board-chalk svg.play .b{stroke:#2F5DB8}
 .board-chalk svg.play .r{stroke:#C8102E}
 .board-chalk .eyebrow{color:#5B6472;display:block!important}
 .board-chalk h1{color:#16213A;font-family:var(--display);letter-spacing:.01em}
-.board-chalk p{margin:6px 0 10px;max-width:62%;font-size:.86rem;color:#3D4656}
+.board-chalk p{margin:6px 0 10px;max-width:50%;font-size:.86rem;color:#3D4656}
 .chapters button .num{font-size:.78rem;margin-right:6px;opacity:.7}
 #faq details.play{position:relative;padding-left:58px;background:var(--surface)}
 #faq details.play::before{content:attr(data-play);position:absolute;left:14px;top:14px;width:32px;height:32px;display:grid;place-items:center;border:1.5px solid color-mix(in srgb,var(--room) 70%,var(--fg));border-radius:50%;font:400 .78rem var(--num);color:var(--fg);opacity:.85}
@@ -1367,14 +1367,14 @@ function vRank(){
    <a class="btn ghost block" href="${r.link}" target="_blank" rel="noopener">See the official live ranking</a></div>`;
 }
 
-const CHALK_PLAY=`<svg class="play" viewBox="0 0 170 110" aria-hidden="true"><g class="k"><rect x="8" y="8" width="154" height="94" rx="2"/><path d="M85 4v102M58 8v94"/></g><g class="r"><path d="M22 28l8 8M30 28l-8 8M24 74l8 8M32 74l-8 8"/><path d="M34 40c18 6 30 18 40 30" stroke-dasharray="4 5"/><path d="M70 66l5 6-7 1"/></g><g class="b"><circle cx="118" cy="34" r="6"/><circle cx="136" cy="74" r="6"/><circle cx="104" cy="88" r="5"/><path d="M118 42c-4 14-2 22 10 28" stroke-dasharray="3 4"/></g></svg>`;
+const CHALK_PLAY=`<svg class="play" viewBox="0 0 170 110" aria-hidden="true"><g class="k"><rect x="8" y="8" width="154" height="94" rx="2"/><path d="M85 8v94M58 8v94"/></g><g class="r"><path d="M22 28l8 8M30 28l-8 8M24 74l8 8M32 74l-8 8"/><path d="M34 40c18 6 30 18 40 30" stroke-dasharray="4 5"/><path d="M70 66l5 6-7 1"/></g><g class="b"><circle cx="118" cy="34" r="6"/><circle cx="136" cy="74" r="6"/><circle cx="104" cy="88" r="5"/><path d="M118 42c-4 14-2 22 10 28" stroke-dasharray="3 4"/></g></svg>`;
 function seenSet(){try{return new Set(JSON.parse(localStorage.getItem("af_seen")||"[]"))}catch(e){return new Set()}}
 function markSeen(i){const s=seenSet();if(s.has(i))return;s.add(i);try{localStorage.setItem("af_seen",JSON.stringify([...s]))}catch(e){};const t=$("#tally");if(t)t.outerHTML=tallyHTML()}
 function tallyHTML(){const n=[...seenSet()].filter(i=>i<FAQ.length).length;return `<div class="tally" id="tally"><span class="marks" aria-hidden="true">${Array.from({length:Math.min(n,20)},()=>"<i></i>").join("")}</span><span><b>${n}</b> of ${FAQ.length} plays reviewed</span></div>`}
 document.addEventListener("toggle",e=>{const d=e.target;if(d.matches&&d.matches("#faq details.play")&&d.open){d.classList.add("seen");markSeen(+d.dataset.idx)}},true);
 let learnSeg="answers";
 function vLearn(){
-  return `<div class="view"><div class="board-chalk">${CHALK_PLAY}<p class="eyebrow" style="margin:0;max-width:none">Nutrition 411</p><h1 style="margin-top:6px;max-width:64%;line-height:1.02">Nutrition Education</h1><p>Every answer on the board comes with its source.</p></div>
+  return `<div class="view"><div class="board-chalk">${CHALK_PLAY}<p class="eyebrow" style="margin:0;max-width:none">Nutrition 411</p><h1 style="margin-top:6px">Learn</h1><p>Every answer on the board comes with its source.</p></div>
    <div class="searchbox"><input id="q" type="search" placeholder="Search the playbook: protein, iron, creatine…" value="${esc(draft.q||"")}" aria-label="Search answers and guides"></div>
    <div class="seg" data-learnseg="1"><button data-lseg="answers" aria-pressed="${learnSeg==="answers"}">Playbook</button><button data-lseg="guides" aria-pressed="${learnSeg==="guides"}">Poster wall</button></div>
    ${learnSeg==="answers"?`<p class="muted" style="font-size:.86rem">Quick answers, numbered like plays. Open one to review it.</p><div class="seg chapters">${["All","Fueling","Hydration","Recovery & health","Supplements","Travel"].map((k,i)=>`<button data-faqtopic="${k}" aria-pressed="${faqTopic===k}">${i?`<span class="num">${String(i).padStart(2,"0")}</span>`:""}${k}</button>`).join("")}</div>
