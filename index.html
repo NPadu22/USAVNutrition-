@@ -661,7 +661,7 @@ h2::before{width:.6em;height:.6em}
 .confetti{position:fixed;top:-20px;z-index:70;width:9px;height:14px;border-radius:2px;pointer-events:none;animation:fall var(--t,2.4s) cubic-bezier(.3,.6,.5,1) var(--d,0s) forwards}
 @keyframes fall{to{transform:translate(var(--x,0),110vh) rotate(var(--r,540deg));opacity:.9}}
 /* Easter egg ball */
-.eggball{position:fixed;top:-60px;z-index:80;width:46px;height:46px;color:var(--accent-text);pointer-events:none;animation:drop 1.8s cubic-bezier(.33,0,.67,1) forwards}
+.eggball{position:fixed;top:-70px;z-index:80;width:60px;height:60px;color:var(--accent-text);pointer-events:none;animation:drop 1.8s cubic-bezier(.33,0,.67,1) forwards}
 .eggball svg{width:100%;height:100%;animation:spin .6s linear infinite}
 @keyframes drop{0%{transform:translateY(0)}55%{transform:translateY(calc(100vh - 130px))}70%{transform:translateY(calc(100vh - 230px))}82%{transform:translateY(calc(100vh - 130px))}90%{transform:translateY(calc(100vh - 165px))}100%{transform:translateY(calc(100vh - 130px));opacity:0}}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -673,6 +673,7 @@ h2::before{width:.6em;height:.6em}
 /* No double-tap zoom (pinch zoom still works) */
 html,body,button,a,input,select,textarea,label{touch-action:manipulation}
 .ng-sub{font-size:.78rem;line-height:1.25;color:var(--muted);margin-top:-2px}
+.hero .logo-badge{cursor:pointer;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 /* Sliding tab bubble */
 nav.tabs .in{position:relative}
 nav.tabs button{position:relative;z-index:1}
@@ -1038,7 +1039,7 @@ function checkWin(){const w=(DATA.announcements||[]).find(a=>/^win/i.test(a.tag|
   if(seen.includes(winKey(w)))return;seen.push(winKey(w));try{localStorage.setItem("af_wins",JSON.stringify(seen.slice(-20)))}catch(e){}
   setTimeout(()=>{confettiBurst();toast(w.t)},350)}
 let eggTaps=[];
-document.addEventListener("click",e=>{if(!e.target.closest(".hero .logo-badge"))return;const t=Date.now();eggTaps=eggTaps.filter(x=>t-x<2500);eggTaps.push(t);
+document.addEventListener("pointerup",e=>{if(!e.target.closest(".hero .logo-badge"))return;const t=Date.now();eggTaps=eggTaps.filter(x=>t-x<3000);eggTaps.push(t);
   if(eggTaps.length>=5){eggTaps=[];if(reduceMotion()){toast("🏐 Nice touch.");return}const el=document.createElement("div");el.className="eggball";el.style.left=(15+Math.random()*60)+"vw";el.innerHTML=IC.ball;document.body.appendChild(el);setTimeout(()=>el.remove(),1900)}});
 /* ===== Smoothie vote ===== */
 function voteMonth(){const d=new Date();d.setMonth(d.getMonth()+1);return d.toLocaleDateString("en-US",{month:"long",year:"numeric"})}
