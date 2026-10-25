@@ -1374,7 +1374,7 @@ function tallyHTML(){const n=[...seenSet()].filter(i=>i<FAQ.length).length;retur
 document.addEventListener("toggle",e=>{const d=e.target;if(d.matches&&d.matches("#faq details.play")&&d.open){d.classList.add("seen");markSeen(+d.dataset.idx)}},true);
 let learnSeg="answers";
 function vLearn(){
-  return `<div class="view"><div class="board-chalk">${CHALK_PLAY}<p class="eyebrow" style="margin:0;max-width:none">Nutrition 411</p><h1 style="margin-top:6px">Learn</h1><p>Every answer on the board comes with its source.</p></div>
+  return `<div class="view"><div class="board-chalk">${CHALK_PLAY}<p class="eyebrow" style="margin:0;max-width:none">Nutrition 411</p><h1 style="margin-top:6px;max-width:64%;line-height:1.02">Nutrition Education</h1><p>Every answer on the board comes with its source.</p></div>
    <div class="searchbox"><input id="q" type="search" placeholder="Search the playbook: protein, iron, creatine…" value="${esc(draft.q||"")}" aria-label="Search answers and guides"></div>
    <div class="seg" data-learnseg="1"><button data-lseg="answers" aria-pressed="${learnSeg==="answers"}">Playbook</button><button data-lseg="guides" aria-pressed="${learnSeg==="guides"}">Poster wall</button></div>
    ${learnSeg==="answers"?`<p class="muted" style="font-size:.86rem">Quick answers, numbered like plays. Open one to review it.</p><div class="seg chapters">${["All","Fueling","Hydration","Recovery & health","Supplements","Travel"].map((k,i)=>`<button data-faqtopic="${k}" aria-pressed="${faqTopic===k}">${i?`<span class="num">${String(i).padStart(2,"0")}</span>`:""}${k}</button>`).join("")}</div>
