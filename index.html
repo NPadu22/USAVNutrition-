@@ -638,7 +638,7 @@ nav.tabs button[aria-current="page"]{background:transparent;box-shadow:none}
 .tab-pill{position:absolute;top:0;bottom:0;left:0;width:calc((100% - 10px) / 6);border-radius:999px;background:color-mix(in srgb,var(--fg) 13%,transparent);box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 10%,transparent);transform:translateX(calc(var(--i) * (100% + 2px)));transition:transform .42s cubic-bezier(.3,1.25,.45,1),opacity .2s;pointer-events:none}
 /* Countdown sits on its own chip so court lines don't run through it */
 .la{display:inline-flex;align-self:flex-start;padding:3px 12px 4px;border-radius:999px;background:color-mix(in srgb,var(--surface) 78%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);position:relative;z-index:1}
-.hero .la{width:max-content;margin-top:8px;padding:2px 9px 3px;gap:4px;font-size:.7rem}
+.hero .la{width:max-content;margin-top:12px;padding:2px 9px 3px;gap:4px;font-size:.7rem}
 .hero .la .num{font-size:.9rem}
 </style>
 
@@ -964,7 +964,7 @@ function vHome(){
    <header class="hero court">${COURT_SVG}${profile.num?`<span class="jersey num" aria-hidden="true">${esc(profile.num)}</span>`:""}
     <div class="hero-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><div style="text-align:right;display:flex;flex-direction:column;gap:6px"><span class="eyebrow">Team USA · ${profile.team}</span><span class="eyebrow">${dateLine}</span></div></div>
     ${STARS5}<p class="wordmark"><span>Nutrition</span></p>
-    <p class="hello">Welcome back, ${esc(first)}.</p>${daysTo(LA_OPENING)>0?`<p class="la"><span class="num">${daysTo(LA_OPENING)}</span> days to LA</p>`:""}
+    ${daysTo(LA_OPENING)>0?`<p class="la"><span class="num">${daysTo(LA_OPENING)}</span> days to LA</p>`:""}
     <div class="meta"><span class="chip blue">${noPref()?"Any protein":profile.protein+" protein"}</span>${myAllergens().length?`<span class="chip stop">${myAllergens().length} allergen${myAllergens().length>1?"s":""} flagged</span>`:`<span class="chip ok">No allergens listed</span>`}${esc(profile.position)?`<span class="chip">${esc(profile.position)}</span>`:""}</div>
    </header>
 
