@@ -791,6 +791,15 @@ input,select,textarea{font-size:max(16px,1em)!important}
 .poster-stub::before,.poster-stub::after{content:"";position:absolute;top:-9px;width:16px;height:16px;border-radius:50%;background:var(--bg)}
 .poster-stub::before{left:-8px}.poster-stub::after{right:-8px}
 .poster:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.btn svg{width:18px;height:18px;flex:none;vertical-align:-3px;margin-right:6px}
+/* Allergy card */
+.acard{background:#fff;color:#111;border-radius:16px;padding:22px 20px;border:4px solid #C8102E;box-shadow:0 12px 28px rgb(0 0 0 / .3)}
+.acard-h{font:800 1.5rem/1.2 var(--body);margin:0 0 12px;color:#C8102E}
+.acard-l{font-weight:700;font-size:1.05rem;margin:8px 0 6px}
+.acard ul{margin:0 0 10px;padding-left:22px;font-size:1.2rem;font-weight:700;line-height:1.5}
+.acard-o{font-size:1.05rem;font-weight:600;margin:0 0 10px}
+.acard-w{font-size:1rem;margin:10px 0 6px}
+.acard-t{font-weight:700;font-size:1.1rem;margin:0}
 /* Sliding tab bubble */
 nav.tabs .in{position:relative}
 nav.tabs button{position:relative;z-index:1}
@@ -1113,6 +1122,7 @@ setInterval(()=>{const b=document.getElementById("board");if(b&&tab==="home"&&pr
 function hashStr(t){let h=0;for(const c of t)h=(h*31+c.charCodeAt(0))>>>0;return h}
 function passportHTML(){
   const seen={};Object.keys(J.days).sort().forEach(iso=>{const d=J.days[iso];if(d&&d.training&&d.training.includes("Travel")&&d.city){const k=d.city.trim().toLowerCase();if(k&&!seen[k])seen[k]={c:d.city.trim(),iso}}});
+  if(profile&&profile.clubCity){const k=profile.clubCity.trim().toLowerCase();if(!seen[k])seen[k]={c:profile.clubCity.trim(),iso:isoToday()}}
   const list=Object.values(seen);
   return `<section><div class="sec-head"><h2>Nutrition passport</h2><span class="stamp">${list.length} ${list.length===1?"city":"cities"}</span></div>
    ${list.length?`<div class="passport">${list.map(x=>{const h=hashStr(x.c.toLowerCase());return `<div class="pstamp s${h%4}" style="--rot:${(h%15)-7}deg;--ink:${["#A6192E","#2F5DB8","#071D49","#8A6400"][(h>>3)%4]}"><i>USAV · Nutrition</i><b>${esc(x.c.toUpperCase())}</b><span class="num">${mmdd(x.iso)}.${x.iso.slice(2,4)}</span></div>`}).join("")}</div>`
@@ -1130,6 +1140,7 @@ function heatIndexF(T,RH){if(RH==null||T<80)return T;let hi=-42.379+2.04901523*T
 let HEAT=(()=>{try{const h=JSON.parse(localStorage.getItem("af_heat2")||"null");return h&&h.date===isoToday()?h:null}catch(e){return null}})();
 let heatTried=false;
 async function loadHeat(){
+  if(clubMode()){if(!heatTried){heatTried=true;loadHeatClub()}return}
   if(HEAT||heatTried||!CONFIG.heatPoint||!navigator.onLine)return;heatTried=true;
   try{
     const [la,lo]=CONFIG.heatPoint;
@@ -1144,10 +1155,10 @@ async function loadHeat(){
   }catch(e){}
 }
 function heatHTML(){
-  if(!HEAT||HEAT.hi<90)return "";
+  if(!HEAT||HEAT.hi<90)return "";if(clubMode()!==(HEAT.src==="om"))return "";
   const bad=HEAT.hi>=103;
   return `<div class="heat ${bad?"hot2":""}" role="note"><span class="deg num">${HEAT.hi}°</span><div><b>${bad?"Dangerous heat today":"Hot one today"}</b>
-   <p>Feels like ${HEAT.hi}°F at ${esc(CONFIG.facilityName)}. Start practice hydrated, add a sports drink with sodium, and drink more if you're outside or a salty sweater.${bad?" Talk with athletic training before any outdoor session.":""}</p></div></div>`;
+   <p>Feels like ${HEAT.hi}°F (${Math.round((HEAT.hi-32)*5/9)}°C) ${HEAT.src==="om"?"in "+esc(HEAT.city):"at "+esc(CONFIG.facilityName)}. Start practice hydrated, add a sports drink with sodium, and drink more if you're outside or a salty sweater.${bad?" Talk with athletic training before any outdoor session.":""}${HEAT.src==="om"?`<br><a href="https://open-meteo.com/" target="_blank" rel="noopener" style="color:inherit;font-size:.72rem">Weather data by Open-Meteo.com</a>`:""}</p></div></div>`;
 }
 /* ===== Win mode ===== */
 function winKey(a){return (a.when||"")+"|"+a.t}
@@ -1224,6 +1235,101 @@ function walkOut(force,who){
    <p class="wo-4">${esc(pr.position||pr.team)} · USA Volleyball Nutrition</p>`;
   const done=()=>el.remove();el.addEventListener("click",done);setTimeout(done,4600);document.body.appendChild(el);
 }
+
+/* ===== Club season (off-season abroad) ===== */
+const CLUB_COUNTRIES=["Italy","Turkey","Poland","Brazil","Japan","France","Germany","Spain","Other"];
+function clubMode(){const p=profile||{};if(!p.clubCity)return false;if(p.season==="club")return true;if(p.season==="team")return false;return /off/i.test(chapterName())}
+function clubPlace(){const p=profile||{};return [p.clubCity,p.clubCountry&&p.clubCountry!=="Other"?p.clubCountry:""].filter(Boolean).join(", ")}
+/* Allergy cards. Every language must be checked by a native speaker before CARD_REVIEWED is set to true for it. */
+const CARD_REVIEWED={it:false,tr:false,pl:false,pt:false,ja:false,fr:false,de:false,es:false};
+const CARD_LANGS=[["it","Italiano","Italy"],["tr","Türkçe","Turkey"],["pl","Polski","Poland"],["pt","Português (Brasil)","Brazil"],["ja","日本語","Japan"],["fr","Français","France"],["de","Deutsch","Germany"],["es","Español","Spain"]];
+const CARDS={
+ it:{h:"Ho una grave allergia alimentare.",l:"Il mio cibo non deve contenere:",w:"Anche piccole quantità o la contaminazione crociata possono farmi stare molto male.",o:"Altra allergia o dieta medica (vedi sotto in inglese):",t:"Grazie!",
+  a:{"Dairy":"latte e latticini","Egg":"uova","Wheat/Gluten":"grano e glutine","Peanut":"arachidi","Tree nut":"frutta a guscio (noci, mandorle, nocciole, pistacchi…)","Soy":"soia","Fish":"pesce","Shellfish":"crostacei e molluschi","Sesame":"sesamo"}},
+ tr:{h:"Ciddi bir gıda alerjim var.",l:"Yemeğimde aşağıdakiler kesinlikle olmamalı:",w:"Çok az miktar veya bulaşma bile beni ciddi şekilde hasta edebilir.",o:"Başka bir alerji veya tıbbi diyet (aşağıda İngilizce):",t:"Teşekkür ederim!",
+  a:{"Dairy":"süt ve süt ürünleri","Egg":"yumurta","Wheat/Gluten":"buğday ve gluten","Peanut":"yer fıstığı","Tree nut":"sert kabuklu yemişler (ceviz, badem, fındık, antep fıstığı…)","Soy":"soya","Fish":"balık","Shellfish":"kabuklu deniz ürünleri","Sesame":"susam"}},
+ pl:{h:"Mam poważną alergię pokarmową.",l:"Moje jedzenie nie może zawierać:",w:"Nawet niewielka ilość lub kontakt z tymi produktami może mi bardzo zaszkodzić.",o:"Inna alergia lub dieta medyczna (poniżej po angielsku):",t:"Dziękuję!",
+  a:{"Dairy":"mleko i produkty mleczne","Egg":"jaja","Wheat/Gluten":"pszenica i gluten","Peanut":"orzeszki ziemne (arachidowe)","Tree nut":"orzechy (włoskie, laskowe, migdały, pistacje…)","Soy":"soja","Fish":"ryby","Shellfish":"skorupiaki i mięczaki","Sesame":"sezam"}},
+ pt:{h:"Tenho uma alergia alimentar grave.",l:"Minha comida não pode conter:",w:"Mesmo pequenas quantidades ou contaminação cruzada podem me fazer muito mal.",o:"Outra alergia ou dieta médica (abaixo, em inglês):",t:"Obrigado(a)!",
+  a:{"Dairy":"leite e derivados","Egg":"ovo","Wheat/Gluten":"trigo e glúten","Peanut":"amendoim","Tree nut":"castanhas e nozes (castanha-de-caju, amêndoas, nozes, pistache…)","Soy":"soja","Fish":"peixe","Shellfish":"frutos do mar (camarão, lagosta, mariscos…)","Sesame":"gergelim"}},
+ ja:{h:"私は重い食物アレルギーがあります。",l:"私の料理に次のものを入れないでください：",w:"少量や調理器具からの混入でも、重い症状が出ることがあります。",o:"その他のアレルギー・食事制限（下に英語で記載）：",t:"ありがとうございます。",
+  a:{"Dairy":"乳・乳製品","Egg":"卵","Wheat/Gluten":"小麦（醤油にも含まれます）","Peanut":"落花生（ピーナッツ）","Tree nut":"ナッツ類（くるみ、アーモンド、カシューナッツなど）","Soy":"大豆（醤油・味噌を含む）","Fish":"魚（だしを含む）","Shellfish":"えび・かに・貝類","Sesame":"ごま"}},
+ fr:{h:"J'ai une allergie alimentaire grave.",l:"Mon plat ne doit contenir aucun des aliments suivants :",w:"Même une petite quantité ou une contamination croisée peut me rendre très malade.",o:"Autre allergie ou régime médical (en anglais ci-dessous) :",t:"Merci !",
+  a:{"Dairy":"lait et produits laitiers","Egg":"œufs","Wheat/Gluten":"blé et gluten","Peanut":"arachides (cacahuètes)","Tree nut":"fruits à coque (noix, amandes, noisettes, pistaches…)","Soy":"soja","Fish":"poisson","Shellfish":"crustacés et mollusques","Sesame":"sésame"}},
+ de:{h:"Ich habe eine schwere Lebensmittelallergie.",l:"Mein Essen darf Folgendes nicht enthalten:",w:"Schon kleine Mengen oder Spuren können mich sehr krank machen.",o:"Andere Allergie oder medizinische Diät (unten auf Englisch):",t:"Danke!",
+  a:{"Dairy":"Milch und Milchprodukte","Egg":"Eier","Wheat/Gluten":"Weizen und Gluten","Peanut":"Erdnüsse","Tree nut":"Schalenfrüchte (Walnüsse, Mandeln, Haselnüsse, Pistazien…)","Soy":"Soja","Fish":"Fisch","Shellfish":"Krebs- und Weichtiere","Sesame":"Sesam"}},
+ es:{h:"Tengo una alergia alimentaria grave.",l:"Mi comida no puede contener:",w:"Incluso una pequeña cantidad o la contaminación cruzada me puede hacer mucho daño.",o:"Otra alergia o dieta médica (abajo, en inglés):",t:"¡Gracias!",
+  a:{"Dairy":"leche y lácteos","Egg":"huevo","Wheat/Gluten":"trigo y gluten","Peanut":"cacahuete (maní)","Tree nut":"frutos secos (nueces, almendras, avellanas, pistachos…)","Soy":"soja","Fish":"pescado","Shellfish":"mariscos (crustáceos y moluscos)","Sesame":"sésamo"}}
+};
+let cardLang=null;
+function vCard(){
+  const al=myAllergens(),other=(profile.other||"").trim();
+  const def=(CARD_LANGS.find(x=>x[2]===profile.clubCountry)||CARD_LANGS[0])[0];
+  const L=cardLang||def,c=CARDS[L];
+  if(!al.length&&!other)return `<div class="view"><div><p class="eyebrow">Club season</p><h1 style="margin-top:6px">Allergy card</h1></div>${emptyState("No allergies on your profile.","Add them in Me → Edit profile and your card builds itself in the local language.")}</div>`;
+  return `<div class="view"><div><p class="eyebrow">Show this to your server or chef</p><h1 style="margin-top:6px">Allergy card</h1></div>
+   <div class="seg" data-cardlang="1">${CARD_LANGS.map(([k,n])=>`<button data-clang="${k}" aria-pressed="${L===k}">${n}</button>`).join("")}</div>
+   <div class="acard" lang="${L}">
+    <p class="acard-h">${c.h}</p>
+    ${al.length?`<p class="acard-l">${c.l}</p><ul>${al.map(a=>`<li>${esc(c.a[a]||a)}</li>`).join("")}</ul>`:""}
+    ${other?`<p class="acard-l">${c.o}</p><p class="acard-o" lang="en">${esc(other)}</p>`:""}
+    <p class="acard-w">${c.w}</p><p class="acard-t">${c.t}</p>
+   </div>
+   <details class="more"><summary>English version</summary><div class="stack" style="padding-bottom:14px"><p><b>I have a severe food allergy.</b></p>${al.length?`<p>My food must not contain: ${al.map(a=>esc(a.toLowerCase())).join(", ")}.</p>`:""}${other?`<p>Other allergy or medical diet: ${esc(other)}.</p>`:""}<p>Even small amounts or cross-contact can make me very sick. Thank you!</p></div></details>
+   ${CARD_REVIEWED[L]?"":`<p class="stamp">This translation hasn't been checked by a native speaker yet. Always confirm out loud too, and carry your emergency medication.</p>`}
+  </div>`;
+}
+/* Country food guides */
+const GUIDE_C={
+ Italy:{s:"Pasta, rice, bread and focaccia, potatoes, legumes (ceci, lenticchie), canned tuna, bresaola and prosciutto cotto, eggs, Greek yogurt, ricotta, fresh fruit. Big chains: Esselunga, Coop, Conad.",e:"Pasta with tomato or ragù sauce plus a grilled protein (pollo or pesce alla griglia) is a near-perfect training plate. Pizza is a fine rest-day dinner. Before a match, plain pasta (in bianco) or rice sits easily.",w:"Dinners often start at 9 pm or later, so have a solid snack after practice. Aperitivo spreads are mostly fried snacks, not a meal. Count espresso as caffeine before evening matches."},
+ Turkey:{s:"Bulgur and rice pilaf, lavash and pide bread, lentils and chickpeas, eggs, white cheese, yogurt and ayran, chicken, fruit and dried fruit. Big chains: Migros, CarrefourSA, BİM, A101.",e:"Tavuk şiş or köfte with pilav and salad, or lentil soup (mercimek çorbası) with bread, are reliable training meals. Döner in lavash works well after a match.",w:"Pistachios and walnuts are everywhere, especially in desserts like baklava, so watch them if you have a tree nut allergy. Ayran is salty, which helps after sweaty sessions."},
+ Poland:{s:"Oats (płatki owsiane), potatoes, buckwheat and barley (kasza), rye and whole-grain bread, twaróg, skyr and kefir, eggs, chicken, apples. Big chains: Biedronka, Lidl, Żabka for quick stops.",e:"Pierogi, soups like żurek, and kasza with chicken are good carb-and-protein meals. Milk bars (bar mleczny) serve cheap, simple plates.",w:"Many traditional dishes are fried or creamy (like schabowy), so keep those for rest days. Winters are dark, so ask Nick about checking vitamin D."},
+ Brazil:{s:"Rice and beans, tapioca, pão francês, eggs, chicken, fruit (banana, papaya, mango), queijo minas, yogurt. Big chains: Pão de Açúcar, Carrefour, Assaí.",e:"A prato feito (rice, beans, protein and salad) is a textbook training plate. At comida por quilo buffets, build your plate first and weigh it after. Churrascaria nights are for rest days.",w:"Heat and humidity raise sweat losses, so carry water and electrolytes. Açaí bowls are a solid recovery snack, just a big one. Use filtered or bottled water where the tap water isn't trusted."},
+ Japan:{s:"Rice, onigiri from convenience stores, udon and soba, tofu, natto, eggs, chicken, salmon, yogurt, bananas. 7-Eleven, Lawson and FamilyMart carry real meals.",e:"Teishoku set meals (rice, protein, soup, sides) and donburi bowls are ideal training plates. Ramen is a heavier choice, better after a match than before.",w:"Soy sauce contains soy and wheat, and dashi broth is usually made from fish, so check if those are your allergens. Portions run small, so add an extra onigiri or banana."},
+ France:{s:"Baguette and pain complet, pasta, rice, lentils, eggs, chicken, yogurt and fromage blanc, fruit. Big chains: Carrefour, Monoprix, Leclerc, Intermarché.",e:"The plat du jour at a brasserie is usually a protein with a starch. A crêpe complète (ham, egg, cheese) is a quick meal. Steak-frites is a good rest-day choice.",w:"Dinner runs late, so have a snack after practice. Butter and cream sauces are heavy before matches, and the pastries are a treat rather than a recovery meal."},
+ Germany:{s:"Oats, whole-grain bread, potatoes, pasta, lentils, eggs, chicken, quark and skyr, fruit. Big chains: Rewe, Edeka, Aldi, Lidl.",e:"A Döner or Dürüm makes a solid post-match meal. Turkish and Italian places are everywhere and easy to order from. Schnitzel is fried, so keep it for rest days.",w:"Bakery pastries look like breakfast but don't fuel much, so pick bread rolls with eggs, quark or meat instead. Cream sauces are heavy before matches."},
+ Spain:{s:"Bread, rice, potatoes, pasta, chickpeas and lentils, eggs, canned fish, jamón, yogurt, fruit. Big chains: Mercadona, Carrefour, Lidl, Día.",e:"The menú del día (two courses plus bread) is great value and usually balanced. Paella and pasta dishes fuel well. A tortilla española is easy protein and carbs.",w:"Lunch is around 2 pm and dinner 9–10 pm, so plan snacks around practice. Tapas add up fast without much carbohydrate."},
+ Other:{s:"Find the local rice, bread, potatoes or noodles, a lean protein (chicken, fish, eggs, beans, tofu), yogurt or milk, and fruit you can carry.",e:"In any country, the best order is a carb base, a palm or two of protein, and something colorful. Simple grilled dishes are the safest bet before matches.",w:"Check water safety, learn the local word for your allergens, and send Nick a photo of anything you're unsure about."}
+};
+let guideC=null;
+function vCguide(){
+  const C=guideC||(GUIDE_C[profile.clubCountry]?profile.clubCountry:"Other"),g=GUIDE_C[C];
+  return `<div class="view"><div><p class="eyebrow">Club season${clubPlace()?" · "+esc(clubPlace()):""}</p><h1 style="margin-top:6px">Food guide</h1></div>
+   <div class="seg">${Object.keys(GUIDE_C).map(k=>`<button data-gc="${k}" aria-pressed="${C===k}">${k==="Other"?"Anywhere":k}</button>`).join("")}</div>
+   <div class="card stack"><span class="eyebrow">Grocery staples</span><p>${g.s}</p></div>
+   <div class="card stack"><span class="eyebrow">Eating out</span><p>${g.e}</p></div>
+   <div class="card stack"><span class="eyebrow">Watch for</span><p>${g.w}</p></div>
+   <button class="btn ghost block" data-go="acard">${IC.card} Open my allergy card</button></div>`;
+}
+/* Monthly check-in */
+function ciMonth(){return new Date().toLocaleDateString("en-US",{month:"long",year:"numeric"})}
+function checkinHTML(){
+  let done=null;try{done=localStorage.getItem("af_checkin")}catch(e){}
+  if(done===ciMonth())return `<section><h2>Monthly check-in</h2><div class="card"><span class="chip ok">Checked in for ${ciMonth().split(" ")[0]}</span></div></section>`;
+  return `<section><h2>Monthly check-in</h2><form class="card stack" id="form-checkin">
+   <p class="muted" style="font-size:.88rem">Two minutes, once a month, so Nick knows how club life is going.</p>
+   <div class="stack" style="gap:6px"><span class="eyebrow">How's food going?</span><div class="choice" data-pick="ciFood">${["Rough","OK","Good","Great"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${draft.ciFood===t}">${t}</button>`).join("")}</div></div>
+   <div class="stack" style="gap:6px"><span class="eyebrow">Energy at practice</span><div class="choice" data-pick="ciEnergy">${["Low","OK","Good"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${draft.ciEnergy===t}">${t}</button>`).join("")}</div></div>
+   <div class="stack" style="gap:6px"><span class="eyebrow">Stomach issues</span><div class="choice" data-pick="ciGut">${["None","Sometimes","Often"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${draft.ciGut===t}">${t}</button>`).join("")}</div></div>
+   <label for="ci-note">Anything else? Questions, wins, struggles<textarea id="ci-note" placeholder="e.g. Hard to find breakfast before 8 am practices"></textarea></label>
+   <button class="btn block" type="submit">Send check-in to RD</button></form></section>`;
+}
+/* Heat abroad (Open-Meteo, free for non-commercial use, CC BY 4.0) */
+async function loadHeatClub(){
+  const city=profile.clubCity;if(!city)return;
+  let H=null;try{H=JSON.parse(localStorage.getItem("af_heat3")||"null")}catch(e){}
+  if(H&&H.date===isoToday()&&H.city===clubPlace()){HEAT=H;return}
+  try{
+    let geo=null;try{geo=JSON.parse(localStorage.getItem("af_geo")||"null")}catch(e){}
+    if(!geo||geo.q!==clubPlace()){const r=await (await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=10&language=en&format=json`)).json();
+      const list=r.results||[];const m=list.find(x=>!profile.clubCountry||profile.clubCountry==="Other"||x.country===profile.clubCountry)||list[0];if(!m)return;
+      geo={q:clubPlace(),la:m.latitude,lo:m.longitude};try{localStorage.setItem("af_geo",JSON.stringify(geo))}catch(e){}}
+    const f=await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${geo.la}&longitude=${geo.lo}&daily=apparent_temperature_max&temperature_unit=fahrenheit&timezone=auto&forecast_days=1`)).json();
+    const v=f.daily&&f.daily.apparent_temperature_max&&f.daily.apparent_temperature_max[0];if(v==null)return;
+    HEAT={date:isoToday(),hi:Math.round(v),city:clubPlace(),src:"om"};try{localStorage.setItem("af_heat3",JSON.stringify(HEAT))}catch(e){}
+    if(tab==="home"&&!(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)))render();
+  }catch(e){}
+}
 function vHome(){
   const first=profile.first||profile.name.split(" ")[0];
   const wd=new Date().getDay(), weekend=wd===0||wd===6;
@@ -1232,7 +1338,15 @@ function vHome(){
   const flagged=meals.filter(x=>hits(x.a)).length;
   const [feat,...rest]=DATA.announcements;
   const dateLine=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
-  const go=[
+  const club=clubMode();
+  const go=club?[
+   ["acard","","Allergy card","Show it at restaurants",IC.card],
+   ["cguide","","Food guide","Staples and orders where you play",IC.globe],
+   ["match","","Match-day plan","What to eat from wake-up to recovery",IC.cal],
+   ["journal","","Food journal","Log it and send it to Nick",IC.book],
+   ["rd","","Ask the RD","Nutrition 411 and booking",IC.chat],
+   ["learn","","Learn","Answers with sources",IC.plate]
+  ]:[
    ["food","smoothie","Smoothies","A lifting day staple",IC.cup],
    ["food","snacks","Court snacks","Between sets and matches",IC.ball],
    ["match","","Match-day plan","What to eat from wake-up to recovery",IC.cal],
@@ -1242,27 +1356,28 @@ function vHome(){
   ];
   return `<div class="view home">
    <header class="hero court" style="${chapterTint()?`--chapter:${chapterTint()}`:""}">${COURT_SVG}${profile.num?`<span class="jersey num" aria-hidden="true">${esc(profile.num)}</span>`:""}
-    <div class="hero-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><div style="text-align:right;display:flex;flex-direction:column;gap:6px"><span class="eyebrow">Team USA · ${profile.team}</span><span class="eyebrow">${dateLine}</span></div></div>
-    ${STARS5}<p class="wordmark"><span>Nutrition</span></p>
-    ${chapterName()?`<p class="chapter" style="--chapter:${chapterTint()||"var(--accent-text)"}">${esc(chapterName())}</p>`:""}${daysTo(LA_OPENING)>0?`<button class="la" data-go="rank" aria-label="${daysTo(LA_OPENING)} days to LA. See world rankings"><span class="num">${daysTo(LA_OPENING)}</span> days to LA</button>`:""}
+    <div class="hero-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><div style="text-align:right;display:flex;flex-direction:column;gap:6px"><span class="eyebrow">${club?"Club season":"Team USA · "+profile.team}</span><span class="eyebrow">${dateLine}</span></div></div>
+    ${STARS5}<p class="wordmark"><span>Nutrition</span></p>${club?`<p class="chapter" style="--chapter:var(--accent-text)">Club season · ${esc(clubPlace())}</p>`:""}
+    ${!club&&chapterName()?`<p class="chapter" style="--chapter:${chapterTint()||"var(--accent-text)"}">${esc(chapterName())}</p>`:""}${daysTo(LA_OPENING)>0?`<button class="la" data-go="rank" aria-label="${daysTo(LA_OPENING)} days to LA. See world rankings"><span class="num">${daysTo(LA_OPENING)}</span> days to LA</button>`:""}
     <div class="meta"><span class="chip blue">${noPref()?"Any protein":profile.protein+" protein"}</span>${myAllergens().length?`<span class="chip stop">${myAllergens().length} allergen${myAllergens().length>1?"s":""} flagged</span>`:`<span class="chip ok">No allergens listed</span>`}${esc(profile.position)?`<span class="chip">${esc(profile.position)}</span>`:""}</div>
    </header>
 
-   ${matchBoard()}
+   ${club?"":matchBoard()}
    ${heatHTML()}
    ${feat?`<section><div class="sec-head"><h2>Announcements</h2><span class="stamp">Updated ${fmtDate(DATA.updated)}</span></div>
     <article class="feature${/^win/i.test(feat.tag||"")?" win":""}"><div class="row" style="justify-content:space-between"><span class="chip accent">${esc(feat.tag)}</span><span class="stamp">${fmtDate(feat.when)}</span></div><h3>${esc(feat.t)}</h3>${feat.d?`<p>${esc(feat.d)}</p>`:""}</article>
     ${rest.length?`<div class="card" style="padding-block:2px">${rest.map(a=>`<div class="ann"><div class="row"><span class="chip">${esc(a.tag)}</span><span class="stamp">${fmtDate(a.when)}</span></div><b style="margin-top:6px">${esc(a.t)}</b><p class="muted" style="font-size:.88rem">${esc(a.d)}</p></div>`).join("")}</div>`:""}</section>`:""}
 
    ${installCard("home")}
-   ${weekend?`<section><div class="sec-head"><h2>This weekend</h2></div><button class="wkend" data-go="food" data-seg="dinner" data-dseg="weekend">${IC.cart}<span class="grow"><b>Meals away from the facility</b><span>No team meals on weekends. Grocery staples, batch cooking, delivery picks, and recipes.</span></span><span class="go" aria-hidden="true">›</span></button></section>`:""}
-   ${weekend?weekPoster(todayIso):`<section><div class="sec-head"><h2>Today's menu</h2><span class="row" style="gap:14px"><button class="linkbtn" data-go="food" data-seg="menu">Full week</button></span></div>
+   ${club?checkinHTML():""}
+   ${club?"":weekend?`<section><div class="sec-head"><h2>This weekend</h2></div><button class="wkend" data-go="food" data-seg="dinner" data-dseg="weekend">${IC.cart}<span class="grow"><b>Meals away from the facility</b><span>No team meals on weekends. Grocery staples, batch cooking, delivery picks, and recipes.</span></span><span class="go" aria-hidden="true">›</span></button></section>`:""}
+   ${club?"":weekend?weekPoster(todayIso):`<section><div class="sec-head"><h2>Today's menu</h2><span class="row" style="gap:14px"><button class="linkbtn" data-go="food" data-seg="menu">Full week</button></span></div>
     ${meals.length?`<div class="lineup">${luHead(weekend?"Monday's lineup":"Today's lineup",todayIso,"")}${meals.map(x=>mealHTML(x)).join("")}</div>
     
     ${flagged?`<p class="stamp">${flagged} of ${meals.length} meals may contain something you listed. Ask foodservice for your safe option.</p>`:""}`:emptyState("Menu's warming up.","This week's menu isn't posted yet. Check back soon.")}</section>`}
 
    <section><h2>More</h2><div class="nav-grid">
-    ${(()=>{const x=smoothieFor(todayIso);smTile=x&&(x.team==="Both"||x.team===teamOf())?mySmoothie(x):null;return ""})()}${go.map(([t,seg,l,d,ic,dseg])=>t==="wa"?`<a class="ng" href="${CONFIG.whatsappLink}" target="_blank" rel="noopener">${ic}<b>${l}</b><span>${d}</span></a>`:`<button class="ng" ${t==="learn"?'data-tab="learn"':`data-go="${t}"${seg?` data-seg="${seg}"`:""}${dseg?` data-dseg="${dseg}"`:""}`}>${ic}<b>${l}</b><span>${d}</span>${seg==="smoothie"&&smTile?`<small class="ng-sub">${weekend?"Mon":"Today"}: ${esc(smTile.n)}${hits(smTile.a)?" · check allergens":""}</small>`:""}</button>`).join("")}
+    ${(()=>{const x=smoothieFor(todayIso);smTile=x&&(x.team==="Both"||x.team===teamOf())?mySmoothie(x):null;return ""})()}${go.map(([t,seg,l,d,ic,dseg])=>t==="wa"?`<a class="ng" href="${CONFIG.whatsappLink}" target="_blank" rel="noopener">${ic}<b>${l}</b><span>${d}</span></a>`:`<button class="ng" ${TABS.some(x=>x[0]===t)?`data-tab="${t}"`:`data-go="${t}"${seg?` data-seg="${seg}"`:""}${dseg?` data-dseg="${dseg}"`:""}`}>${ic}<b>${l}</b><span>${d}</span>${!club&&seg==="smoothie"&&smTile?`<small class="ng-sub">${weekend?"Mon":"Today"}: ${esc(smTile.n)}${hits(smTile.a)?" · check allergens":""}</small>`:""}</button>`).join("")}
    </div></section>
    <div class="usa-mark" role="img" aria-label="USA"></div>
 </div>`;
@@ -1280,6 +1395,8 @@ const IC=(()=>{const s=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentC
  plate:s('<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/>'),
  cup:s('<path d="M6 8h12l-1.5 12h-9z"/><path d="M5 8h14M12 8l2-5"/>'),
  ball:s('<circle cx="12" cy="12" r="9"/><path d="M12 3c-2 4-2 9 3 13M4.5 8c4 0 9 2 11 7M8 20c1-4 5-7 12-7"/>'),
+ card:s('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h6M7 14h10"/><circle cx="17" cy="10" r="1.2"/>'),
+ globe:s('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>'),
  cart:s('<path d="M3 4h2.5l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.3a1.5 1.5 0 0 0 1.5-1.1L21 8H6.4"/><circle cx="10" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/>'),
  moon:s('<path d="M20 14a8 8 0 1 1-10-10 6 6 0 0 0 10 10z"/>'),
  cal:s('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>'),
@@ -1459,6 +1576,11 @@ function vMe(){
    </div></div>
    <p class="wear-note">Your badge earns a punch for each month with 3+ days logged${chapterName()?`, and a sticker for each season chapter`:""}.</p>
    <button class="btn ghost block" data-edit="1">Edit profile</button>
+   <section><h2>Season</h2><div class="card stack">
+    <div class="choice" data-seasonset="1">${[["team","With the national team"],["club","With my club"]].map(([k,l])=>`<button type="button" data-seasonv="${k}" aria-pressed="${(profile.season||"team")===k}">${l}</button>`).join("")}</div>
+    ${(profile.season==="club")?`<div class="namerow"><label for="club-city">Club city<input id="club-city" value="${esc(profile.clubCity||"")}" placeholder="e.g. Istanbul" autocomplete="off"></label><label for="club-country">Country<select id="club-country"><option value="">Select</option>${CLUB_COUNTRIES.map(c=>`<option ${profile.clubCountry===c?"selected":""}>${c}</option>`).join("")}</select></label></div>
+    <p class="muted" style="font-size:.8rem">Home switches to your club city: allergy card in the local language, a food guide, heat checks and a monthly check-in with Nick. Your city stays on this phone.</p>`:`<p class="muted" style="font-size:.8rem">Playing club volleyball abroad? Switch to "With my club" for a version of the app built for your city.</p>`}
+   </div></section>
    ${passportHTML()}
    ${canEdit?`<div class="card stack"><span class="eyebrow">Share with athletes · editors only</span><img src="qr-code.png" alt="QR code that opens this app" style="width:180px;align-self:center;border-radius:8px"><div class="row"><span class="copybox grow" id="app-link">${CONFIG.appLink}</span><button class="btn ghost sm" data-copy="app-link">Copy</button></div><p class="stamp">Athletes can open this without a Claude account once link sharing is on in the Share menu.</p></div>`:""}
    ${canEdit?`<button class="tile editlink" data-tab="edit"><b>Edit menus & announcements</b><span>Only you and other editors see this. Last published ${fmtDate(DATA.updated)}.</span></button>`:""}
@@ -1745,7 +1867,7 @@ function render(){
   if(tab==="edit"&&!canEdit)tab="me";
   if(tab==="home"&&profile){setTimeout(checkWin,0);loadHeat()}
   document.documentElement.setAttribute("data-room",{food:"food",journal:"journal",rd:"rd",learn:"learn",me:"me"}[tab]||"home");
-  app.innerHTML={home:vHome,food:vFood,journal:vJournal,rd:vRD,learn:vLearn,me:vMe,edit:vEdit,rank:vRank,match:vMatch}[tab]();
+  app.innerHTML={home:vHome,food:vFood,journal:vJournal,rd:vRD,learn:vLearn,me:vMe,edit:vEdit,rank:vRank,match:vMatch,acard:vCard,cguide:vCguide}[tab]();
   renderTabs();
 }
 document.addEventListener("click",e=>{
@@ -1795,6 +1917,9 @@ document.addEventListener("click",e=>{
   if(b.dataset.closelb){$("#lightbox").hidden=true;return}
   if(b.dataset.cancel){draft={};render();return}
   if(b.dataset.edit){draft={...profile,editing:true};render();scrollTo({top:0});return}
+  if(b.dataset.seasonv){profile.season=b.dataset.seasonv;store.set("profile",profile);HEAT=null;heatTried=false;render();if(profile.season==="club"&&!profile.clubCity){const c=document.getElementById("club-city");if(c)c.focus()}return}
+  if(b.dataset.clang){cardLang=b.dataset.clang;render();return}
+  if(b.dataset.gc){guideC=b.dataset.gc;render();return}
   if(b.dataset.reset){delete draft[b.dataset.reset+"Sent"];render();return}
   if(b.dataset.copy){const el=document.getElementById(b.dataset.copy);const txt=el.textContent;
     const sel=()=>{const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r);toast("Selected. Copy it from here")};
@@ -1807,7 +1932,7 @@ document.addEventListener("submit",e=>{
     const first=$("#f-first").value.trim(),last=$("#f-last").value.trim(),name=(first+" "+last).trim();
     if(!first||!last||!draft.team||!draft.protein){toast("Add your first and last name, team and protein preference");return}
     const prevAllergy=profile?JSON.stringify([profile.allergies,profile.other]):"";
-    profile={name,first,last,team:draft.team,position:$("#f-pos").value,pro:$("#f-pro").value.trim(),allergies:draft.allergies||[],other:$("#f-other").value.trim(),protein:draft.protein,num:($("#f-num").value||"").replace(/\D/g,"").slice(0,2),ack:profile?profile.ack:false};
+    profile={...(profile||{}),name,first,last,team:draft.team,position:$("#f-pos").value,pro:$("#f-pro").value.trim(),allergies:draft.allergies||[],other:$("#f-other").value.trim(),protein:draft.protein,num:($("#f-num").value||"").replace(/\D/g,"").slice(0,2),ack:profile?profile.ack:false};
     if(prevAllergy!==JSON.stringify([profile.allergies,profile.other]))profile.ack=false;
     const isNew=!draft.editing;
     store.set("profile",profile);draft={};tab="home";render();if(isNew)walkOut();else toast("Profile saved");
@@ -1822,6 +1947,11 @@ document.addEventListener("submit",e=>{
     draft.askSent=`Nutrition 411 question\n${profile.name} · ${profile.team}\n${q}`;
     sendInbox({...profileRecord("Nutrition 411 question"),Details:q});
     render();toast("Sent to Nick");ballArc();return}
+  if(f.id==="form-checkin"){
+    if(!draft.ciFood||!draft.ciEnergy||!draft.ciGut){toast("Answer the three quick questions");return}
+    const note=$("#ci-note").value.trim();
+    sendInbox({...profileRecord("Club check-in"),Details:`${ciMonth()} · ${clubPlace()} · Food: ${draft.ciFood} · Energy: ${draft.ciEnergy} · Stomach: ${draft.ciGut}${note?" · "+note:""}`});
+    try{localStorage.setItem("af_checkin",ciMonth())}catch(e){}draft.ciFood=draft.ciEnergy=draft.ciGut="";render();toast("Check-in sent");ballArc();return}
   if(f.id==="form-feedback"){
     if(!draft.fbType){toast("Pick a feedback type");return}
     draft.feedbackSent=`Food feedback · ${draft.fbType}\n${profile.name} · ${profile.team}\nItem: ${$("#fb-meal").value.trim()||"—"}${draft.fbRate?"\nRating: "+draft.fbRate+"/5":""}${$("#fb-note").value.trim()?"\n"+$("#fb-note").value.trim():""}`;
@@ -1830,7 +1960,8 @@ document.addEventListener("submit",e=>{
 });
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){const lb=$("#lightbox");if(lb&&!lb.hidden)lb.hidden=true}});
 document.addEventListener("change",e=>{if(e.target.id==="j-photo"&&e.target.files&&e.target.files[0])jPhoto(e.target.files[0]);
-  if(e.target.id==="j-city"){const d=jGet(jDate),v=e.target.value.trim().slice(0,40),had=Object.values(J.days).some(x=>x&&x.city&&x.city.trim().toLowerCase()===v.toLowerCase());d.city=v;if(jPut(jDate,d)){render();if(v&&!had)toast(`${v} stamped in your passport`)}}});
+  if(e.target.id==="club-city"||e.target.id==="club-country"){profile.clubCity=($("#club-city")||{}).value?.trim().slice(0,40)||"";profile.clubCountry=($("#club-country")||{}).value||"";store.set("profile",profile);HEAT=null;heatTried=false;try{localStorage.removeItem("af_heat3")}catch(e){}cardLang=null;guideC=null;setTimeout(render,0);if(profile.clubCity&&profile.clubCountry)toast(`Club season set: ${clubPlace()}`);return}
+  if(e.target.id==="j-city"){const d=jGet(jDate),v=e.target.value.trim().slice(0,40),had=Object.values(J.days).some(x=>x&&x.city&&x.city.trim().toLowerCase()===v.toLowerCase());d.city=v;if(jPut(jDate,d)){setTimeout(render,0);if(v&&!had)toast(`${v} stamped in your passport`)}}});
 document.addEventListener("input",e=>{const t=e.target;if(t.dataset&&t.dataset.ed&&ED){setPath(ED,t.dataset.ed,t.dataset.num?(t.value===""?"":Number(t.value)):t.value);edStatus();return}if(e.target.id==="q"){draft.q=e.target.value;const f=$("#faq"),g=$("#guides"),h=$("#guidehint");if(f)f.innerHTML=faqHTML();if(g)g.innerHTML=guidesHTML();if(h)h.innerHTML=guideHint()}});
 
 /* Block double-tap zoom on iPhone (pinch zoom still works) */
