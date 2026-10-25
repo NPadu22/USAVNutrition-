@@ -672,6 +672,7 @@ h2::before{width:.6em;height:.6em}
 :root[data-style] .nav-grid .ng b,:root[data-style] .nav-grid .ng:first-child b{font-size:1.02rem;line-height:1.2}
 /* No double-tap zoom (pinch zoom still works) */
 html,body,button,a,input,select,textarea,label{touch-action:manipulation}
+.ng-sub{font-size:.78rem;line-height:1.25;color:var(--muted);margin-top:-2px}
 /* Sliding tab bubble */
 nav.tabs .in{position:relative}
 nav.tabs button{position:relative;z-index:1}
@@ -1051,6 +1052,7 @@ function voteHTML(){
    <div class="choice" data-pick="vote">${opts.map(o=>`<button type="button" data-v="${esc(o)}" aria-pressed="${draft.vote===o}">${esc(o)}</button>`).join("")}</div>
    <button class="btn block" data-castvote="1">Cast my vote</button>`}</div></section>`;
 }
+let smTile=null;
 function vHome(){
   const first=profile.first||profile.name.split(" ")[0];
   const wd=new Date().getDay(), weekend=wd===0||wd===6;
@@ -1063,7 +1065,7 @@ function vHome(){
    ["food","smoothie","Smoothies","A lifting day staple",IC.cup],
    ["food","snacks","Court snacks","Between sets and matches",IC.ball],
    ["match","","Match-day plan","What to eat from wake-up to recovery",IC.cal],
-   ["food","dinner","Away from the facility","Dinners and weekends",IC.moon],
+   ["food","dinner","Away meals","Dinners, delivery and weekends",IC.moon],
    ["food","feedback","Food feedback","Rate a meal or request one",IC.chat],
    ["rank","","World rankings","Men's and women's national teams",IC.ball]
   ];
@@ -1084,11 +1086,11 @@ function vHome(){
    ${installCard("home")}
    <section><div class="sec-head"><h2>${weekend?"Monday's menu":"Today's menu"}</h2><span class="row" style="gap:14px"><button class="linkbtn" data-go="food" data-seg="menu">Full week</button></span></div>
     ${meals.length?`<div class="lineup">${luHead(weekend?"Monday's lineup":"Today's lineup",todayIso,"")}${meals.map(x=>mealHTML(x)).join("")}</div>
-    ${(()=>{const x=smoothieFor(todayIso);if(!x||!(x.team==="Both"||x.team===teamOf()))return "";const me=mySmoothie(x);return `<button class="tile" data-go="food" data-seg="smoothie" style="min-height:0"><span>${weekend?"Monday's":"Today's"} smoothie</span><b>${esc(me.n)}</b><span>${noPref()?`Whey · or plant: ${esc(me.other)}`:esc(me.prot)}${hits(me.a)?" · may contain your allergen":""}</span></button>`})()}
+    
     ${flagged?`<p class="stamp">${flagged} of ${meals.length} meals may contain something you listed. Ask foodservice for your safe option.</p>`:""}`:emptyState("Menu's warming up.","This week's menu isn't posted yet. Check back soon.")}</section>
 
    <section><h2>More</h2><div class="nav-grid">
-    ${go.map(([t,seg,l,d,ic])=>t==="wa"?`<a class="ng" href="${CONFIG.whatsappLink}" target="_blank" rel="noopener">${ic}<b>${l}</b><span>${d}</span></a>`:`<button class="ng" ${t==="learn"?'data-tab="learn"':`data-go="${t}"${seg?` data-seg="${seg}"`:""}`}>${ic}<b>${l}</b><span>${d}</span></button>`).join("")}
+    ${(()=>{const x=smoothieFor(todayIso);smTile=x&&(x.team==="Both"||x.team===teamOf())?mySmoothie(x):null;return ""})()}${go.map(([t,seg,l,d,ic])=>t==="wa"?`<a class="ng" href="${CONFIG.whatsappLink}" target="_blank" rel="noopener">${ic}<b>${l}</b><span>${d}</span></a>`:`<button class="ng" ${t==="learn"?'data-tab="learn"':`data-go="${t}"${seg?` data-seg="${seg}"`:""}`}>${ic}<b>${l}</b><span>${d}</span>${seg==="smoothie"&&smTile?`<small class="ng-sub">${weekend?"Mon":"Today"}: ${esc(smTile.n)}${hits(smTile.a)?" · check allergens":""}</small>`:""}</button>`).join("")}
    </div></section>
    <div class="usa-mark" role="img" aria-label="USA"></div>
 </div>`;
