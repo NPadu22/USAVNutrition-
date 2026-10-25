@@ -42,6 +42,10 @@ See `loadSheet()` near the end of the script. The JSON in `<script id="af-data">
 - Keep everything static: no server, no build tools and no paid services.
 - The in-app content editor (`vEdit`, `publishData`, `window.claude`) only works when hosted on Claude. On GitHub Pages it stays hidden. Leave it in place or remove it cleanly; don't half-remove it.
 
+## Keeping the offline backup in sync
+
+`<script id="af-data">` is what athletes see if the sheet can't load. After any sheet change, export every tab (header row included) to a JSON file `{tab: [[...],[...]]}` and run `python3 tools/sync_fallback.py index.html tabs.json`. It runs the app's own sheet loader against those rows, so the backup always matches what the live sheet produces.
+
 ## Before you finish a change
 
 1. Open `index.html` locally and check Home, Food (all tabs), Journal, RD, Learn and Me with a sample profile.
