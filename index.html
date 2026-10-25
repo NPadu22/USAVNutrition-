@@ -671,7 +671,8 @@ h2::before{width:.6em;height:.6em}
 :root[data-style] .nav-grid .ng svg,:root[data-style] .nav-grid .ng:first-child svg{width:22px;height:22px;margin:0 0 2px}
 :root[data-style] .nav-grid .ng b,:root[data-style] .nav-grid .ng:first-child b{font-size:1.02rem;line-height:1.2}
 /* No double-tap zoom (pinch zoom still works) */
-html,body,button,a,input,select,textarea,label{touch-action:manipulation}
+*,*::before,*::after{touch-action:manipulation}
+input,select,textarea{font-size:max(16px,1em)!important}
 .ng-sub{font-size:.78rem;line-height:1.25;color:var(--muted);margin-top:-2px}
 .hero .logo-badge{cursor:pointer;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 /* Sliding tab bubble */
@@ -1650,6 +1651,9 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"){const lb=$("#lightb
 document.addEventListener("change",e=>{if(e.target.id==="j-photo"&&e.target.files&&e.target.files[0])jPhoto(e.target.files[0]);
   if(e.target.id==="j-city"){const d=jGet(jDate),v=e.target.value.trim().slice(0,40),had=Object.values(J.days).some(x=>x&&x.city&&x.city.trim().toLowerCase()===v.toLowerCase());d.city=v;if(jPut(jDate,d)){render();if(v&&!had)toast(`${v} stamped in your passport`)}}});
 document.addEventListener("input",e=>{const t=e.target;if(t.dataset&&t.dataset.ed&&ED){setPath(ED,t.dataset.ed,t.dataset.num?(t.value===""?"":Number(t.value)):t.value);edStatus();return}if(e.target.id==="q"){draft.q=e.target.value;const f=$("#faq"),g=$("#guides"),h=$("#guidehint");if(f)f.innerHTML=faqHTML();if(g)g.innerHTML=guidesHTML();if(h)h.innerHTML=guideHint()}});
+
+/* Block double-tap zoom on iPhone (pinch zoom still works) */
+(()=>{let last=0;document.addEventListener("touchend",e=>{const now=Date.now();if(now-last<320&&e.touches.length===0&&e.changedTouches.length===1&&!e.target.closest("input,textarea,select,[contenteditable]")){e.preventDefault();const t=e.target.closest("button,a,label,[data-tab],.logo-badge");if(t)t.dispatchEvent(new MouseEvent("click",{bubbles:true,cancelable:true}))}last=now},{passive:false})})();
 
 render();
 (()=>{const sp=document.getElementById("splash");if(!sp)return;let seen=false;try{seen=sessionStorage.getItem("af_splash")}catch(e){}
