@@ -1250,7 +1250,7 @@ const CLUBS=[
  ["Olympiakós","Piraeus","Greece"],
  ["Sesc-RJ/Flamengo","Rio de Janeiro","Brazil"],
  ["LOVB Austin","Austin","USA"],["LOVB Houston","Houston","USA"],["LOVB Atlanta","Atlanta","USA"],["LOVB Salt Lake","Salt Lake City","USA"],["LOVB Madison","Madison","USA"],["LOVB Nebraska","Omaha","USA"],["LOVB Los Angeles Orbit","Los Angeles","USA"],["LOVB San Francisco Signal","San Francisco","USA"],
- ["MLV Omaha Supernovas","Omaha","USA"],["MLV Grand Rapids Rise","Grand Rapids","USA"],["MLV Orlando Valkyries","Orlando","USA"],["MLV Los Angeles Thunder","Los Angeles","USA"],["MLV Minnesota Forge","","USA"],["MLV Indy Ignite","Indianapolis","USA"]
+ ["MLV Omaha Supernovas","Omaha","USA"],["MLV Grand Rapids Rise","Grand Rapids","USA"],["MLV Orlando Valkyries","Orlando","USA"],["MLV Los Angeles Thunder","Los Angeles","USA"],["MLV Minnesota Forge","Minnesota","USA",44.98,-93.27],["MLV Indy Ignite","Indianapolis","USA"]
 ];
 function clubMode(){const p=profile||{};if(!p.clubCity&&!p.clubCountry)return false;if(p.season==="club")return true;if(p.season==="team")return false;return /off/i.test(chapterName())}
 function clubPlace(){const p=profile||{};return [p.clubCity,p.clubCountry&&p.clubCountry!=="Other"?p.clubCountry:""].filter(Boolean).join(", ")}
@@ -1342,6 +1342,7 @@ async function loadHeatClub(){
   if(H&&H.date===isoToday()&&H.city===clubPlace()){HEAT=H;return}
   try{
     let geo=null;try{geo=JSON.parse(localStorage.getItem("af_geo")||"null")}catch(e){}
+    if(profile.clubGeo&&profile.clubGeo.length===2)geo={q:clubPlace(),la:profile.clubGeo[0],lo:profile.clubGeo[1]};
     if(!geo||geo.q!==clubPlace()){const r=await (await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=10&language=en&format=json`)).json();
       const list=r.results||[];const code=CC[profile.clubCountry];const m=list.find(x=>!code||x.country_code===code)||list[0];if(!m)return;
       geo={q:clubPlace(),la:m.latitude,lo:m.longitude};try{localStorage.setItem("af_geo",JSON.stringify(geo))}catch(e){}}
@@ -1982,8 +1983,8 @@ document.addEventListener("submit",e=>{
 });
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){const lb=$("#lightbox");if(lb&&!lb.hidden)lb.hidden=true}});
 document.addEventListener("change",e=>{if(e.target.id==="j-photo"&&e.target.files&&e.target.files[0])jPhoto(e.target.files[0]);
-  if(e.target.id==="club-pick"){const v=e.target.value,c=CLUBS.find(x=>x[0]===v);if(c){profile.club=c[0];profile.clubCity=c[1];profile.clubCountry=c[2]}else{profile.club=""}store.set("profile",profile);HEAT=null;heatTried=false;try{localStorage.removeItem("af_heat3")}catch(e){}cardLang=null;guideC=null;setTimeout(()=>{render();if(c&&!c[1]){const i=document.getElementById("club-city");if(i)i.focus();toast("Add your club's city")}else if(c)toast(`Club season set: ${clubLabel()}`)},0);return}
-  if(e.target.id==="club-city"||e.target.id==="club-country"){profile.clubCity=($("#club-city")||{}).value?.trim().slice(0,40)||"";profile.clubCountry=($("#club-country")||{}).value||"";store.set("profile",profile);HEAT=null;heatTried=false;try{localStorage.removeItem("af_heat3")}catch(e){}cardLang=null;guideC=null;setTimeout(render,0);if(profile.clubCity&&profile.clubCountry)toast(`Club season set: ${clubPlace()}`);return}
+  if(e.target.id==="club-pick"){const v=e.target.value,c=CLUBS.find(x=>x[0]===v);if(c){profile.club=c[0];profile.clubCity=c[1];profile.clubCountry=c[2];profile.clubGeo=c[3]!=null?[c[3],c[4]]:null}else{profile.club=""}store.set("profile",profile);HEAT=null;heatTried=false;try{localStorage.removeItem("af_heat3")}catch(e){}cardLang=null;guideC=null;setTimeout(()=>{render();if(c&&!c[1]){const i=document.getElementById("club-city");if(i)i.focus();toast("Add your club's city")}else if(c)toast(`Club season set: ${clubLabel()}`)},0);return}
+  if(e.target.id==="club-city"||e.target.id==="club-country"){profile.clubGeo=null;profile.clubCity=($("#club-city")||{}).value?.trim().slice(0,40)||"";profile.clubCountry=($("#club-country")||{}).value||"";store.set("profile",profile);HEAT=null;heatTried=false;try{localStorage.removeItem("af_heat3")}catch(e){}cardLang=null;guideC=null;setTimeout(render,0);if(profile.clubCity&&profile.clubCountry)toast(`Club season set: ${clubPlace()}`);return}
   if(e.target.id==="j-city"){const d=jGet(jDate),v=e.target.value.trim().slice(0,40),had=Object.values(J.days).some(x=>x&&x.city&&x.city.trim().toLowerCase()===v.toLowerCase());d.city=v;if(jPut(jDate,d)){setTimeout(render,0);if(v&&!had)toast(`${v} stamped in your passport`)}}});
 document.addEventListener("input",e=>{const t=e.target;if(t.dataset&&t.dataset.ed&&ED){setPath(ED,t.dataset.ed,t.dataset.num?(t.value===""?"":Number(t.value)):t.value);edStatus();return}if(e.target.id==="q"){draft.q=e.target.value;const f=$("#faq"),g=$("#guides"),h=$("#guidehint");if(f)f.innerHTML=faqHTML();if(g)g.innerHTML=guidesHTML();if(h)h.innerHTML=guideHint()}});
 
