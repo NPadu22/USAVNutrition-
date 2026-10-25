@@ -1743,7 +1743,7 @@ document.addEventListener("input",e=>{const t=e.target;if(t.dataset&&t.dataset.e
 (()=>{let last=0;document.addEventListener("touchend",e=>{const now=Date.now();if(now-last<320&&e.touches.length===0&&e.changedTouches.length===1&&!e.target.closest("input,textarea,select,[contenteditable]")){e.preventDefault();const t=e.target.closest("button,a,label,[data-tab]");if(t)t.dispatchEvent(new MouseEvent("click",{bubbles:true,cancelable:true}))}last=now},{passive:false})})();
 
 render();
-if(/[?&#]walkout\b/.test(location.search+location.hash))setTimeout(()=>walkOut(true,profile||{first:"Kelsey",last:"Robinson",num:"12",position:"Outside hitter",team:"WNT"}),400);
+if(/[?&#]walkout\b/.test(location.search+location.hash))setTimeout(()=>walkOut(true,{first:"Nick",last:"Padula",num:"22",position:"USAV Sports Dietitian",team:"WNT"}),400);
 (()=>{const sp=document.getElementById("splash");if(!sp)return;let seen=false;try{seen=sessionStorage.getItem("af_splash")}catch(e){}
   const standalone=(()=>{try{return matchMedia("(display-mode: standalone)").matches||navigator.standalone}catch(e){return false}})();
   if(!standalone||seen||reduceMotion()){sp.remove();return}try{sessionStorage.setItem("af_splash","1")}catch(e){}
