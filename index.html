@@ -488,6 +488,18 @@ input,select,textarea{border-radius:12px}
 .seg button[aria-pressed="true"]{background:var(--sel-bg);color:var(--sel-fg);box-shadow:none}
 .seg [data-edweekadd]{border-radius:999px;border:1px dashed var(--line)}
 nav.tabs::before{display:none}
+/* Floating glass tab bar */
+nav.tabs{left:50%;right:auto;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom,0px));width:min(540px,calc(100% - 20px));box-sizing:border-box;
+  padding:6px;border:1px solid color-mix(in srgb,var(--fg) 14%,transparent);border-radius:999px;
+  background:color-mix(in srgb,var(--surface) 55%,color-mix(in srgb,var(--bg) 80%,transparent));backdrop-filter:blur(26px) saturate(1.8);-webkit-backdrop-filter:blur(26px) saturate(1.8);
+  box-shadow:0 10px 30px rgb(0 0 0 / .35),inset 0 1px 0 color-mix(in srgb,#fff 14%,transparent)}
+nav.tabs .in{max-width:none;gap:2px}
+nav.tabs button{padding:8px 0 7px;border-radius:999px;color:var(--fg);opacity:.8;font-size:.66rem;font-weight:600;letter-spacing:.01em;transition:background .25s,opacity .2s}
+nav.tabs button svg{width:23px;height:23px}
+nav.tabs button[aria-current="page"]{opacity:1;background:color-mix(in srgb,var(--fg) 13%,transparent);box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 10%,transparent)}
+nav.tabs button[aria-current="page"] svg{color:var(--fg);transform:none}
+nav.tabs button[aria-current="page"]::before{display:none}
+.app{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}
 h2{text-transform:none;font-size:1.5rem;letter-spacing:.005em}
 h2::before{width:.6em;height:.6em}
 .sb{border-radius:7px}
