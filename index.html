@@ -701,7 +701,8 @@ const CONFIG = {
   rdName: "Nick, USAV Sports Dietitian",
   appLink: "https://npadu22.github.io/USAVNutrition-/",
   sheetId: "1c9JblGdCmb972_vX0yK2UJvCnv_kmc4JSpDwUYuFn9g",
-  heatPoint: [33.8155, -117.9107],            // Heat check: training center location (Anaheim). National Weather Service forecast, US only.  // Google Sheet ID for menus and announcements (see README)
+  heatPoint: [33.7170, -117.7970],            // Heat check: Momentous Sports Center, 14522 Myford Rd (Tustin/Irvine). National Weather Service forecast, US only.
+  facilityName: "Momentous in Tustin",  // Google Sheet ID for menus and announcements (see README)
   // RD inbox (Google Form). Profiles, session requests and feedback are sent here.
   inboxForm: "1FAIpQLSdW-2SWePfyArgLWH8_hUVcID3fX-ASAbdYT6XwMJKCsrtHxA",
   inboxFields: {Type:"entry.750054576",Name:"entry.263971746",Team:"entry.2052735913",Position:"entry.744514368","Pro team":"entry.657252409",
@@ -983,19 +984,19 @@ function stampFor(e){
 /* ===== Heat check (National Weather Service) ===== */
 function heatIndexF(T,RH){if(RH==null||T<80)return T;let hi=-42.379+2.04901523*T+10.14333127*RH-.22475541*T*RH-.00683783*T*T-.05481717*RH*RH+.00122874*T*T*RH+.00085282*T*RH*RH-.00000199*T*T*RH*RH;
   if(RH<13&&T<=112)hi-=((13-RH)/4)*Math.sqrt((17-Math.abs(T-95))/17);else if(RH>85&&T<=87)hi+=((RH-85)/10)*((87-T)/5);return hi}
-let HEAT=(()=>{try{const h=JSON.parse(localStorage.getItem("af_heat")||"null");return h&&h.date===isoToday()?h:null}catch(e){return null}})();
+let HEAT=(()=>{try{const h=JSON.parse(localStorage.getItem("af_heat2")||"null");return h&&h.date===isoToday()?h:null}catch(e){return null}})();
 let heatTried=false;
 async function loadHeat(){
   if(HEAT||heatTried||!CONFIG.heatPoint||!navigator.onLine)return;heatTried=true;
   try{
     const [la,lo]=CONFIG.heatPoint;
-    let url=null;try{url=localStorage.getItem("af_heaturl")}catch(e){}
-    if(!url){const p=await (await fetch(`https://api.weather.gov/points/${la},${lo}`)).json();url=p.properties&&p.properties.forecastHourly;if(!url)return;try{localStorage.setItem("af_heaturl",url)}catch(e){}}
+    let url=null;try{url=localStorage.getItem("af_heaturl2")}catch(e){}
+    if(!url){const p=await (await fetch(`https://api.weather.gov/points/${la},${lo}`)).json();url=p.properties&&p.properties.forecastHourly;if(!url)return;try{localStorage.setItem("af_heaturl2",url)}catch(e){}}
     const f=await (await fetch(url)).json(),today=isoToday();
     let max=null;(f.properties&&f.properties.periods||[]).forEach(x=>{const st=String(x.startTime||"");if(st.slice(0,10)!==today)return;const hr=+st.slice(11,13);if(hr<8||hr>20)return;
       let T=+x.temperature;if(x.temperatureUnit==="C")T=T*9/5+32;const RH=x.relativeHumidity&&x.relativeHumidity.value!=null?+x.relativeHumidity.value:null;const hi=heatIndexF(T,RH);if(max==null||hi>max)max=hi});
     if(max==null)return;
-    HEAT={date:today,hi:Math.round(max)};try{localStorage.setItem("af_heat",JSON.stringify(HEAT))}catch(e){}
+    HEAT={date:today,hi:Math.round(max)};try{localStorage.setItem("af_heat2",JSON.stringify(HEAT))}catch(e){}
     if(tab==="home"&&profile&&!(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)))render();
   }catch(e){}
 }
@@ -1003,7 +1004,7 @@ function heatHTML(){
   if(!HEAT||HEAT.hi<90)return "";
   const bad=HEAT.hi>=103;
   return `<div class="heat ${bad?"hot2":""}" role="note"><span class="deg num">${HEAT.hi}°</span><div><b>${bad?"Dangerous heat today":"Hot one today"}</b>
-   <p>Feels like ${HEAT.hi}°F near the training center. Start practice hydrated, add a sports drink with sodium, and drink more if you're outside or a salty sweater.${bad?" Talk with athletic training before any outdoor session.":""}</p></div></div>`;
+   <p>Feels like ${HEAT.hi}°F at ${esc(CONFIG.facilityName)}. Start practice hydrated, add a sports drink with sodium, and drink more if you're outside or a salty sweater.${bad?" Talk with athletic training before any outdoor session.":""}</p></div></div>`;
 }
 /* ===== Win mode + easter egg ===== */
 function winKey(a){return (a.when||"")+"|"+a.t}
