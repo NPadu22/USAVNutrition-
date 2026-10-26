@@ -1255,7 +1255,8 @@ const CLUBS=[
  ["LOVB Austin","Austin","USA"],["LOVB Houston","Houston","USA"],["LOVB Atlanta","Atlanta","USA"],["LOVB Salt Lake","Salt Lake City","USA"],["LOVB Madison","Madison","USA"],["LOVB Nebraska","Omaha","USA"],["LOVB Los Angeles Orbit","Los Angeles","USA"],["LOVB San Francisco Signal","San Francisco","USA"],
  ["MLV Omaha Supernovas","Omaha","USA"],["MLV Grand Rapids Rise","Grand Rapids","USA"],["MLV Orlando Valkyries","Orlando","USA"],["MLV Los Angeles Thunder","Los Angeles","USA"],["MLV Minnesota Forge","Minnesota","USA",44.98,-93.27],["MLV Indy Ignite","Indianapolis","USA"]
 ];
-function isStaff(){return !!profile&&STAFF_ROLES.includes(profile.position)}
+function isStaffRole(){return !!profile&&STAFF_ROLES.includes(profile.position)}
+function isStaff(){return isStaffRole()&&profile.view!=="athlete"}
 function clubMode(){if(isStaff()&&(profile||{}).season!=="club")return false;const p=profile||{};if(!p.clubCity&&!p.clubCountry)return false;if(p.season==="club")return true;if(p.season==="team")return false;return /off/i.test(chapterName())}
 function clubPlace(){const p=profile||{};return [p.clubCity,p.clubCountry&&p.clubCountry!=="Other"?p.clubCountry:""].filter(Boolean).join(", ")}
 function clubLabel(){const p=profile||{};return [p.club,clubPlace()].filter(Boolean).join(" · ")}
@@ -1607,7 +1608,14 @@ function vMe(){
    </div></div>
    <p class="wear-note">Your badge earns a punch for each month with 3+ days logged${chapterName()?`, and a sticker for each season chapter`:""}.</p>
    <button class="btn ghost block" data-edit="1">Edit profile</button>
-   ${`<section><h2>Season</h2><div class="card stack">${isStaff()?`<p class="muted" style="font-size:.8rem">Staff: switch to "With my club" to preview what athletes see during club season.</p>`:""}
+   ${isStaffRole()?`<section><h2>Editor tools</h2><div class="card stack">
+    <p class="muted" style="font-size:.84rem">Only staff see this. Preview the app the way athletes see it.</p>
+    <div class="stack" style="gap:6px"><span class="eyebrow">Preview as</span><div class="choice">${[["staff","Staff view"],["athlete","Athlete view"]].map(([k,l])=>`<button type="button" data-viewas="${k}" aria-pressed="${(profile.view||"staff")===k}">${l}</button>`).join("")}</div></div>
+    <div class="stack" style="gap:6px"><span class="eyebrow">Team</span><div class="choice">${["WNT","MNT"].map(t=>`<button type="button" data-teamas="${t}" aria-pressed="${profile.team===t}">${t}</button>`).join("")}</div></div>
+    <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn ghost sm" data-replaywo="1">Replay walk-out</button><a class="btn ghost sm" href="https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/edit" target="_blank" rel="noopener">Open content sheet</a></div>
+    <p class="muted" style="font-size:.78rem">Club season preview: use Season below. Allergy flags: add test allergies in Edit profile.</p>
+   </div></section>`:""}
+   ${`<section><h2>Season</h2><div class="card stack">
     <div class="choice" data-seasonset="1">${[["team","With the national team"],["club","With my club"]].map(([k,l])=>`<button type="button" data-seasonv="${k}" aria-pressed="${(profile.season||"team")===k}">${l}</button>`).join("")}</div>
     ${(profile.season==="club")?`<label for="club-pick">Your club<select id="club-pick"><option value="">Select your club</option>${CLUB_COUNTRIES.filter(c=>c!=="Other").map(c=>`<optgroup label="${c}">${CLUBS.filter(x=>x[2]===c).map(x=>`<option ${profile.club===x[0]?"selected":""}>${esc(x[0])}</option>`).join("")}</optgroup>`).join("")}<option value="__other" ${profile.club===""&&profile.clubCity?"selected":""}>My club isn't listed</option></select></label>
     <div class="namerow"><label for="club-city">Club city<input id="club-city" value="${esc(profile.clubCity||"")}" placeholder="e.g. Istanbul" autocomplete="off"></label><label for="club-country">Country<select id="club-country"><option value="">Select</option>${CLUB_COUNTRIES.map(c=>`<option ${profile.clubCountry===c?"selected":""}>${c}</option>`).join("")}</select></label></div>
@@ -1948,6 +1956,9 @@ document.addEventListener("click",e=>{
   if(b.dataset.closelb){$("#lightbox").hidden=true;return}
   if(b.dataset.cancel){draft={};render();return}
   if(b.dataset.edit){draft={...profile,editing:true};render();scrollTo({top:0});return}
+  if(b.dataset.viewas){profile.view=b.dataset.viewas;store.set("profile",profile);render();toast(profile.view==="athlete"?"Previewing the athlete view":"Back to the staff view");return}
+  if(b.dataset.teamas){profile.team=b.dataset.teamas;store.set("profile",profile);render();toast(`Previewing ${profile.team}`);return}
+  if(b.dataset.replaywo){walkOut(true,{...profile,position:profile.view==="athlete"?"Outside hitter":profile.position,num:profile.num||"22"});return}
   if(b.dataset.seasonv){profile.season=b.dataset.seasonv;store.set("profile",profile);HEAT=null;heatTried=false;render();if(profile.season==="club"&&!profile.clubCity){const c=document.getElementById("club-city");if(c)c.focus()}return}
   if(b.dataset.clang){cardLang=b.dataset.clang;render();return}
   if(b.dataset.gc){guideC=b.dataset.gc;render();return}
