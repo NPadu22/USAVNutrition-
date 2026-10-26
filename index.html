@@ -1256,7 +1256,7 @@ const CLUBS=[
  ["MLV Omaha Supernovas","Omaha","USA"],["MLV Grand Rapids Rise","Grand Rapids","USA"],["MLV Orlando Valkyries","Orlando","USA"],["MLV Los Angeles Thunder","Los Angeles","USA"],["MLV Minnesota Forge","Minnesota","USA",44.98,-93.27],["MLV Indy Ignite","Indianapolis","USA"]
 ];
 function isStaff(){return !!profile&&STAFF_ROLES.includes(profile.position)}
-function clubMode(){if(isStaff())return false;const p=profile||{};if(!p.clubCity&&!p.clubCountry)return false;if(p.season==="club")return true;if(p.season==="team")return false;return /off/i.test(chapterName())}
+function clubMode(){if(isStaff()&&(profile||{}).season!=="club")return false;const p=profile||{};if(!p.clubCity&&!p.clubCountry)return false;if(p.season==="club")return true;if(p.season==="team")return false;return /off/i.test(chapterName())}
 function clubPlace(){const p=profile||{};return [p.clubCity,p.clubCountry&&p.clubCountry!=="Other"?p.clubCountry:""].filter(Boolean).join(", ")}
 function clubLabel(){const p=profile||{};return [p.club,clubPlace()].filter(Boolean).join(" · ")}
 /* Allergy cards. Every language must be checked by a native speaker before CARD_REVIEWED is set to true for it. */
@@ -1364,7 +1364,7 @@ function vHome(){
   const flagged=meals.filter(x=>hits(x.a)).length;
   const [feat,...rest]=DATA.announcements;
   const dateLine=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
-  const club=clubMode(),staff=isStaff();
+  const club=clubMode(),staff=isStaff()&&!club;
   const go=staff?[
    ["food","menu","Weekly menu","The full lineup",IC.plate],
    ["rd","","Ask the RD","Nutrition 411 and booking",IC.chat],
@@ -1607,7 +1607,7 @@ function vMe(){
    </div></div>
    <p class="wear-note">Your badge earns a punch for each month with 3+ days logged${chapterName()?`, and a sticker for each season chapter`:""}.</p>
    <button class="btn ghost block" data-edit="1">Edit profile</button>
-   ${isStaff()?"":`<section><h2>Season</h2><div class="card stack">
+   ${`<section><h2>Season</h2><div class="card stack">${isStaff()?`<p class="muted" style="font-size:.8rem">Staff: switch to "With my club" to preview what athletes see during club season.</p>`:""}
     <div class="choice" data-seasonset="1">${[["team","With the national team"],["club","With my club"]].map(([k,l])=>`<button type="button" data-seasonv="${k}" aria-pressed="${(profile.season||"team")===k}">${l}</button>`).join("")}</div>
     ${(profile.season==="club")?`<label for="club-pick">Your club<select id="club-pick"><option value="">Select your club</option>${CLUB_COUNTRIES.filter(c=>c!=="Other").map(c=>`<optgroup label="${c}">${CLUBS.filter(x=>x[2]===c).map(x=>`<option ${profile.club===x[0]?"selected":""}>${esc(x[0])}</option>`).join("")}</optgroup>`).join("")}<option value="__other" ${profile.club===""&&profile.clubCity?"selected":""}>My club isn't listed</option></select></label>
     <div class="namerow"><label for="club-city">Club city<input id="club-city" value="${esc(profile.clubCity||"")}" placeholder="e.g. Istanbul" autocomplete="off"></label><label for="club-country">Country<select id="club-country"><option value="">Select</option>${CLUB_COUNTRIES.map(c=>`<option ${profile.clubCountry===c?"selected":""}>${c}</option>`).join("")}</select></label></div>
