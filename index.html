@@ -803,6 +803,17 @@ input,select,textarea{font-size:max(16px,1em)!important}
 .acard-o{font-size:1.05rem;font-weight:600;margin:0 0 10px}
 .acard-w{font-size:1rem;margin:10px 0 6px}
 .acard-t{font-weight:700;font-size:1.1rem;margin:0}
+/* Club food */
+.plate{width:220px;height:220px;margin:4px auto 0;display:block}
+.plate-key{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;font-size:.84rem}
+.plate-key i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:0}
+.groc{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;text-align:left!important;gap:12px!important;padding:11px 0;border-bottom:1px solid var(--line);cursor:pointer;font-weight:400}
+.groc span{flex:1;min-width:0;text-align:left;color:var(--fg)}
+.groc:last-child{border-bottom:0}
+.groc input{width:22px!important;height:22px;min-width:22px;padding:0!important;margin:0;flex:none;accent-color:var(--accent);border:0;background:none}
+.groc b{display:block;font-weight:600}
+.groc i{display:block;font-style:normal;font-size:.8rem;color:var(--muted)}
+.groc input:checked+span{opacity:.5;text-decoration:line-through}
 /* Sliding tab bubble */
 nav.tabs .in{position:relative}
 nav.tabs button{position:relative;z-index:1}
@@ -1443,7 +1454,107 @@ const IC=(()=>{const s=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentC
  chat:s('<path d="M4 5h16v11H9l-5 4z"/>'),
  note:s('<path d="M6 3h11a2 2 0 0 1 2 2v16H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M8 8h7M8 12h7M8 16h4"/>'),
  send:s('<path d="M21 3 3 10l7 3 3 7z"/><path d="m10 13 4-4"/>')}})();
+
+/* ===== Club-season Food tab (athletes living alone; club provides little) ===== */
+let cfSeg="plate",cfLoad="moderate",foodTeamView=false;
+/* Plate shares follow the Athlete's Plates (USOPC sport dietitians + UCCS Sport Nutrition Graduate Program). */
+const PLATES={easy:{n:"Easy or rest day",g:.25,v:.5,p:.25,fat:"1 teaspoon"},moderate:{n:"Moderate day",g:1/3,v:1/3,p:1/3,fat:"1 tablespoon"},hard:{n:"Hard day or match",g:.5,v:.25,p:.25,fat:"2 tablespoons"}};
+const LOCAL={
+ Italy:{c:"pasta, rice or bread",p:"chicken, tuna, eggs or legumes",v:"salad, seasonal vegetables and fruit"},
+ "Türkiye":{c:"rice pilaf, bulgur or bread",p:"chicken, köfte, eggs or lentils",v:"salad, vegetables and fruit"},
+ Poland:{c:"potatoes, kasza, rice or bread",p:"chicken, eggs, twaróg or fish",v:"vegetables, apples and other fruit"},
+ France:{c:"pasta, rice, potatoes or baguette",p:"chicken, eggs, fish or lentils",v:"vegetables, salad and fruit"},
+ Germany:{c:"potatoes, pasta, rice or whole-grain bread",p:"chicken, eggs, quark or lentils",v:"vegetables and fruit"},
+ Japan:{c:"rice, udon or soba",p:"chicken, salmon, tofu or eggs",v:"vegetables, miso soup and fruit"},
+ Greece:{c:"rice, pasta, potatoes or bread",p:"chicken, fish, eggs or beans",v:"Greek salad, vegetables and fruit"},
+ Brazil:{c:"rice, beans, tapioca or bread",p:"chicken, eggs or fish",v:"vegetables, papaya, banana and other fruit"},
+ Spain:{c:"rice, pasta, potatoes or bread",p:"chicken, eggs, tuna or chickpeas",v:"vegetables, salad and fruit"},
+ USA:{c:"rice, pasta, potatoes or tortillas",p:"chicken, eggs, fish or beans",v:"vegetables and fruit"},
+ Other:{c:"the local rice, bread, potatoes or noodles",p:"chicken, fish, eggs, beans or tofu",v:"vegetables and fruit"}
+};
+const GROC={
+ Italy:[["Pasta","pasta"],["Rice","riso"],["Bread","pane"],["Oats","fiocchi d'avena"],["Potatoes","patate"],["Eggs","uova"],["Chicken breast","petto di pollo"],["Canned tuna","tonno in scatola"],["Greek yogurt","yogurt greco"],["Milk","latte"],["Chickpeas or lentils","ceci o lenticchie"],["Bananas","banane"],["Seasonal fruit","frutta di stagione"],["Vegetables and salad","verdure e insalata"],["Olive oil","olio d'oliva"]],
+ "Türkiye":[["Rice","pirinç"],["Bulgur","bulgur"],["Bread","ekmek"],["Oats","yulaf ezmesi"],["Potatoes","patates"],["Eggs","yumurta"],["Chicken breast","tavuk göğsü"],["Canned tuna","ton balığı konservesi"],["Strained yogurt","süzme yoğurt"],["Milk","süt"],["Lentils","mercimek"],["Bananas","muz"],["Fruit","meyve"],["Vegetables","sebze"],["Olive oil","zeytinyağı"]],
+ Poland:[["Rice","ryż"],["Pasta","makaron"],["Bread","chleb"],["Oats","płatki owsiane"],["Potatoes","ziemniaki"],["Buckwheat","kasza gryczana"],["Eggs","jajka"],["Chicken breast","pierś z kurczaka"],["Canned tuna","tuńczyk w puszce"],["Skyr or quark","skyr lub twaróg"],["Milk or kefir","mleko lub kefir"],["Bananas","banany"],["Apples","jabłka"],["Vegetables","warzywa"]],
+ France:[["Pasta","pâtes"],["Rice","riz"],["Bread","pain"],["Oats","flocons d'avoine"],["Potatoes","pommes de terre"],["Eggs","œufs"],["Chicken breast","blanc de poulet"],["Canned tuna","thon en boîte"],["Yogurt or fromage blanc","yaourt ou fromage blanc"],["Milk","lait"],["Lentils","lentilles"],["Bananas","bananes"],["Fruit","fruits"],["Vegetables","légumes"],["Olive oil","huile d'olive"]],
+ Germany:[["Pasta","Nudeln"],["Rice","Reis"],["Whole-grain bread","Vollkornbrot"],["Oats","Haferflocken"],["Potatoes","Kartoffeln"],["Eggs","Eier"],["Chicken breast","Hähnchenbrust"],["Canned tuna","Thunfisch (Dose)"],["Quark or skyr","Magerquark oder Skyr"],["Milk","Milch"],["Lentils","Linsen"],["Bananas","Bananen"],["Fruit","Obst"],["Vegetables","Gemüse"]],
+ Japan:[["Rice","米 (kome)"],["Udon or soba","うどん・そば"],["Sliced bread","食パン"],["Oats","オートミール"],["Eggs","卵"],["Chicken breast","鶏むね肉"],["Salmon","鮭"],["Tofu","豆腐"],["Natto","納豆"],["Yogurt","ヨーグルト"],["Milk","牛乳"],["Bananas","バナナ"],["Vegetables","野菜"]],
+ Greece:[["Pasta","μακαρόνια"],["Rice","ρύζι"],["Bread","ψωμί"],["Oats","βρώμη"],["Potatoes","πατάτες"],["Eggs","αυγά"],["Chicken breast","στήθος κοτόπουλο"],["Canned tuna","τόνος σε κονσέρβα"],["Greek yogurt","στραγγιστό γιαούρτι"],["Milk","γάλα"],["Lentils","φακές"],["Bananas","μπανάνες"],["Fruit","φρούτα"],["Vegetables","λαχανικά"]],
+ Brazil:[["Rice","arroz"],["Beans","feijão"],["Bread rolls","pão francês"],["Tapioca","tapioca"],["Oats","aveia"],["Potatoes","batata"],["Eggs","ovos"],["Chicken breast","peito de frango"],["Canned tuna","atum em lata"],["Yogurt","iogurte"],["Milk","leite"],["Bananas","banana"],["Papaya","mamão"],["Vegetables","legumes e verduras"]],
+ Spain:[["Pasta","pasta"],["Rice","arroz"],["Bread","pan"],["Oats","copos de avena"],["Potatoes","patatas"],["Eggs","huevos"],["Chicken breast","pechuga de pollo"],["Canned tuna","atún en lata"],["Yogurt","yogur"],["Milk","leche"],["Chickpeas","garbanzos"],["Bananas","plátanos"],["Fruit","fruta"],["Vegetables","verduras"]],
+ USA:[["Rice"],["Pasta"],["Bread or tortillas"],["Oats"],["Potatoes"],["Eggs"],["Chicken breast"],["Canned tuna or salmon"],["Greek yogurt"],["Milk"],["Beans"],["Bananas"],["Fruit"],["Frozen vegetables"]],
+ Other:[["Rice or local grain"],["Bread or noodles"],["Oats"],["Potatoes"],["Eggs"],["Chicken or fish"],["Canned tuna"],["Yogurt"],["Milk"],["Beans or lentils"],["Bananas"],["Fruit"],["Vegetables"]]
+};
+const COOK=[
+ {n:"Chicken rice bowl",t:"20 min · 1 serving",a:["Soy","Wheat/Gluten"],d:"Cook rice. Pan-fry diced chicken, add a handful of frozen vegetables and a splash of soy sauce. Serve over the rice. Hard day: double the rice."},
+ {n:"Tuna tomato pasta",t:"15 min · 1 serving",a:["Wheat/Gluten","Fish"],d:"Boil pasta. Warm canned tomatoes with garlic and olive oil, stir in a can of tuna. Toss with the pasta and add a side salad."},
+ {n:"Egg and potato skillet",t:"20 min · 1 serving",a:["Egg"],d:"Fry diced potatoes until golden, add peppers or spinach, then crack in 3 eggs and scramble. Add bread or fruit on hard days."},
+ {n:"Overnight oats",t:"5 min the night before",a:["Dairy"],d:"Mix oats, milk and yogurt in a jar, top with banana and honey. Grab it on the way to morning practice. Gluten-free oats if wheat is your allergen."},
+ {n:"Lentil and rice pot",t:"35 min · 3 meals",a:[],d:"Simmer lentils and rice with onion, carrot, stock and spices. Keeps 3 days in the fridge. Add an egg or chicken for more protein."},
+ {n:"Salmon and potato tray",t:"30 min · 1 serving",a:["Fish"],d:"Roast potato wedges for 15 minutes, add salmon and vegetables, roast 12 more. Olive oil, salt and lemon."},
+ {n:"Yogurt power bowl",t:"3 min · 1 serving",a:["Dairy","Wheat/Gluten"],d:"Greek yogurt, fruit, oats or granola and honey. A fast recovery snack. Check the granola label for nuts."},
+ {n:"Chicken wrap",t:"10 min · 1 serving",a:["Wheat/Gluten"],d:"Tortilla or flatbread, cooked chicken, salad, cheese or hummus. Two wraps plus fruit after practice."},
+ {n:"Egg fried rice",t:"15 min · 2 meals",a:["Egg","Soy","Wheat/Gluten"],d:"Best with yesterday's rice. Scramble eggs, add rice, frozen vegetables and soy sauce. Eat half now, half tomorrow."},
+ {n:"Big-batch chili",t:"40 min · 4 meals",a:[],d:"Ground meat or extra beans, two kinds of beans, tomatoes, onion and chili spice. Serve with rice or bread. Freezes well."}
+];
+const SNACKS={
+ Italy:[["Banana",[]],["Grissini or crackers",["Wheat/Gluten"]],["Panino with bresaola",["Wheat/Gluten"]],["Fette biscottate with honey",["Wheat/Gluten"]],["Yogurt drink",["Dairy"]],["Rice cakes",[]]],
+ "Türkiye":[["Banana",[]],["Simit",["Wheat/Gluten","Sesame"]],["Ayran",["Dairy"]],["Dried apricots and figs",[]],["Lavash wrap with cheese",["Wheat/Gluten","Dairy"]],["Yogurt cup",["Dairy"]]],
+ Poland:[["Banana",[]],["Rice cakes (wafle ryżowe)",[]],["Kefir",["Dairy"]],["Twaróg sandwich",["Wheat/Gluten","Dairy"]],["Apple",[]],["Cereal bar",["Wheat/Gluten"]]],
+ France:[["Banana",[]],["Fruit compote pouch",[]],["Baguette with ham",["Wheat/Gluten"]],["Drinkable yogurt",["Dairy"]],["Pain d'épices",["Wheat/Gluten"]],["Cereal bar",["Wheat/Gluten"]]],
+ Germany:[["Banana",[]],["Brezel",["Wheat/Gluten"]],["Quark cup",["Dairy"]],["Müsliriegel",["Wheat/Gluten"]],["Cheese roll",["Wheat/Gluten","Dairy"]],["Apple",[]]],
+ Japan:[["Onigiri",[]],["Banana",[]],["Jelly energy drink",[]],["Roasted sweet potato",[]],["Drinkable yogurt",["Dairy"]],["Bread roll",["Wheat/Gluten"]]],
+ Greece:[["Banana",[]],["Koulouri",["Wheat/Gluten","Sesame"]],["Greek yogurt cup",["Dairy"]],["Dried figs",[]],["Rice cakes",[]],["Fruit",[]]],
+ Brazil:[["Banana",[]],["Tapioca with cheese",["Dairy"]],["Pão de queijo",["Dairy","Egg"]],["Coconut water",[]],["Açaí bowl (recovery)",[]],["Cereal bar",["Wheat/Gluten"]]],
+ Spain:[["Banana",[]],["Bocadillo",["Wheat/Gluten"]],["Drinkable yogurt",["Dairy"]],["Membrillo with cheese",["Dairy"]],["Rice cakes",[]],["Dried fruit",[]]],
+ USA:[["Banana",[]],["Pretzels",["Wheat/Gluten"]],["Granola bar",["Wheat/Gluten"]],["PB&J",["Peanut","Wheat/Gluten"]],["String cheese",["Dairy"]],["Chocolate milk",["Dairy"]]],
+ Other:[["Banana",[]],["Rice cakes",[]],["Yogurt",["Dairy"]],["Bread with something salty",["Wheat/Gluten"]],["Dried fruit",[]],["Fruit",[]]]
+};
+function cKey(){return GUIDE_C[profile.clubCountry]?profile.clubCountry:"Other"}
+function grocState(){try{return JSON.parse(localStorage.getItem("af_groc")||"{}")}catch(e){return {}}}
+function plateSVG(pl){
+  const seg=(start,frac,color)=>{const a0=start*2*Math.PI-Math.PI/2,a1=(start+frac)*2*Math.PI-Math.PI/2,r=90,cx=100,cy=100,large=frac>.5?1:0;
+    return `<path d="M${cx} ${cy} L${(cx+r*Math.cos(a0)).toFixed(1)} ${(cy+r*Math.sin(a0)).toFixed(1)} A${r} ${r} 0 ${large} 1 ${(cx+r*Math.cos(a1)).toFixed(1)} ${(cy+r*Math.sin(a1)).toFixed(1)} Z" fill="${color}" stroke="#fff" stroke-width="3"/>`};
+  return `<svg viewBox="0 0 200 200" class="plate" role="img" aria-label="${Math.round(pl.g*100)}% grains and starches, ${Math.round(pl.v*100)}% vegetables and fruit, ${Math.round(pl.p*100)}% protein"><circle cx="100" cy="100" r="98" fill="#fff" stroke="#D0D0CE" stroke-width="2"/>${seg(0,pl.g,"#E8B04A")}${seg(pl.g,pl.v,"#5FA35B")}${seg(pl.g+pl.v,pl.p,"#C8553D")}</svg>`;
+}
+function vFoodClub(){
+  const C=cKey(),L=LOCAL[C]||LOCAL.Other;
+  const segs=[["plate","Plate"],["groc","Groceries"],["cook","Cook"],["eat","Eat out"],["snacks","Snacks"],["tell","Tell Nick"]];
+  let body="";
+  if(cfSeg==="plate"){const pl=PLATES[cfLoad];
+    body=`<div class="choice" data-cfload="1">${Object.entries(PLATES).map(([k,v])=>`<button type="button" data-load="${k}" aria-pressed="${cfLoad===k}">${v.n}</button>`).join("")}</div>
+    <div class="card stack" style="align-items:center">${plateSVG(pl)}
+     <div class="plate-key"><span><i style="background:#E8B04A"></i>Grains and starches ${pl.g===1/3?"⅓":pl.g===.5?"½":"¼"}</span><span><i style="background:#5FA35B"></i>Vegetables and fruit ${pl.v===1/3?"⅓":pl.v===.5?"½":"¼"}</span><span><i style="background:#C8553D"></i>Protein ${pl.p===1/3?"⅓":"¼"}</span></div>
+     <p style="text-align:center"><b>${C==="Other"?"Where you are":C}:</b> ${cfLoad==="hard"?"a big portion of ":cfLoad==="easy"?"a small portion of ":""}${L.c}, with ${L.p}, plus ${L.v}.</p>
+     <p class="muted" style="font-size:.84rem;text-align:center">Add about ${pl.fat} of fat (olive oil, butter, avocado), a drink, and fruit on the side.${cfLoad==="hard"?" On match days, eat this 3–4 hours before the first serve.":""}</p></div>
+    <p class="stamp">Based on the Athlete's Plates from the USOPC sport dietitians and the UCCS Sport Nutrition Graduate Program.</p>`}
+  else if(cfSeg==="groc"){const g=grocState(),list=GROC[C]||GROC.Other,done=list.filter(x=>g[C+"|"+x[0]]).length;
+    body=`<p class="muted" style="font-size:.88rem">A week of staples for one. Tick things off as you shop; the local name is what to look for on the label.</p>
+    <div class="card" style="padding-block:4px">${list.map(x=>{const k=C+"|"+x[0];return `<label class="groc"><input type="checkbox" data-groc="${esc(k)}" ${g[k]?"checked":""}><span><b>${esc(x[0])}</b>${x[1]?`<i>${esc(x[1])}</i>`:""}</span></label>`}).join("")}</div>
+    <div class="row" style="gap:8px"><button class="btn ghost block" data-groccopy="1">Copy list</button><button class="btn ghost block" data-grocclear="1">Start a new week</button></div>
+    <p class="stamp">${done} of ${list.length} in the basket.</p>`}
+  else if(cfSeg==="cook"){
+    body=`<p class="muted" style="font-size:.88rem">One-pan meals for a small kitchen. The batch recipes cover two to four meals, so you cook less often.</p>
+    ${COOK.map(r=>`<details class="card"><summary><span><b>${esc(r.n)}</b><span class="muted" style="display:block;font-size:.8rem;font-weight:400">${r.t}</span></span></summary><div class="ans"><p>${r.d}</p>${r.a.length?`<p class="contains">Contains ${r.a.map(a=>myAllergens().includes(a)?`<b class="hit">${esc(a.toLowerCase())}</b>`:esc(a.toLowerCase())).join(", ")}</p>`:`<p class="contains">No major allergens in the base recipe</p>`}</div></details>`).join("")}`}
+  else if(cfSeg==="eat"){const g=GUIDE_C[C];
+    body=`${myAllergens().length||profile.other?`<button class="btn block" data-go="acard">${IC.card} Show my allergy card</button>`:""}
+    <div class="card stack"><span class="eyebrow">What to order${C==="Other"?"":" in "+C}</span><p>${g.e}</p></div>
+    <div class="card stack"><span class="eyebrow">Watch for</span><p>${g.w}</p></div>
+    <button class="btn ghost block" data-go="cguide">Full food guide</button>`}
+  else if(cfSeg==="snacks"){const L2=SNACKS[C]||SNACKS.Other;
+    body=`<p class="muted" style="font-size:.88rem">Easy to buy${C==="Other"?"":" in "+C} and carry to practice. Eat one 30–60 minutes before, and another after if dinner is far off.</p>
+    <div class="card" style="padding-block:2px">${L2.map(([n,a])=>{const hit=a.some(x=>myAllergens().includes(x));return `<div class="item"><div class="meal-top"><h3>${esc(n)}</h3>${hit?`<span class="chip stop">Your allergen</span>`:""}</div>${a.length?`<p class="contains">Usually contains ${a.map(x=>esc(x.toLowerCase())).join(", ")}</p>`:""}</div>`}).join("")}</div>`}
+  else{
+    body=`<div class="rail"><div class="ticket">${draft.clubfoodSent?"":`<div class="ticket-head"><span>Club food report</span><span>${esc(profile.club||clubPlace()||"")}</span></div>`}`+formBlock("clubfood",[
+      `<div class="stack" style="gap:6px"><span class="eyebrow">What does your club provide?</span><div class="choice" data-pick="cfProv">${["Nothing","Some team meals","Lunch most days","Most meals"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${draft.cfProv===t}">${t}</button>`).join("")}</div></div>`,
+      `<label for="cf-note">What's hardest about eating here?<textarea id="cf-note" placeholder="e.g. Practice ends at 9 pm and nothing is open"></textarea></label>`
+    ],"Send to RD")+`</div></div>`}
+  return `<div class="view"><div><p class="eyebrow">Club season${clubLabel()?" · "+esc(clubLabel()):""}</p><h1 style="margin-top:6px">Food</h1></div>
+   <div class="seg" data-cfsegs="1">${segs.map(([k,l])=>`<button data-cfseg="${k}" aria-pressed="${cfSeg===k}">${l}</button>`).join("")}</div>${body}
+   <button class="linkbtn" style="align-self:center" data-foodteam="1">USAV menus (for when you're back with the team)</button></div>`;
+}
 function vFood(){
+  if(clubMode()&&!foodTeamView)return vFoodClub();
   const segs=[["menu","Weekly menu"],["smoothie","Smoothies"],["snacks","Court snacks"],["dinner","Away meals"],["feedback","Feedback"]];
   let body="";
   if(foodSeg==="menu"){
@@ -1494,7 +1605,7 @@ function vFood(){
       `<label for="fb-note">Details<textarea id="fb-note" placeholder="What worked, what didn't, what you'd like to see"></textarea></label>`
     ],"Send to the kitchen")+`<p class="stamp" style="margin-top:10px">Goes to Nick, who shares it with foodservice.</p></div></div>`;
   }
-  return `<div class="view"><div><p class="eyebrow">Foodservice · updated ${fmtDate(DATA.updated)}</p><h1 style="margin-top:6px">Food</h1></div>
+  return `<div class="view"><div><p class="eyebrow">Foodservice · updated ${fmtDate(DATA.updated)}</p><h1 style="margin-top:6px">Food</h1>${clubMode()?`<button class="linkbtn" data-foodteam="1">‹ Back to club season food</button>`:""}</div>
    <div class="seg" data-segset="food">${segs.map(([k,l])=>`<button data-v="${k}" aria-pressed="${foodSeg===k}">${l}</button>`).join("")}</div>${body}</div>`;
 }
 /* ===== Send to the RD inbox (Google Form) ===== */
@@ -1965,6 +2076,11 @@ document.addEventListener("click",e=>{
   if(b.dataset.cancel){draft={};render();return}
   if(b.dataset.edit){draft={...profile,editing:true};render();scrollTo({top:0});return}
   if(b.dataset.lockeditor){try{localStorage.removeItem("af_editor")}catch(e){}EDITOR=false;profile.view="";store.set("profile",profile);render();toast("Editor mode off on this device");return}
+  if(b.dataset.cfseg){cfSeg=b.dataset.cfseg;render();return}
+  if(b.dataset.load){cfLoad=b.dataset.load;render();return}
+  if(b.dataset.foodteam){foodTeamView=!foodTeamView;render();scrollTo({top:0});return}
+  if(b.dataset.grocclear){try{const g=grocState();Object.keys(g).filter(k=>k.startsWith(cKey()+"|")).forEach(k=>delete g[k]);localStorage.setItem("af_groc",JSON.stringify(g))}catch(e){}render();toast("New week, fresh list");return}
+  if(b.dataset.groccopy){const C=cKey(),g=grocState(),t="Groceries\n"+(GROC[C]||GROC.Other).map(x=>`${g[C+"|"+x[0]]?"✓":"☐"} ${x[0]}${x[1]?" ("+x[1]+")":""}`).join("\n");(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast("List copied"),()=>toast("Couldn't copy on this device"));return}
   if(b.dataset.viewas){profile.view=b.dataset.viewas;store.set("profile",profile);render();toast(profile.view==="athlete"?"Previewing the athlete view":"Back to the staff view");return}
   if(b.dataset.teamas){profile.team=b.dataset.teamas;store.set("profile",profile);render();toast(`Previewing ${profile.team}`);return}
   if(b.dataset.replaywo){walkOut(true,{...profile,position:profile.view==="athlete"?"Outside hitter":profile.position,num:profile.num||"22"});return}
@@ -2005,6 +2121,12 @@ document.addEventListener("submit",e=>{
     const note=$("#ci-note").value.trim();
     sendInbox({...profileRecord("Club check-in"),Details:`${ciMonth()} · ${clubLabel()} · Local time ${new Date().toLocaleString("en-US",{weekday:"short",hour:"numeric",minute:"2-digit"})} (${(()=>{try{return Intl.DateTimeFormat().resolvedOptions().timeZone}catch(e){return "unknown"}})()}) · Food: ${draft.ciFood} · Energy: ${draft.ciEnergy} · Stomach: ${draft.ciGut}${note?" · "+note:""}`});
     try{localStorage.setItem("af_checkin",ciMonth())}catch(e){}draft.ciFood=draft.ciEnergy=draft.ciGut="";render();toast("Check-in sent");ballArc();return}
+  if(f.id==="form-clubfood"){
+    if(!draft.cfProv){toast("Pick what your club provides");return}
+    const note=$("#cf-note").value.trim();
+    draft.clubfoodSent=`Club food · ${clubLabel()}\n${profile.name} · ${profile.team}\nClub provides: ${draft.cfProv}${note?"\n"+note:""}`;
+    sendInbox({...profileRecord("Club food"),Details:`${clubLabel()} · Club provides: ${draft.cfProv}${note?" · "+note:""}`});
+    render();toast("Sent to Nick");ballArc();return}
   if(f.id==="form-feedback"){
     if(!draft.fbType){toast("Pick a feedback type");return}
     draft.feedbackSent=`Food feedback · ${draft.fbType}\n${profile.name} · ${profile.team}\nItem: ${$("#fb-meal").value.trim()||"—"}${draft.fbRate?"\nRating: "+draft.fbRate+"/5":""}${$("#fb-note").value.trim()?"\n"+$("#fb-note").value.trim():""}`;
@@ -2012,7 +2134,8 @@ document.addEventListener("submit",e=>{
     render();toast("Ticket sent");ballArc();return}
 });
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){const lb=$("#lightbox");if(lb&&!lb.hidden)lb.hidden=true}});
-document.addEventListener("change",e=>{if(e.target.id==="f-pos"){const f=$("#onb");if(f)f.classList.toggle("staff",STAFF_ROLES.includes(e.target.value))}
+document.addEventListener("change",e=>{if(e.target.dataset&&e.target.dataset.groc){const g=grocState();if(e.target.checked)g[e.target.dataset.groc]=1;else delete g[e.target.dataset.groc];try{localStorage.setItem("af_groc",JSON.stringify(g))}catch(x){}const st=document.querySelector(".view .stamp");if(st){const C=cKey(),L=GROC[C]||GROC.Other;st.textContent=`${L.filter(x=>g[C+"|"+x[0]]).length} of ${L.length} in the basket.`}return}
+  if(e.target.id==="f-pos"){const f=$("#onb");if(f)f.classList.toggle("staff",STAFF_ROLES.includes(e.target.value))}
   if(e.target.id==="j-photo"&&e.target.files&&e.target.files[0])jPhoto(e.target.files[0]);
   if(e.target.id==="club-pick"){const v=e.target.value,c=CLUBS.find(x=>x[0]===v);if(c){profile.club=c[0];profile.clubCity=c[1];profile.clubCountry=c[2];profile.clubGeo=c[3]!=null?[c[3],c[4]]:null}else{profile.club=""}store.set("profile",profile);HEAT=null;heatTried=false;try{localStorage.removeItem("af_heat3")}catch(e){}cardLang=null;guideC=null;setTimeout(()=>{render();if(c&&!c[1]){const i=document.getElementById("club-city");if(i)i.focus();toast("Add your club's city")}else if(c)toast(`Club season set: ${clubLabel()}`)},0);return}
   if(e.target.id==="club-city"||e.target.id==="club-country"){profile.clubGeo=null;profile.clubCity=($("#club-city")||{}).value?.trim().slice(0,40)||"";profile.clubCountry=($("#club-country")||{}).value||"";store.set("profile",profile);HEAT=null;heatTried=false;try{localStorage.removeItem("af_heat3")}catch(e){}cardLang=null;guideC=null;setTimeout(render,0);if(profile.clubCity&&profile.clubCountry)toast(`Club season set: ${clubPlace()}`);return}
