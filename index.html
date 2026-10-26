@@ -1255,9 +1255,15 @@ const CLUBS=[
  ["LOVB Austin","Austin","USA"],["LOVB Houston","Houston","USA"],["LOVB Atlanta","Atlanta","USA"],["LOVB Salt Lake","Salt Lake City","USA"],["LOVB Madison","Madison","USA"],["LOVB Nebraska","Omaha","USA"],["LOVB Los Angeles Orbit","Los Angeles","USA"],["LOVB San Francisco Signal","San Francisco","USA"],
  ["MLV Omaha Supernovas","Omaha","USA"],["MLV Grand Rapids Rise","Grand Rapids","USA"],["MLV Orlando Valkyries","Orlando","USA"],["MLV Los Angeles Thunder","Los Angeles","USA"],["MLV Minnesota Forge","Minnesota","USA",44.98,-93.27],["MLV Indy Ignite","Indianapolis","USA"]
 ];
+/* Editor mode: unlocked on one device by Nick's private link (?editor=<code>). Only the code's SHA-256 is stored here. */
+const EDITOR_HASH="7416afe21c0710fa85b291a4c6bb4f6b28d169367c4b5cbf7a4a7b8809155a63";
+let EDITOR=(()=>{try{return localStorage.getItem("af_editor")===EDITOR_HASH}catch(e){return false}})();
+(async()=>{const m=location.search.match(/[?&]editor=([a-z0-9]+)/i);if(!m||!window.crypto||!crypto.subtle)return;
+  const d=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(m[1]));const hx=[...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,"0")).join("");
+  if(hx===EDITOR_HASH){try{localStorage.setItem("af_editor",hx)}catch(e){}EDITOR=true;try{history.replaceState(null,"",location.pathname)}catch(e){}if(profile)render();toast("Editor mode on for this device")}})();
 function isStaffRole(){return !!profile&&STAFF_ROLES.includes(profile.position)}
-function isStaff(){return isStaffRole()&&profile.view!=="athlete"}
-function clubMode(){if(isStaff()&&(profile||{}).season!=="club")return false;const p=profile||{};if(!p.clubCity&&!p.clubCountry)return false;if(p.season==="club")return true;if(p.season==="team")return false;return /off/i.test(chapterName())}
+function isStaff(){return isStaffRole()&&!(EDITOR&&profile.view==="athlete")}
+function clubMode(){if(isStaffRole()&&!EDITOR)return false;const p=profile||{};if(!p.clubCity&&!p.clubCountry)return false;if(p.season==="club")return true;if(p.season==="team")return false;return /off/i.test(chapterName())}
 function clubPlace(){const p=profile||{};return [p.clubCity,p.clubCountry&&p.clubCountry!=="Other"?p.clubCountry:""].filter(Boolean).join(", ")}
 function clubLabel(){const p=profile||{};return [p.club,clubPlace()].filter(Boolean).join(" · ")}
 /* Allergy cards. Every language must be checked by a native speaker before CARD_REVIEWED is set to true for it. */
@@ -1608,14 +1614,14 @@ function vMe(){
    </div></div>
    <p class="wear-note">Your badge earns a punch for each month with 3+ days logged${chapterName()?`, and a sticker for each season chapter`:""}.</p>
    <button class="btn ghost block" data-edit="1">Edit profile</button>
-   ${isStaffRole()?`<section><h2>Editor tools</h2><div class="card stack">
-    <p class="muted" style="font-size:.84rem">Only staff see this. Preview the app the way athletes see it.</p>
+   ${EDITOR?`<section><h2>Editor tools</h2><div class="card stack">
+    <p class="muted" style="font-size:.84rem">Only you see this, on devices you unlocked with your private link.</p>
     <div class="stack" style="gap:6px"><span class="eyebrow">Preview as</span><div class="choice">${[["staff","Staff view"],["athlete","Athlete view"]].map(([k,l])=>`<button type="button" data-viewas="${k}" aria-pressed="${(profile.view||"staff")===k}">${l}</button>`).join("")}</div></div>
     <div class="stack" style="gap:6px"><span class="eyebrow">Team</span><div class="choice">${["WNT","MNT"].map(t=>`<button type="button" data-teamas="${t}" aria-pressed="${profile.team===t}">${t}</button>`).join("")}</div></div>
-    <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn ghost sm" data-replaywo="1">Replay walk-out</button><a class="btn ghost sm" href="https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/edit" target="_blank" rel="noopener">Open content sheet</a></div>
+    <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn ghost sm" data-replaywo="1">Replay walk-out</button><a class="btn ghost sm" href="https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/edit" target="_blank" rel="noopener">Open content sheet</a><button class="btn ghost sm" data-lockeditor="1">Turn off editor mode</button></div>
     <p class="muted" style="font-size:.78rem">Club season preview: use Season below. Allergy flags: add test allergies in Edit profile.</p>
    </div></section>`:""}
-   ${`<section><h2>Season</h2><div class="card stack">
+   ${isStaffRole()&&!EDITOR?"":`<section><h2>Season</h2><div class="card stack">
     <div class="choice" data-seasonset="1">${[["team","With the national team"],["club","With my club"]].map(([k,l])=>`<button type="button" data-seasonv="${k}" aria-pressed="${(profile.season||"team")===k}">${l}</button>`).join("")}</div>
     ${(profile.season==="club")?`<label for="club-pick">Your club<select id="club-pick"><option value="">Select your club</option>${CLUB_COUNTRIES.filter(c=>c!=="Other").map(c=>`<optgroup label="${c}">${CLUBS.filter(x=>x[2]===c).map(x=>`<option ${profile.club===x[0]?"selected":""}>${esc(x[0])}</option>`).join("")}</optgroup>`).join("")}<option value="__other" ${profile.club===""&&profile.clubCity?"selected":""}>My club isn't listed</option></select></label>
     <div class="namerow"><label for="club-city">Club city<input id="club-city" value="${esc(profile.clubCity||"")}" placeholder="e.g. Istanbul" autocomplete="off"></label><label for="club-country">Country<select id="club-country"><option value="">Select</option>${CLUB_COUNTRIES.map(c=>`<option ${profile.clubCountry===c?"selected":""}>${c}</option>`).join("")}</select></label></div>
@@ -1956,6 +1962,7 @@ document.addEventListener("click",e=>{
   if(b.dataset.closelb){$("#lightbox").hidden=true;return}
   if(b.dataset.cancel){draft={};render();return}
   if(b.dataset.edit){draft={...profile,editing:true};render();scrollTo({top:0});return}
+  if(b.dataset.lockeditor){try{localStorage.removeItem("af_editor")}catch(e){}EDITOR=false;profile.view="";store.set("profile",profile);render();toast("Editor mode off on this device");return}
   if(b.dataset.viewas){profile.view=b.dataset.viewas;store.set("profile",profile);render();toast(profile.view==="athlete"?"Previewing the athlete view":"Back to the staff view");return}
   if(b.dataset.teamas){profile.team=b.dataset.teamas;store.set("profile",profile);render();toast(`Previewing ${profile.team}`);return}
   if(b.dataset.replaywo){walkOut(true,{...profile,position:profile.view==="athlete"?"Outside hitter":profile.position,num:profile.num||"22"});return}
