@@ -1519,7 +1519,7 @@ function plateSVG(pl){
 }
 function vFoodClub(){
   const C=cKey(),L=LOCAL[C]||LOCAL.Other;
-  const segs=[["plate","Plate"],["groc","Groceries"],["cook","Cook"],["eat","Eat out"],["snacks","Snacks"],["tell","Tell Nick"]];
+  const segs=[["plate","Plate"],["groc","Groceries"],["cook","Cook"],["eat","Eat out"],["snacks","Snacks"],["ask","Ask the RD"]];
   let body="";
   if(cfSeg==="plate"){const pl=PLATES[cfLoad];
     body=`<div class="choice" data-cfload="1">${Object.entries(PLATES).map(([k,v])=>`<button type="button" data-load="${k}" aria-pressed="${cfLoad===k}">${v.n}</button>`).join("")}</div>
@@ -1545,10 +1545,7 @@ function vFoodClub(){
     body=`<p class="muted" style="font-size:.88rem">Easy to buy${C==="Other"?"":" in "+C} and carry to practice. Eat one 30–60 minutes before, and another after if dinner is far off.</p>
     <div class="card" style="padding-block:2px">${L2.map(([n,a])=>{const hit=a.some(x=>myAllergens().includes(x));return `<div class="item"><div class="meal-top"><h3>${esc(n)}</h3>${hit?`<span class="chip stop">Your allergen</span>`:""}</div>${a.length?`<p class="contains">Usually contains ${a.map(x=>esc(x.toLowerCase())).join(", ")}</p>`:""}</div>`}).join("")}</div>`}
   else{
-    body=`<div class="rail"><div class="ticket">${draft.clubfoodSent?"":`<div class="ticket-head"><span>Club food report</span><span>${esc(profile.club||clubPlace()||"")}</span></div>`}`+formBlock("clubfood",[
-      `<div class="stack" style="gap:6px"><span class="eyebrow">What does your club provide?</span><div class="choice" data-pick="cfProv">${["Nothing","Some team meals","Lunch most days","Most meals"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${draft.cfProv===t}">${t}</button>`).join("")}</div></div>`,
-      `<label for="cf-note">What's hardest about eating here?<textarea id="cf-note" placeholder="e.g. Practice ends at 9 pm and nothing is open"></textarea></label>`
-    ],"Send to RD")+`</div></div>`}
+    body=`<p class="muted" style="font-size:.88rem">A question about eating where you play? Send it and Nick replies by email or WhatsApp.</p>`+formBlock("ask",[`<label for="ask-q">Your question<textarea id="ask-q" placeholder="e.g. What should I eat after a 9 pm match when nothing is open?"></textarea></label>`],"Send Message to RD")+`<button class="btn ghost block" data-tab="rd">Book a session</button>`}
   return `<div class="view"><div><p class="eyebrow">Club season${clubLabel()?" · "+esc(clubLabel()):""}</p><h1 style="margin-top:6px">Food</h1></div>
    <div class="seg" data-cfsegs="1">${segs.map(([k,l])=>`<button data-cfseg="${k}" aria-pressed="${cfSeg===k}">${l}</button>`).join("")}</div>${body}
    <button class="linkbtn" style="align-self:center" data-foodteam="1">USAV menus (for when you're back with the team)</button></div>`;
@@ -2113,7 +2110,7 @@ document.addEventListener("submit",e=>{
   if(f.id==="form-ask"){
     const q=$("#ask-q").value.trim();if(!q){toast("Type your question first");return}
     draft.askSent=`Nutrition 411 question\n${profile.name} · ${profile.team}\n${q}`;
-    sendInbox({...profileRecord("Nutrition 411 question"),Details:q});
+    sendInbox({...profileRecord("Nutrition 411 question"),Details:clubMode()?`[${clubLabel()}] ${q}`:q});
     render();toast("Sent to Nick");ballArc();return}
   if(f.id==="form-editor"){tryEditor($("#ed-code").value).then(ok=>{if(!ok)toast("That code didn't work")});return}
   if(f.id==="form-checkin"){
