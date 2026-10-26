@@ -1258,9 +1258,10 @@ const CLUBS=[
 /* Editor mode: unlocked on one device by Nick's private link (?editor=<code>). Only the code's SHA-256 is stored here. */
 const EDITOR_HASH="7416afe21c0710fa85b291a4c6bb4f6b28d169367c4b5cbf7a4a7b8809155a63";
 let EDITOR=(()=>{try{return localStorage.getItem("af_editor")===EDITOR_HASH}catch(e){return false}})();
-(async()=>{const m=location.search.match(/[?&]editor=([a-z0-9]+)/i);if(!m||!window.crypto||!crypto.subtle)return;
-  const d=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(m[1]));const hx=[...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,"0")).join("");
-  if(hx===EDITOR_HASH){try{localStorage.setItem("af_editor",hx)}catch(e){}EDITOR=true;try{history.replaceState(null,"",location.pathname)}catch(e){}if(profile)render();toast("Editor mode on for this device")}})();
+async function tryEditor(code){if(!code||!window.crypto||!crypto.subtle)return false;
+  const d=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(code.trim().toLowerCase()));const hx=[...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,"0")).join("");
+  if(hx===EDITOR_HASH){try{localStorage.setItem("af_editor",hx)}catch(e){}EDITOR=true;try{history.replaceState(null,"",location.pathname)}catch(e){}if(profile)render();toast("Editor mode on for this device");return true}return false}
+(()=>{const m=location.search.match(/[?&]editor=([a-z0-9]+)/i);if(m)tryEditor(m[1])})();
 function isStaffRole(){return !!profile&&STAFF_ROLES.includes(profile.position)}
 function isStaff(){return isStaffRole()&&!(EDITOR&&profile.view==="athlete")}
 function clubMode(){if(isStaffRole()&&!EDITOR)return false;const p=profile||{};if(!p.clubCity&&!p.clubCountry)return false;if(p.season==="club")return true;if(p.season==="team")return false;return /off/i.test(chapterName())}
@@ -1621,6 +1622,7 @@ function vMe(){
     <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn ghost sm" data-replaywo="1">Replay walk-out</button><a class="btn ghost sm" href="https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/edit" target="_blank" rel="noopener">Open content sheet</a><button class="btn ghost sm" data-lockeditor="1">Turn off editor mode</button></div>
     <p class="muted" style="font-size:.78rem">Club season preview: use Season below. Allergy flags: add test allergies in Edit profile.</p>
    </div></section>`:""}
+   ${isStaffRole()&&!EDITOR?`<details class="more"><summary>Editor sign-in</summary><form class="stack" id="form-editor" style="padding-bottom:14px"><label for="ed-code">Editor code<input id="ed-code" autocomplete="off" autocapitalize="off"></label><button class="btn ghost block" type="submit">Unlock</button></form></details>`:""}
    ${isStaffRole()&&!EDITOR?"":`<section><h2>Season</h2><div class="card stack">
     <div class="choice" data-seasonset="1">${[["team","With the national team"],["club","With my club"]].map(([k,l])=>`<button type="button" data-seasonv="${k}" aria-pressed="${(profile.season||"team")===k}">${l}</button>`).join("")}</div>
     ${(profile.season==="club")?`<label for="club-pick">Your club<select id="club-pick"><option value="">Select your club</option>${CLUB_COUNTRIES.filter(c=>c!=="Other").map(c=>`<optgroup label="${c}">${CLUBS.filter(x=>x[2]===c).map(x=>`<option ${profile.club===x[0]?"selected":""}>${esc(x[0])}</option>`).join("")}</optgroup>`).join("")}<option value="__other" ${profile.club===""&&profile.clubCity?"selected":""}>My club isn't listed</option></select></label>
@@ -1997,6 +1999,7 @@ document.addEventListener("submit",e=>{
     draft.askSent=`Nutrition 411 question\n${profile.name} · ${profile.team}\n${q}`;
     sendInbox({...profileRecord("Nutrition 411 question"),Details:q});
     render();toast("Sent to Nick");ballArc();return}
+  if(f.id==="form-editor"){tryEditor($("#ed-code").value).then(ok=>{if(!ok)toast("That code didn't work")});return}
   if(f.id==="form-checkin"){
     if(!draft.ciFood||!draft.ciEnergy||!draft.ciGut){toast("Answer the three quick questions");return}
     const note=$("#ci-note").value.trim();
