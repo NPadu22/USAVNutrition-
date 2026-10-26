@@ -1256,7 +1256,7 @@ const CLUBS=[
  ["MLV Omaha Supernovas","Omaha","USA"],["MLV Grand Rapids Rise","Grand Rapids","USA"],["MLV Orlando Valkyries","Orlando","USA"],["MLV Los Angeles Thunder","Los Angeles","USA"],["MLV Minnesota Forge","Minnesota","USA",44.98,-93.27],["MLV Indy Ignite","Indianapolis","USA"]
 ];
 /* Editor mode: unlocked on one device by Nick's private link (?editor=<code>). Only the code's SHA-256 is stored here. */
-const EDITOR_HASH="7416afe21c0710fa85b291a4c6bb4f6b28d169367c4b5cbf7a4a7b8809155a63";
+const EDITOR_HASH="d4184685ec419cea8f8828138904e555e77da5ba326a2a34f14e4cee0f5146a1";
 let EDITOR=(()=>{try{return localStorage.getItem("af_editor")===EDITOR_HASH}catch(e){return false}})();
 async function tryEditor(code){if(!code||!window.crypto||!crypto.subtle)return false;
   const d=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(code.trim().toLowerCase()));const hx=[...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,"0")).join("");
