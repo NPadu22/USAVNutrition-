@@ -1801,7 +1801,7 @@ function vMe(){
     ${wear.stickers.length?`<div class="stickers" aria-label="Season stickers">${wear.stickers.map((c,i)=>`<span class="sticker" style="background:${CHAPTER_TINTS[c.toLowerCase()]||"#A6192E"};--rot:${[-5,4,-2,6,-7][i%5]}deg">${esc(c)}</span>`).join("")}</div>`:""}
     ${al.length?`<div class="cred-alert"><span>Allergy alert</span><b>${al.map(esc).join(" · ")}</b></div>`:`<div class="cred-ok">No food allergies listed</div>`}
    </div></div>
-   <p class="wear-note">Your badge earns a punch for each month with 3+ days logged${chapterName()?`, and a sticker for each season chapter`:""}.</p>
+   ${isStaff()&&!clubMode()?"":`<p class="wear-note">Your badge earns a punch for each month with 3+ days logged${chapterName()?`, and a sticker for each season chapter`:""}.</p>`}
    <button class="btn ghost block" data-edit="1">Edit profile</button>
    ${EDITOR?`<section><h2>Editor tools</h2><div class="card stack">
     <p class="muted" style="font-size:.84rem">Only you see this, on devices you unlocked with your private link.</p>
@@ -1817,7 +1817,7 @@ function vMe(){
     <div class="namerow"><label for="club-city">Club city<input id="club-city" value="${esc(profile.clubCity||"")}" placeholder="e.g. Istanbul" autocomplete="off"></label><label for="club-country">Country<select id="club-country"><option value="">Select</option>${CLUB_COUNTRIES.map(c=>`<option ${profile.clubCountry===c?"selected":""}>${c}</option>`).join("")}</select></label></div>
     <p class="muted" style="font-size:.8rem">Home switches to your club city: allergy card in the local language, a food guide, heat checks and a monthly check-in with Nick. Your city stays on this phone.</p>`:`<p class="muted" style="font-size:.8rem">Playing club volleyball abroad? Switch to "With my club" for a version of the app built for your city.</p>`}
    </div></section>`}
-   ${passportHTML()}
+   ${isStaff()&&!clubMode()?"":passportHTML()}
    ${canEdit?`<div class="card stack"><span class="eyebrow">Share with athletes · editors only</span><img src="qr-code.png" alt="QR code that opens this app" style="width:180px;align-self:center;border-radius:8px"><div class="row"><span class="copybox grow" id="app-link">${CONFIG.appLink}</span><button class="btn ghost sm" data-copy="app-link">Copy</button></div><p class="stamp">Athletes can open this without a Claude account once link sharing is on in the Share menu.</p></div>`:""}
    ${canEdit?`<button class="tile editlink" data-tab="edit"><b>Edit menus & announcements</b><span>Only you and other editors see this. Last published ${fmtDate(DATA.updated)}.</span></button>`:""}
    <section><h2>Customize</h2><div class="card custom">
