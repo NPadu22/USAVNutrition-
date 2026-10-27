@@ -1712,7 +1712,7 @@ function vRD(){
     <a class="btn block" href="${CONFIG.bookingLink}" target="_blank" rel="noopener">Pick a time on Calendly</a>
     <p class="stamp">Covers onboarding HHQ, sports performance, lab review, body tissue measurement and supplement requests.</p>
    </div>
-   <section><h2>Tell Nick what it's for</h2><p class="muted" style="font-size:.88rem">Optional. Goes straight to Nick's inbox so the session starts ready.</p>
+   <section><h2>Tell Nick what it's for</h2><p class="muted" style="font-size:.88rem">Optional. Goes directly to the RD's inbox so the session starts ready.</p>
    ${formBlock("session",[
     `<div class="stack" style="gap:6px"><span class="eyebrow">Session type</span><div class="choice" data-pick="session">${SESSIONS.map(t=>`<button type="button" data-v="${t}" aria-pressed="${draft.session===t}">${t}</button>`).join("")}</div></div>`,
     `<label for="rd-note">Notes<textarea id="rd-note" placeholder="Goals, questions, labs you're bringing, or the supplement you're asking about"></textarea></label>`,
@@ -2007,7 +2007,7 @@ function vJournal(){
      </div></button>`).join(""):`<div class="sheet-empty">${COURT_EMPTY}<b>Serve's in your hand.</b><span>Nothing logged for ${jLabel(jDate).toLowerCase()==="today"?"today":jLabel(jDate)} yet. A quick photo plus a few words is enough.</span></div>`}</div>
     <button class="btn block" data-jnew="1">Log a meal or drink</button></section>
    <section><h2>Send your journal to the RD</h2><div class="card stack">
-    <p class="muted" style="font-size:.88rem">Goes straight to Nick's inbox. Photos stay on your phone.</p>
+    <p class="muted" style="font-size:.88rem">Goes directly to the RD's inbox. Photos stay on your phone.</p>
     <div class="choice mini">${[[1,"This day"],[3,"Last 3 days"],[7,"Last 7 days"]].map(([n,l])=>`<button type="button" data-jrange="${n}" aria-pressed="${jRange===n}">${l}</button>`).join("")}</div>
     ${jSent?`<span class="chip ok" style="align-self:flex-start">Sent to Nick</span><p class="stamp">${esc(jSent)}</p>`:`<button class="btn block" data-jsend="1">Send journal to RD</button>`}
    </div>
