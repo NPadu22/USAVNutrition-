@@ -596,7 +596,8 @@ h2::before{width:.6em;height:.6em}
 .pstamp.s2{border-radius:4px;border-style:solid;border-width:2px;outline:2px solid currentColor;outline-offset:3px}
 .pstamp.s3{border-radius:28px 4px 28px 4px}
 .pstamp i{font:700 .52rem var(--mono);font-style:normal;letter-spacing:.14em;text-transform:uppercase}
-.pstamp b{font:800 1.2rem/1.05 var(--display);letter-spacing:.04em;word-break:break-word}
+.pstamp b{font:800 1.2rem/1.05 var(--display);letter-spacing:.04em;overflow-wrap:break-word;hyphens:auto}
+.pstamp b.long{font-size:.92rem;letter-spacing:.02em}
 .pstamp span{font-size:.95rem}
 /* Scoresheet journal */
 .lineup.sheet{padding:0 18px 2px!important}
@@ -1188,7 +1189,7 @@ function passportHTML(){
   if(profile&&profile.clubCity){const k=profile.clubCity.trim().toLowerCase();if(!seen[k])seen[k]={c:profile.clubCity.trim(),iso:isoToday()}}
   const list=Object.values(seen);
   return `<section><div class="sec-head"><h2>Nutrition passport</h2><span class="stamp">${list.length} ${list.length===1?"city":"cities"}</span></div>
-   ${list.length?`<div class="passport">${list.map(x=>{const h=hashStr(x.c.toLowerCase());return `<div class="pstamp s${h%4}" style="--rot:${(h%15)-7}deg;--ink:${["#A6192E","#2F5DB8","#071D49","#8A6400"][(h>>3)%4]}"><i>USAV · Nutrition</i><b>${esc(x.c.toUpperCase())}</b><span class="num">${mmdd(x.iso)}.${x.iso.slice(2,4)}</span></div>`}).join("")}</div>`
+   ${list.length?`<div class="passport">${list.map(x=>{const h=hashStr(x.c.toLowerCase());return `<div class="pstamp s${h%4}" style="--rot:${(h%15)-7}deg;--ink:${["#A6192E","#2F5DB8","#071D49","#0F6B4A"][(h>>>3)%4]}"><i>USAV · Nutrition</i><b${x.c.trim().length>9?' class="long"':""}>${esc(x.c.toUpperCase())}</b><span class="num">${mmdd(x.iso)}.${x.iso.slice(2,4)}</span></div>`}).join("")}</div>`
    :emptyState("Your passport is empty.","Log a Travel day in your journal and add the city to earn your first stamp.")}</section>`;
 }
 function stampFor(e){
