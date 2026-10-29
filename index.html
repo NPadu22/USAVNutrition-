@@ -1798,7 +1798,7 @@ function vMe(){
    ${(()=>{wear=wearData();return ""})()}<div class="credwrap"><div class="cred" role="group" aria-label="Athlete credential">${wear.punches.length?`<div class="cred-wear" aria-label="${wear.punches.length} months logged">${wear.punches.map(m=>`<i title="${m}"></i>`).join("")}</div>`:""}
     <div class="cred-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><span class="cred-org">USA Volleyball<b>Nutrition</b></span>${profile.num?`<span class="cred-num num">${esc(profile.num)}</span>`:""}</div>
     <p class="cred-name">${esc(profile.first||"")}<b>${esc(profile.last||profile.name)}</b></p>
-    <div class="cred-grid"><div><i>Team</i><b>${profile.team}</b></div><div><i>Position</i><b>${esc(profile.position||"—")}</b></div><div><i>Pro team</i><b>${esc(profile.club||profile.pro||"—")}</b></div>${isStaff()?"":`<div><i>Protein</i><b>${profile.protein}</b></div>`}</div>
+    <div class="cred-grid"><div><i>Team</i><b>${profile.team}</b></div><div><i>Position</i><b>${esc(profile.position||"—")}</b></div>${isStaff()?"":`<div><i>Pro team</i><b>${esc(profile.club||profile.pro||"—")}</b></div><div><i>Protein</i><b>${profile.protein}</b></div>`}</div>
     ${wear.stickers.length?`<div class="stickers" aria-label="Season stickers">${wear.stickers.map((c,i)=>`<span class="sticker" style="background:${CHAPTER_TINTS[c.toLowerCase()]||"#A6192E"};--rot:${[-5,4,-2,6,-7][i%5]}deg">${esc(c)}</span>`).join("")}</div>`:""}
     ${al.length?`<div class="cred-alert"><span>Allergy alert</span><b>${al.map(esc).join(" · ")}</b></div>`:`<div class="cred-ok">No food allergies listed</div>`}
    </div></div>
@@ -1808,7 +1808,7 @@ function vMe(){
     <p class="muted" style="font-size:.84rem">Only you see this, on devices you unlocked with your private link.</p>
     <div class="stack" style="gap:6px"><span class="eyebrow">Preview as</span><div class="choice">${[["staff","Staff view"],["athlete","Athlete view"]].map(([k,l])=>`<button type="button" data-viewas="${k}" aria-pressed="${(profile.view||"staff")===k}">${l}</button>`).join("")}</div></div>
     <div class="stack" style="gap:6px"><span class="eyebrow">Team</span><div class="choice">${["WNT","MNT"].map(t=>`<button type="button" data-teamas="${t}" aria-pressed="${profile.team===t}">${t}</button>`).join("")}</div></div>
-    <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn ghost sm" data-replaywo="1">Replay walk-out</button><a class="btn ghost sm" href="https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/edit" target="_blank" rel="noopener">Open content sheet</a><button class="btn ghost sm" data-lockeditor="1">Turn off editor mode</button></div>
+    <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn ghost sm" data-replaywo="1">Replay walk-out</button><a class="btn ghost sm" href="https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/edit" target="_blank" rel="noopener">Open content sheet</a>${profile.club||profile.clubCity||profile.clubCountry||profile.pro?`<button class="btn ghost sm" data-clearclub="1">Clear test club</button>`:""}<button class="btn ghost sm" data-lockeditor="1">Turn off editor mode</button></div>
     <p class="muted" style="font-size:.78rem">Club season preview: use Season below. Allergy flags: add test allergies in Edit profile.</p>
    </div></section>`:""}
    ${isStaffRole()&&!EDITOR?`<details class="more"><summary>Editor sign-in</summary><form class="stack" id="form-editor" style="padding-bottom:14px"><label for="ed-code">Editor code<input id="ed-code" autocomplete="off" autocapitalize="off"></label><button class="btn ghost block" type="submit">Unlock</button></form></details>`:""}
@@ -2161,6 +2161,7 @@ document.addEventListener("click",e=>{
   if(b.dataset.groccopy){const C=cKey(),g=grocState(),t="Groceries\n"+(GROC[C]||GROC.Other).map(x=>`${g[C+"|"+x[0]]?"✓":"☐"} ${x[0]}${x[1]?" ("+x[1]+")":""}`).join("\n");(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast("List copied"),()=>toast("Couldn't copy on this device"));return}
   if(b.dataset.viewas){profile.view=b.dataset.viewas;store.set("profile",profile);render();toast(profile.view==="athlete"?"Previewing the athlete view":"Back to the staff view");return}
   if(b.dataset.teamas){profile.team=b.dataset.teamas;store.set("profile",profile);render();toast(`Previewing ${profile.team}`);return}
+  if(b.dataset.clearclub){["club","clubCity","clubCountry","pro","season"].forEach(k=>delete profile[k]);store.set("profile",profile);render();toast("Test club cleared");return}
   if(b.dataset.replaywo){walkOut(true,{...profile,position:profile.view==="athlete"?"Outside hitter":profile.position,num:profile.num||"22"});return}
   if(b.dataset.seasonv){profile.season=b.dataset.seasonv;store.set("profile",profile);HEAT=null;heatTried=false;render();if(profile.season==="club"&&!profile.clubCity){const c=document.getElementById("club-city");if(c)c.focus()}return}
   if(b.dataset.clang){cardLang=b.dataset.clang;render();return}
