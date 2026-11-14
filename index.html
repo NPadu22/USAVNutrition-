@@ -222,7 +222,7 @@ details.more summary{font-weight:600}
 <title>USA Volleyball Nutrition</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Graduate&family=Saira+Condensed:wght@500;700;800&family=JetBrains+Mono:wght@400;600&family=Share+Tech+Mono&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Graduate&family=Newsreader:ital,opsz,wght@0,6..72,500..700;1,6..72,500&family=Saira+Condensed:wght@500;700;800&family=JetBrains+Mono:wght@400;600&family=Share+Tech+Mono&display=swap">
 <style id="af-style">
 /* Layout: one-column phone app. Court lines (net + two 3 m attack lines) are the recurring motif; bottom tab bar; content is the hero. Dark-first, OLED. */
 :root{
@@ -839,6 +839,15 @@ nav.tabs button[aria-current="page"]{background:transparent;box-shadow:none}
 .la{display:inline-flex;align-self:flex-start;padding:3px 12px 4px;border-radius:999px;background:color-mix(in srgb,var(--surface) 78%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);position:relative;z-index:1}
 .hero .la{width:max-content;margin-top:12px;padding:2px 9px 3px;gap:4px;font-size:.7rem}
 .hero .la .num{font-size:.9rem}
+
+/* Editorial serif (Newsreader) for headlines only; buttons, numbers, menus and allergy flags keep the sports fonts. Follows the athlete's font choice if they pick anything but Classic. */
+:root{--editorial:"Newsreader",Georgia,"Times New Roman",serif}
+:root[data-font]:not([data-font="classic"]){--editorial:var(--display)}
+:root[data-style="soft"] h1,:root[data-style="soft"] h2,:root[data-style="soft"] .feature h3,#faq summary{font-family:var(--editorial);font-weight:600;letter-spacing:-.005em}
+:root[data-style="soft"] h1{font-weight:700}
+:root[data-font="classic"][data-style="soft"] h2{font-size:1.42rem}
+:root[data-style="soft"] .board-chalk h1{font-family:var(--display)}
+:root[data-font="classic"] .board-archive{font-family:var(--editorial);font-style:italic;font-size:.92rem;line-height:1.35}
 </style>
 
 <div class="pagebg" aria-hidden="true"><svg viewBox="0 0 150 240" preserveAspectRatio="xMidYMid slice"><rect width="150" height="240" class="pz"/><rect x="30" y="30" width="90" height="180" class="pc"/><g class="pl"><rect x="30" y="30" width="90" height="180"/><line x1="30" y1="90" x2="120" y2="90"/><line x1="30" y1="150" x2="120" y2="150"/></g><line x1="22" y1="120" x2="128" y2="120" class="pn"/></svg></div>
@@ -855,7 +864,7 @@ nav.tabs button[aria-current="page"]{background:transparent;box-shadow:none}
 <title>USA Volleyball Nutrition</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Graduate&family=Saira+Condensed:wght@500;700;800&family=JetBrains+Mono:wght@400;600&family=Share+Tech+Mono&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Graduate&family=Newsreader:ital,opsz,wght@0,6..72,500..700;1,6..72,500&family=Saira+Condensed:wght@500;700;800&family=JetBrains+Mono:wght@400;600&family=Share+Tech+Mono&display=swap">
 </script>
 <script id="af-main">
 /* ===== EDIT THESE before you share the app ===== */
