@@ -912,6 +912,8 @@ function dayKey(iso){return DAYS[new Date(iso+"T12:00:00").getDay()-1]}
 function smoothieFor(iso,src=DATA){const k=dayKey(iso),i=rotIdx(src.smoothieCycle.length,iso,src);if(!k||i<0)return null;const x=((src.smoothieCycle[i]||{})[k]||[])[0];return x?{...x,wk:i+1,of:src.smoothieCycle.length}:null}
 function snacksFor(iso,src=DATA){const k=dayKey(iso),i=rotIdx(src.snackCycle.length,iso,src);if(!k||i<0)return [];return ((src.snackCycle[i]||{})[k]||[]).map(x=>({...x,wk:i+1,of:src.snackCycle.length}))}
 const teamOf=()=>profile.team==="MNT"?"Men":"Women";
+const bothTeams=()=>!profile||!profile.team||profile.team==="Both";
+const teamLabel=()=>bothTeams()?"WNT + MNT":profile.team;
 function recipeHTML(n,prot){const r=(DATA.smoothieRecipes||{})[n];if(!r)return "";
   const mac=r.kcal!=null?`<div class="macros"><span>${sb(r.kcal)}<i>kcal</i></span><span>${sb(r.cho)}<i>carbs g</i></span><span>${sb(r.pro)}<i>protein g</i></span><span>${sb(r.fat)}<i>fat g</i></span></div><p class="stamp">${r.est?"Estimated per 15 oz serving.":"Per 15 oz serving, as written in the recipe."}</p>`:"";
   return `${mac}<details class="recipe"><summary>Recipe${r.y?` · makes ${esc(r.y)}`:""}</summary><ul>${r.ing.map(i=>`<li>${esc(i)}</li>`).join("")}</ul><p class="stamp">Your version is made with ${esc(prot)}.</p></details>`}
@@ -1143,7 +1145,7 @@ function vOnboard(){
    ${draft.editing?"":installCard("setup")}
    <form id="onb" class="stack card${STAFF_ROLES.includes(p.position)?" staff":""}">
     <div class="namerow"><label for="f-first">First name<input id="f-first" required value="${esc(p.first??(p.name||"").split(" ")[0]??"")}" placeholder="First Name" autocomplete="given-name"></label><label for="f-last">Last name<input id="f-last" required value="${esc(p.last??(p.name||"").split(" ").slice(1).join(" "))}" placeholder="Last Name" autocomplete="family-name"></label></div>
-    <div class="stack" style="gap:6px"><span class="eyebrow">Team</span><div class="choice" data-pick="team">${["WNT","MNT"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${p.team===t}">${t}</button>`).join("")}</div></div>
+    <div class="stack" style="gap:6px"><span class="eyebrow">Team</span><div class="choice" data-pick="team">${["WNT","MNT","Both"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${p.team===t}">${t==="Both"?"Both / skip":t}</button>`).join("")}</div><p class="muted" style="font-size:.78rem">Optional. Pick “Both / skip” or leave it blank to see menus and matches for both teams.</p></div>
     <div class="namerow"><label for="f-pos">Position<select id="f-pos"><option value="">Select</option><optgroup label="Athlete">${POSITIONS.map(x=>`<option ${p.position===x?"selected":""}>${x}</option>`).join("")}</optgroup><optgroup label="Staff">${STAFF_ROLES.map(x=>`<option ${p.position===x?"selected":""}>${x}</option>`).join("")}</optgroup></select></label><label for="f-num" class="athlete-only">Jersey # <span class="muted" style="font-weight:400">(optional)</span><input id="f-num" inputmode="numeric" maxlength="2" value="${esc(p.num||"")}" placeholder="12"></label></div>
     <label for="f-pro">Pro team<input id="f-pro" value="${esc(p.pro||"")}" placeholder="Club and country"></label>
     <div class="stack" style="gap:6px"><span class="eyebrow">Food allergies</span><div class="choice" data-pick="allergies" data-multi="1">${ALLERGENS.map(a=>`<button type="button" data-v="${a}" aria-pressed="${p.allergies.includes(a)}">${a}</button>`).join("")}</div>
@@ -1172,7 +1174,7 @@ function reduceMotion(){try{return matchMedia("(prefers-reduced-motion: reduce)"
 function ballArc(){if(reduceMotion())return;const el=document.createElement("div");el.className="ballarc";el.setAttribute("aria-hidden","true");el.innerHTML=`<i>${IC.ball}</i>`;document.body.appendChild(el);setTimeout(()=>el.remove(),1150)}
 function parseHM(t){t=String(t||"").trim().toLowerCase();const m=t.match(/^(\d{1,2})(?::(\d{2}))?\s*(a|p)?/);if(!m)return null;let h=+m[1],mi=+(m[2]||0);if(m[3]){if(h===12)h=0;if(m[3]==="p")h+=12}return h<24&&mi<60?h*60+mi:null}
 function fmtMin(x){x=((x%1440)+1440)%1440;return jTime(String(Math.floor(x/60)).padStart(2,"0")+":"+String(x%60).padStart(2,"0"))}
-function myMatches(){return (DATA.matches||[]).filter(x=>x.date&&(x.team==="Both"||x.team===profile.team))}
+function myMatches(){return (DATA.matches||[]).filter(x=>x.date&&(x.team==="Both"||bothTeams()||x.team===profile.team))}
 function matchBoard(){
   const today=isoToday(),ms=myMatches();
   const m=ms.find(x=>x.date===today)||ms.find(x=>x.date===jShift(today,1));
@@ -1191,7 +1193,7 @@ function matchBoard(){
     clock=d>0?`${Math.floor(d/60)}:${String(d%60).padStart(2,"0")}`:d>-150?"LIVE":"FINAL";
     sub=d>0?`to first serve · ${fmtMin(start)}`:d>-150?`First serve was ${fmtMin(start)}`:"Recovery window"}
   return `<section class="board" id="board" aria-label="Match day">
-   <div class="board-top"><span class="eyebrow">${isToday?"Match day":"Match tomorrow"} · ${profile.team}</span><span class="eyebrow">${esc(m.loc||"")}</span></div>
+   <div class="board-top"><span class="eyebrow">${isToday?"Match day":"Match tomorrow"} · ${teamLabel()}</span><span class="eyebrow">${esc(m.loc||"")}</span></div>
    <div class="board-teams"><b>USA</b><span class="vs">VS</span><b>${esc(m.opp||"TBA")}</b></div>
    <div class="board-clock"><span class="num">${clock}</span><span>${sub}</span></div>
    <div class="board-now"><span class="eyebrow">What to eat</span><b>${step}</b><p>${tip}</p></div>
@@ -1497,7 +1499,7 @@ function vHome(){
   ];
   return `<div class="view home">
    <header class="hero court" style="${chapterTint()?`--chapter:${chapterTint()}`:""}">${COURT_SVG}${profile.num?`<span class="jersey num" aria-hidden="true">${esc(profile.num)}</span>`:""}
-    <div class="hero-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><div style="text-align:right;display:flex;flex-direction:column;gap:6px"><span class="eyebrow">${club?"Club season":"Team USA · "+profile.team}</span><span class="eyebrow">${dateLine}</span></div></div>
+    <div class="hero-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><div style="text-align:right;display:flex;flex-direction:column;gap:6px"><span class="eyebrow">${club?"Club season":"Team USA"+(bothTeams()?"":" · "+profile.team)}</span><span class="eyebrow">${dateLine}</span></div></div>
     ${STARS5}<p class="wordmark"><span>Nutrition</span></p>${club?`<p class="chapter clubchip">Club season · ${esc(clubLabel())}</p>`:""}
     ${!club&&chapterName()?`<p class="chapter" style="--chapter:${chapterTint()||"var(--accent-text)"}">${esc(chapterName())}</p>`:""}${daysTo(LA_OPENING)>0?`<button class="la" data-go="rank" aria-label="${daysTo(LA_OPENING)} days to LA. See world rankings"><span class="num">${daysTo(LA_OPENING)}</span> days to LA</button>`:""}
     <div class="meta">${staff?"":`<span class="chip blue">${noPref()?"Any protein":profile.protein+" protein"}</span>`}${myAllergens().length?`<span class="chip stop">${myAllergens().length} allergen${myAllergens().length>1?"s":""} flagged</span>`:`<span class="chip ok">No allergens listed</span>`}${esc(profile.position)?`<span class="chip">${esc(profile.position)}</span>`:""}</div>
@@ -1518,7 +1520,7 @@ function vHome(){
     ${flagged?`<p class="stamp">${flagged} of ${meals.length} meals may contain something you listed. Ask foodservice for your safe option.</p>`:""}`:emptyState("Menu's warming up.","This week's menu isn't posted yet. Check back soon.")}</section>`}
 
    <section><h2>More</h2><div class="nav-grid">
-    ${(()=>{const x=smoothieFor(todayIso);smTile=x&&(x.team==="Both"||x.team===teamOf())?mySmoothie(x):null;return ""})()}${go.map(([t,seg,l,d,ic,dseg])=>t==="wa"?`<a class="ng" href="${CONFIG.whatsappLink}" target="_blank" rel="noopener">${ic}<b>${l}</b><span>${d}</span></a>`:`<button class="ng" ${TABS.some(x=>x[0]===t)?`data-tab="${t}"`:`data-go="${t}"${seg?` data-seg="${seg}"`:""}${dseg?` data-dseg="${dseg}"`:""}`}>${ic}<b>${l}</b><span>${d}</span>${!club&&seg==="smoothie"&&smTile?`<small class="ng-sub">${weekend?"Mon":"Today"}: ${esc(smTile.n)}${hits(smTile.a)?" · check allergens":""}</small>`:""}</button>`).join("")}
+    ${(()=>{const x=smoothieFor(todayIso);smTile=x&&(x.team==="Both"||bothTeams()||x.team===teamOf())?mySmoothie(x):null;return ""})()}${go.map(([t,seg,l,d,ic,dseg])=>t==="wa"?`<a class="ng" href="${CONFIG.whatsappLink}" target="_blank" rel="noopener">${ic}<b>${l}</b><span>${d}</span></a>`:`<button class="ng" ${TABS.some(x=>x[0]===t)?`data-tab="${t}"`:`data-go="${t}"${seg?` data-seg="${seg}"`:""}${dseg?` data-dseg="${dseg}"`:""}`}>${ic}<b>${l}</b><span>${d}</span>${!club&&seg==="smoothie"&&smTile?`<small class="ng-sub">${weekend?"Mon":"Today"}: ${esc(smTile.n)}${hits(smTile.a)?" · check allergens":""}</small>`:""}</button>`).join("")}
    </div></section>
    <div class="usa-mark" role="img" aria-label="USA"></div>
 </div>`;
@@ -1667,9 +1669,9 @@ function vFood(){
     const nav=(line)=>`<div class="datebar"><button class="btn ghost sm" data-wk="-1" aria-label="Previous week">‹</button><span style="text-align:center"><b>${wkLabel}</b></span><button class="btn ghost sm" data-wk="1" aria-label="Next week">›</button></div>`;
     if(foodSeg==="smoothie"){
       const n=DATA.smoothieCycle.length, wi=rotIdx(n,mon), flip=n===4&&wi>=2;
-      const rows=DAYS.map((d,k)=>{const iso=jShift(mon,k),x=smoothieFor(iso);return {d,iso,x}}).filter(r=>r.x&&(r.x.team==="Both"||r.x.team===teamOf()));
+      const rows=DAYS.map((d,k)=>{const iso=jShift(mon,k),x=smoothieFor(iso);return {d,iso,x}}).filter(r=>r.x&&(r.x.team==="Both"||bothTeams()||r.x.team===teamOf()));
       body=nav(n?`Smoothie week ${wi+1} of ${n}${flip?" · protein flip week":""}`:"")+
-      `      <div class="lineup">${luHead("Smoothie card",null,`<span class="rot"><b>${profile.team}</b></span>`)}${rows.length?rows.flatMap(r=>noPref()?[{...r,side:"whey"},{...r,side:"plant"}]:[{...r,side:null}]).map(({d,iso,x,side})=>{const me=mySmoothie(x,side),hit=hits(me.a),mine=myAllergens().length||profile.other;
+      `      <div class="lineup">${luHead("Smoothie card",null,`<span class="rot"><b>${teamLabel()}</b></span>`)}${rows.length?rows.flatMap(r=>noPref()?[{...r,side:"whey"},{...r,side:"plant"}]:[{...r,side:null}]).map(({d,iso,x,side})=>{const me=mySmoothie(x,side),hit=hits(me.a),mine=myAllergens().length||profile.other;
         return `<div class="meal ${hit?"flag":""}"><div class="meal-top"><span class="eyebrow">${fmtDate(iso)} · ${x.team==="Both"?"Men + Women":x.team}${side?` · ${side==="plant"?"Plant":"Whey"} option`:""}</span>${hit?`<span class="chip stop">May contain your allergen</span>`:(!x.ok&&mine?`<span class="chip warn">Confirm allergens</span>`:"")}</div>
         <b>${esc(me.n)}</b>${side?"":`<p class="muted" style="font-size:.86rem">${me.side==="plant"?"Whey":"Plant"} option that day: ${esc(me.other)}</p>`}${recipeHTML(me.n,me.prot)}
         ${(DATA.flavorNotes||{})[me.n]||(DATA.fans||[]).includes(me.n)?`<div class="tags">${(DATA.fans||[]).includes(me.n)?`<span class="chip fan">★ Fan favorite</span>`:""}${(DATA.flavorNotes||{})[me.n]?`<span class="chip warn">${esc(DATA.flavorNotes[me.n])}</span>`:""}</div>`:""}${allergenLine(me.a)}</div>`}).join(""):'<p class="muted" style="padding:12px 0">No smoothie days posted for your team this week.</p>'}</div>
@@ -1692,7 +1694,7 @@ function vFood(){
      <li><b>Split the fee:</b> order with teammates who live nearby.</li></ul></div>`:""}
     <div class="card" style="padding-block:2px">${DINNERS[dinnerSeg].map(x=>`<div class="item"><div class="meal-top"><h3>${x.n}</h3>${x.t?`<span class="nums">${x.t}</span>`:""}</div><p class="muted" style="font-size:.9rem">${x.d}</p></div>`).join("")}</div>`;
   }else{
-    body=`<div class="rail"><div class="ticket">${draft.feedbackSent?"":`<div class="ticket-head"><span>Kitchen ticket</span><span>${profile.team} · ${new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"})}</span></div>`}`+formBlock("feedback",[
+    body=`<div class="rail"><div class="ticket">${draft.feedbackSent?"":`<div class="ticket-head"><span>Kitchen ticket</span><span>${teamLabel()} · ${new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"})}</span></div>`}`+formBlock("feedback",[
       `<div class="stack" style="gap:6px"><span class="eyebrow">Type</span><div class="choice" data-pick="fbType">${["Rate a meal","Request a food","Report an issue"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${draft.fbType===t}">${t}</button>`).join("")}</div></div>`,
       `<label for="fb-meal">Which meal or item<input id="fb-meal" placeholder="e.g. Tue poke bar"></label>`,
       `<div class="stack" style="gap:6px"><span class="eyebrow">Rating</span><div class="choice" data-pick="fbRate">${["1","2","3","4","5"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${draft.fbRate===t}" aria-label="${t} of 5">${t}</button>`).join("")}</div></div>`,
@@ -1732,7 +1734,7 @@ function vRD(){
    ${formBlock("session",[
     `<div class="stack" style="gap:6px"><span class="eyebrow">Session type</span><div class="choice" data-pick="session">${SESSIONS.map(t=>`<button type="button" data-v="${t}" aria-pressed="${draft.session===t}">${t}</button>`).join("")}</div></div>`,
     `<label for="rd-note">Notes<textarea id="rd-note" placeholder="Goals, questions, labs you're bringing, or the supplement you're asking about"></textarea></label>`,
-    `<p class="muted" style="font-size:.8rem">Includes your name, team (${profile.team}) and position.</p>`
+    `<p class="muted" style="font-size:.8rem">Includes your name, team (${teamLabel()}) and position.</p>`
    ],"Send Message to RD")}</section>
    <section><h2>Nutrition 411</h2><p class="muted" style="font-size:.88rem">Quick question that doesn't need a session? Send it here and it goes straight to Nick.</p>
    ${formBlock("ask",[`<label for="ask-q">Your question<textarea id="ask-q" placeholder="e.g. What should I eat before a 6 am lift?"></textarea></label>`],"Send Message to RD")}
@@ -1814,7 +1816,7 @@ function vMe(){
    ${(()=>{wear=wearData();return ""})()}<div class="credwrap"><div class="cred" role="group" aria-label="Athlete credential">${wear.punches.length?`<div class="cred-wear" aria-label="${wear.punches.length} months logged">${wear.punches.map(m=>`<i title="${m}"></i>`).join("")}</div>`:""}
     <div class="cred-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><span class="cred-org">USA Volleyball<b>Nutrition</b></span>${profile.num?`<span class="cred-num num">${esc(profile.num)}</span>`:""}</div>
     <p class="cred-name">${esc(profile.first||"")}<b>${esc(profile.last||profile.name)}</b></p>
-    <div class="cred-grid"><div><i>Team</i><b>${profile.team}</b></div><div><i>Position</i><b>${esc(profile.position||"—")}</b></div>${isStaff()?"":`<div><i>Pro team</i><b>${esc(profile.club||profile.pro||"—")}</b></div><div><i>Protein</i><b>${profile.protein}</b></div>`}</div>
+    <div class="cred-grid"><div><i>Team</i><b>${teamLabel()}</b></div><div><i>Position</i><b>${esc(profile.position||"—")}</b></div>${isStaff()?"":`<div><i>Pro team</i><b>${esc(profile.club||profile.pro||"—")}</b></div><div><i>Protein</i><b>${profile.protein}</b></div>`}</div>
     ${wear.stickers.length?`<div class="stickers" aria-label="Season stickers">${wear.stickers.map((c,i)=>`<span class="sticker" style="background:${CHAPTER_TINTS[c.toLowerCase()]||"#A6192E"};--rot:${[-5,4,-2,6,-7][i%5]}deg">${esc(c)}</span>`).join("")}</div>`:""}
     ${al.length?`<div class="cred-alert"><span>Allergy alert</span><b>${al.map(esc).join(" · ")}</b></div>`:`<div class="cred-ok">No food allergies listed</div>`}
    </div></div>
@@ -1824,7 +1826,7 @@ function vMe(){
    ${EDITOR?`<section><h2>Editor tools</h2><div class="card stack">
     <p class="muted" style="font-size:.84rem">Only you see this, on devices you unlocked with your private link.</p>
     <div class="stack" style="gap:6px"><span class="eyebrow">Preview as</span><div class="choice">${[["staff","Staff view"],["athlete","Athlete view"]].map(([k,l])=>`<button type="button" data-viewas="${k}" aria-pressed="${(profile.view||"staff")===k}">${l}</button>`).join("")}</div></div>
-    <div class="stack" style="gap:6px"><span class="eyebrow">Team</span><div class="choice">${["WNT","MNT"].map(t=>`<button type="button" data-teamas="${t}" aria-pressed="${profile.team===t}">${t}</button>`).join("")}</div></div>
+    <div class="stack" style="gap:6px"><span class="eyebrow">Team</span><div class="choice">${["WNT","MNT","Both"].map(t=>`<button type="button" data-teamas="${t}" aria-pressed="${profile.team===t}">${t}</button>`).join("")}</div></div>
     <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn ghost sm" data-replaywo="1">Replay walk-out</button><a class="btn ghost sm" href="https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/edit" target="_blank" rel="noopener">Open content sheet</a>${profile.club||profile.clubCity||profile.clubCountry||profile.pro?`<button class="btn ghost sm" data-clearclub="1">Clear test club</button>`:""}<button class="btn ghost sm" data-lockeditor="1">Turn off editor mode</button></div>
     <p class="muted" style="font-size:.78rem">Club season preview: use Season below. Allergy flags: add test allergies in Edit profile.</p>
    </div></section>`:""}
@@ -2016,7 +2018,7 @@ function vJournal(){
      <button class="btn ghost sm" data-jwater="-1" aria-label="One less bottle">−</button>${sb(String(d.water).padStart(2,"0"),1)}<button class="btn ghost sm" data-jwater="1" aria-label="One more bottle">+</button></div>
    </div>
    <section><div class="sec-head"><h2>Scoresheet</h2><span class="stamp">${sb(String(list.length).padStart(2,"0"))} logged</span></div>
-    <div class="lineup sheet"><div class="sheet-head"><div><i>Set</i><b class="num">${mmdd(jDate)}</b></div><div><i>Team</i><b>${profile.team}</b></div><div><i>Training</i><b>${esc(d.training.map(t=>t==="Travel"&&d.city?d.city:t).join(", "))||"—"}</b></div><div><i>Bottles</i><b class="num">${d.water}</b></div></div>
+    <div class="lineup sheet"><div class="sheet-head"><div><i>Set</i><b class="num">${mmdd(jDate)}</b></div><div><i>Team</i><b>${teamLabel()}</b></div><div><i>Training</i><b>${esc(d.training.map(t=>t==="Travel"&&d.city?d.city:t).join(", "))||"—"}</b></div><div><i>Bottles</i><b class="num">${d.water}</b></div></div>
     ${list.length?list.map((e,i)=>`<button class="jentry" data-jedit="${e.id}"><span class="rno num">${i+1}</span><div class="grow stack" style="gap:6px">
       <div class="meal-top"><span class="eyebrow">${jTime(e.time)} · ${esc(e.occ)}</span>${e.gut?`<span class="chip ${e.gut==="Upset"?"stop":""}">Stomach: ${esc(e.gut)}</span>`:""}</div>
       <div class="row" style="align-items:flex-start">${e.photo?`<img src="${e.photo}" alt="" class="jthumb">`:""}<p class="grow">${esc(e.what)||'<span class="muted">No description</span>'}</p></div>
@@ -2053,7 +2055,7 @@ function vJournalForm(){
    </form></div>`;
 }
 function jSummary(){
-  const lines=[`Food journal · ${profile.name} · ${profile.team}`];
+  const lines=[`Food journal · ${profile.name} · ${teamLabel()}`];
   for(let i=jRange-1;i>=0;i--){
     const iso=jShift(jDate,-i), d=jGet(iso);
     if(!d.entries.length&&!d.training.length&&!d.water)continue;
@@ -2177,7 +2179,7 @@ document.addEventListener("click",e=>{
   if(b.dataset.grocclear){try{const g=grocState();Object.keys(g).filter(k=>k.startsWith(cKey()+"|")).forEach(k=>delete g[k]);localStorage.setItem("af_groc",JSON.stringify(g))}catch(e){}render();toast("New week, fresh list");return}
   if(b.dataset.groccopy){const C=cKey(),g=grocState(),t="Groceries\n"+(GROC[C]||GROC.Other).map(x=>`${g[C+"|"+x[0]]?"✓":"☐"} ${x[0]}${x[1]?" ("+x[1]+")":""}`).join("\n");(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast("List copied"),()=>toast("Couldn't copy on this device"));return}
   if(b.dataset.viewas){profile.view=b.dataset.viewas;store.set("profile",profile);render();toast(profile.view==="athlete"?"Previewing the athlete view":"Back to the staff view");return}
-  if(b.dataset.teamas){profile.team=b.dataset.teamas;store.set("profile",profile);render();toast(`Previewing ${profile.team}`);return}
+  if(b.dataset.teamas){profile.team=b.dataset.teamas;store.set("profile",profile);render();toast(`Previewing ${teamLabel()}`);return}
   if(b.dataset.clearclub){["club","clubCity","clubCountry","pro","season"].forEach(k=>delete profile[k]);store.set("profile",profile);render();toast("Test club cleared");return}
   if(b.dataset.replaywo){walkOut(true,{...profile,position:profile.view==="athlete"?"Outside hitter":profile.position,num:profile.num||"22"});return}
   if(b.dataset.seasonv){profile.season=b.dataset.seasonv;store.set("profile",profile);HEAT=null;heatTried=false;render();if(profile.season==="club"&&!profile.clubCity){const c=document.getElementById("club-city");if(c)c.focus()}return}
@@ -2194,21 +2196,21 @@ document.addEventListener("submit",e=>{
   if(f.id==="onb"){
     const first=$("#f-first").value.trim(),last=$("#f-last").value.trim(),name=(first+" "+last).trim();
     if(STAFF_ROLES.includes($("#f-pos").value)&&!draft.protein)draft.protein="No preference";
-    if(!first||!last||!draft.team||!draft.protein){toast("Add your first and last name, team and protein preference");return}
+    if(!first||!last||!draft.protein){toast("Add your first and last name and protein preference");return}
     const prevAllergy=profile?JSON.stringify([profile.allergies,profile.other]):"";
-    profile={...(profile||{}),name,first,last,team:draft.team,position:$("#f-pos").value,pro:$("#f-pro").value.trim(),allergies:draft.allergies||[],other:$("#f-other").value.trim(),protein:draft.protein,num:($("#f-num").value||"").replace(/\D/g,"").slice(0,2),ack:profile?profile.ack:false};
+    profile={...(profile||{}),name,first,last,team:draft.team||"Both",position:$("#f-pos").value,pro:$("#f-pro").value.trim(),allergies:draft.allergies||[],other:$("#f-other").value.trim(),protein:draft.protein,num:($("#f-num").value||"").replace(/\D/g,"").slice(0,2),ack:profile?profile.ack:false};
     if(prevAllergy!==JSON.stringify([profile.allergies,profile.other]))profile.ack=false;
     const isNew=!draft.editing;
     store.set("profile",profile);draft={};tab="home";render();if(isNew&&!STAFF_ROLES.includes(profile.position))walkOut();else toast(isNew?"Welcome to the staff view":"Profile saved");
     sendInbox(profileRecord(isNew?"Profile":"Profile update"));return}
   if(f.id==="form-session"){
     if(!draft.session){toast("Pick a session type");return}
-    draft.sessionSent=`Session heads-up for the RD\n${profile.name} · ${profile.team} · ${profile.position||"—"}\nType: ${draft.session}${$("#rd-note").value.trim()?"\nNotes: "+$("#rd-note").value.trim():""}`;
+    draft.sessionSent=`Session heads-up for the RD\n${profile.name} · ${teamLabel()} · ${profile.position||"—"}\nType: ${draft.session}${$("#rd-note").value.trim()?"\nNotes: "+$("#rd-note").value.trim():""}`;
     sendInbox({...profileRecord("Session request"),Details:`${draft.session}${$("#rd-note").value.trim()?" · "+$("#rd-note").value.trim():""}`});
     render();toast("Sent to the RD");ballArc();return}
   if(f.id==="form-ask"){
     const q=$("#ask-q").value.trim();if(!q){toast("Type your question first");return}
-    draft.askSent=`Nutrition 411 question\n${profile.name} · ${profile.team}\n${q}`;
+    draft.askSent=`Nutrition 411 question\n${profile.name} · ${teamLabel()}\n${q}`;
     sendInbox({...profileRecord("Nutrition 411 question"),Details:clubMode()?`[${clubLabel()}] ${q}`:q});
     render();toast("Sent to the RD");ballArc();return}
   if(f.id==="form-editor"){tryEditor($("#ed-code").value).then(ok=>{if(!ok)toast("That code didn't work")});return}
@@ -2220,12 +2222,12 @@ document.addEventListener("submit",e=>{
   if(f.id==="form-clubfood"){
     if(!draft.cfProv){toast("Pick what your club provides");return}
     const note=$("#cf-note").value.trim();
-    draft.clubfoodSent=`Club food · ${clubLabel()}\n${profile.name} · ${profile.team}\nClub provides: ${draft.cfProv}${note?"\n"+note:""}`;
+    draft.clubfoodSent=`Club food · ${clubLabel()}\n${profile.name} · ${teamLabel()}\nClub provides: ${draft.cfProv}${note?"\n"+note:""}`;
     sendInbox({...profileRecord("Club food"),Details:`${clubLabel()} · Club provides: ${draft.cfProv}${note?" · "+note:""}`});
     render();toast("Sent to the RD");ballArc();return}
   if(f.id==="form-feedback"){
     if(!draft.fbType){toast("Pick a feedback type");return}
-    draft.feedbackSent=`Food feedback · ${draft.fbType}\n${profile.name} · ${profile.team}\nItem: ${$("#fb-meal").value.trim()||"—"}${draft.fbRate?"\nRating: "+draft.fbRate+"/5":""}${$("#fb-note").value.trim()?"\n"+$("#fb-note").value.trim():""}`;
+    draft.feedbackSent=`Food feedback · ${draft.fbType}\n${profile.name} · ${teamLabel()}\nItem: ${$("#fb-meal").value.trim()||"—"}${draft.fbRate?"\nRating: "+draft.fbRate+"/5":""}${$("#fb-note").value.trim()?"\n"+$("#fb-note").value.trim():""}`;
     sendInbox({Type:"Food feedback",Name:profile.name,Team:profile.team,Details:draft.feedbackSent.split("\n").slice(2).join(" · ")});
     render();toast("Ticket sent");ballArc();return}
 });
