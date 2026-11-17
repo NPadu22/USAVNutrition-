@@ -848,6 +848,11 @@ nav.tabs button[aria-current="page"]{background:transparent;box-shadow:none}
 :root[data-font="classic"][data-style="soft"] h2{font-size:1.42rem}
 :root[data-style="soft"] .board-chalk h1{font-family:var(--display)}
 :root[data-font="classic"] .board-archive{font-family:var(--editorial);font-style:italic;font-size:.92rem;line-height:1.35}
+
+/* Welcome (setup) logo: large, transparent. A soft light halo keeps the navy parts readable on the dark hero. */
+.logo-hero{position:relative;z-index:2;display:block;width:min(230px,64%);height:auto;flex:none;filter:drop-shadow(0 0 1.5px rgb(255 255 255 / .95)) drop-shadow(0 0 12px rgb(255 255 255 / .32))}
+:root[data-theme="light"] .logo-hero{filter:drop-shadow(0 6px 14px rgb(7 29 73 / .18))}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .logo-hero{filter:drop-shadow(0 6px 14px rgb(7 29 73 / .18))}}
 </style>
 
 <div class="pagebg" aria-hidden="true"><svg viewBox="0 0 150 240" preserveAspectRatio="xMidYMid slice"><rect width="150" height="240" class="pz"/><rect x="30" y="30" width="90" height="180" class="pc"/><g class="pl"><rect x="30" y="30" width="90" height="180"/><line x1="30" y1="90" x2="120" y2="90"/><line x1="30" y1="150" x2="120" y2="150"/></g><line x1="22" y1="120" x2="128" y2="120" class="pn"/></svg></div>
@@ -1132,7 +1137,7 @@ function vOnboard(){
   const p=draft;
   p.allergies=p.allergies||[];
   return `<div class="view">
-   <div class="court hero">${COURT_SVG}<div class="hero-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><span class="eyebrow">Athlete setup</span></div>${STARS5}<p class="wordmark"><span>Nutrition</span></p><p class="hello">${draft.editing?"Update your profile.":"Welcome. Takes about a minute."}</p><p class="muted" style="margin-top:6px">Your answers flag your allergens on every menu and set the protein in your smoothies.</p></div>
+   <div class="court hero">${COURT_SVG}<div class="hero-top"><img class="logo-hero" src="logo-clear.png" alt="USA Volleyball logo"><span class="eyebrow">Athlete setup</span></div>${STARS5}<p class="wordmark"><span>Nutrition</span></p><p class="hello">${draft.editing?"Update your profile.":"Welcome. Takes about a minute."}</p><p class="muted" style="margin-top:6px">Your answers flag your allergens on every menu and set the protein in your smoothies.</p></div>
    ${draft.editing?"":installCard("setup")}
    <form id="onb" class="stack card${STAFF_ROLES.includes(p.position)?" staff":""}">
     <div class="namerow"><label for="f-first">First name<input id="f-first" required value="${esc(p.first??(p.name||"").split(" ")[0]??"")}" placeholder="First Name" autocomplete="given-name"></label><label for="f-last">Last name<input id="f-last" required value="${esc(p.last??(p.name||"").split(" ").slice(1).join(" "))}" placeholder="Last Name" autocomplete="family-name"></label></div>

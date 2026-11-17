@@ -3,7 +3,7 @@
    Images, icons and fonts: served from cache, refreshed in the background.
    Google Sheet requests are not touched; the app keeps its own copy of the last menus. */
 const CACHE = "usav-nutrition-v1";
-const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-180.png", "icon-192.png", "icon-512.png", "logo.jpg", "usa-mark.png"];
+const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-180.png", "icon-192.png", "icon-512.png", "logo.jpg", "logo-clear.png", "usa-mark.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
