@@ -1127,8 +1127,8 @@ function phoneKind(){const u=navigator.userAgent||"";const ios=/iPhone|iPad|iPod
   if(ios){if(/CriOS|FxiOS|EdgiOS|Instagram|FBAN|FBAV|Line\/|GSA\//.test(u))return "ios-other";return "ios"}
   if(/Android/.test(u))return "android";return "desktop"}
 function installSteps(){const k=phoneKind();
-  if(k==="ios")return `<ol class="steps"><li>Tap the <b>Share</b> button <span class="kbd">⬆︎</span> at the bottom of Safari.</li><li>Scroll and tap <b>Add to Home Screen</b>.</li><li>Tap <b>Add</b>, then open USAV Nutrition from your home screen.</li></ol>`;
-  if(k==="ios-other")return `<ol class="steps"><li>This browser can't install apps on iPhone. Copy the link and open it in <b>Safari</b>.</li><li>In Safari, tap <b>Share</b> <span class="kbd">⬆︎</span> → <b>Add to Home Screen</b>.</li></ol><div class="row"><span class="copybox grow" id="inst-link">${esc(CONFIG.appLink||location.href)}</span><button class="btn ghost sm" data-copy="inst-link">Copy</button></div>`;
+  if(k==="ios")return `<ol class="steps"><li>In Safari, tap <b>•••</b> next to the address bar, then <b>Share</b> <span class="kbd">⬆︎</span>. (On older iPhones, tap <b>Share</b> at the bottom.)</li><li>Scroll and tap <b>Add to Home Screen</b>.</li><li>Leave <b>Open as Web App</b> on, tap <b>Add</b>, then open USAV Nutrition from your home screen.</li></ol>`;
+  if(k==="ios-other")return `<ol class="steps"><li>This browser can't install apps on iPhone. Copy the link and open it in <b>Safari</b>.</li><li>In Safari, tap <b>•••</b> → <b>Share</b> <span class="kbd">⬆︎</span> → <b>Add to Home Screen</b>.</li></ol><div class="row"><span class="copybox grow" id="inst-link">${esc(CONFIG.appLink||location.href)}</span><button class="btn ghost sm" data-copy="inst-link">Copy</button></div>`;
   if(k==="android")return deferredInstall?`<button class="btn block" data-install="1">Install the app</button>`:`<ol class="steps"><li>In Chrome, tap the <b>⋮</b> menu at the top right.</li><li>Tap <b>Install app</b> or <b>Add to Home screen</b>.</li></ol>`;
   return deferredInstall?`<button class="btn block" data-install="1">Install the app</button>`:`<p class="muted" style="font-size:.88rem">Open this link on your phone to install it.</p>`}
 function installCard(where){
@@ -1820,6 +1820,7 @@ function vMe(){
    </div></div>
    ${isStaff()&&!clubMode()?"":`<p class="wear-note">Your badge earns a punch for each month with 3+ days logged${chapterName()?`, and a sticker for each season chapter`:""}.</p>`}
    <button class="btn ghost block" data-edit="1">Edit profile</button>
+   ${installCard("me")}
    ${EDITOR?`<section><h2>Editor tools</h2><div class="card stack">
     <p class="muted" style="font-size:.84rem">Only you see this, on devices you unlocked with your private link.</p>
     <div class="stack" style="gap:6px"><span class="eyebrow">Preview as</span><div class="choice">${[["staff","Staff view"],["athlete","Athlete view"]].map(([k,l])=>`<button type="button" data-viewas="${k}" aria-pressed="${(profile.view||"staff")===k}">${l}</button>`).join("")}</div></div>
