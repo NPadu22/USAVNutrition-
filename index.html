@@ -396,7 +396,9 @@ html.lg{font-size:17px}
 .flagline{display:inline-flex;align-items:center;gap:10px}
 svg.flag{width:38px;height:20px;flex:none;border-radius:2px;box-shadow:0 0 0 1px color-mix(in srgb,var(--fg) 18%,transparent);transform-origin:left center;animation:flagin .6s cubic-bezier(.2,.8,.2,1) both}
 @keyframes flagin{from{transform:scaleX(.6);opacity:.5}to{transform:none;opacity:1}}
-.logo-badge{display:block;width:124px;aspect-ratio:377/310;max-width:100%;background:#fff url("logo.jpg") center/72% no-repeat;border-radius:12px;box-shadow:0 6px 18px rgb(0 0 0 / .25);flex:none}
+.logo-badge{display:block;width:124px;aspect-ratio:679/564;max-width:100%;background:transparent url("logo-clear.png") center/contain no-repeat;flex:none;filter:drop-shadow(0 0 1.5px rgb(255 255 255 / .95)) drop-shadow(0 0 10px rgb(255 255 255 / .3))}
+:root[data-theme="light"] .logo-badge,.cred-top .logo-badge{filter:none}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .logo-badge{filter:none}}
 .usa-mark{display:block;width:120px;max-width:100%;aspect-ratio:432/277;margin:4px auto 0;background:url("usa-mark.png") center/contain no-repeat}
 .hero-top{align-items:flex-start}
 .hero .wordmark{margin-top:16px}
@@ -574,7 +576,7 @@ h2::before{width:.6em;height:.6em}
 .cred{position:relative;width:100%;background:var(--noise),var(--paper);color:var(--ink);border-radius:18px;overflow:hidden;box-shadow:0 14px 34px rgb(0 0 0 / .3);padding:30px 18px 0}
 .cred::before{content:"";position:absolute;top:11px;left:50%;width:48px;height:9px;margin-left:-24px;border-radius:99px;background:var(--bg);box-shadow:inset 0 2px 3px rgb(0 0 0 / .45)}
 .cred-top{display:flex;align-items:center;gap:12px}
-.cred-top .logo-badge{width:70px;border-radius:9px;box-shadow:0 2px 8px rgb(0 0 0 / .15)}
+.cred-top .logo-badge{width:70px}
 .cred-org{font:600 .7rem/1.25 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted)}
 .cred-org b{display:block;font:800 1.15rem/1 var(--display);letter-spacing:.04em;color:var(--ink)}
 .cred-num{margin-left:auto;font-size:3.3rem;line-height:.9;color:var(--ink)}
