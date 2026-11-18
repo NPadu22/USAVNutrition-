@@ -1561,7 +1561,7 @@ function raftersHTML(){
     return `<div class="rafter-row"><div class="rafter-head"><b>${label}</b><span>${L.length} medals · ${g} gold</span></div>
     <div class="rafter ${k}" role="list">${L.map(([y,c,m])=>`<div class="bnrw" role="listitem" aria-label="${label} ${m.toLowerCase()}, ${c} ${y}"><i class="rod"></i><div class="bnr"><span class="md ${m.toLowerCase()}"></span><b class="yr">${y}</b><small>${c}</small><em>${m}</em></div></div>`).join("")}</div></div>`};
   const order=profile&&profile.team==="MNT"?[["men","Men"],["women","Women"]]:[["women","Women"],["men","Men"]];
-  return `<section class="rafters"><h2>In the rafters</h2><p class="muted" style="font-size:.85rem;margin:-4px 0 6px">Every medal the U.S. indoor teams have brought home. Swipe along the beam.</p>${order.map(([k,l])=>row(k,l)).join("")}</section>`}
+  return `<section class="rafters"><h2>In the rafters</h2>${order.map(([k,l])=>row(k,l)).join("")}</section>`}
 
 /* US flag (13 stripes, 50 stars in 9 alternating rows of 6 and 5), drawn to standard 1.9:1 proportions */
 const FLAG=(()=>{const W=190,H=100,sh=H/13,cw=76,ch=sh*7;let r="";
