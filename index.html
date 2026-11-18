@@ -878,8 +878,9 @@ nav.tabs button[aria-current="page"]{background:transparent;box-shadow:none}
 .bnr .yr{font-family:var(--num);font-weight:400;font-size:1.25rem;line-height:1;letter-spacing:.02em}
 .bnr small{font-size:.62rem;line-height:1.15;text-transform:uppercase;letter-spacing:.06em;opacity:.85;min-height:2.3em;display:flex;align-items:center}
 .bnr em{font-style:normal;font-size:.6rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#FFD15C}
-@media (prefers-reduced-motion:no-preference){.bnrw{transform-origin:50% 0;animation:sway 4.5s ease-in-out infinite}.bnrw:nth-child(2n){animation-delay:-1.5s}.bnrw:nth-child(3n){animation-delay:-3s}}
-@keyframes sway{0%,100%{transform:rotate(-2.4deg)}50%{transform:rotate(2.4deg)}}
+.bnrw{transform-origin:50% 0}
+@media (prefers-reduced-motion:no-preference){.bnrw.swing{animation:swing 1.1s cubic-bezier(.3,.6,.4,1) both}.bnrw.swing:nth-child(2n){animation-duration:1.25s}.bnrw.swing:nth-child(3n){animation-duration:1s}}
+@keyframes swing{0%{transform:rotate(0)}15%{transform:rotate(calc(var(--dir,1)*7deg))}35%{transform:rotate(calc(var(--dir,1)*-5deg))}55%{transform:rotate(calc(var(--dir,1)*3deg))}75%{transform:rotate(calc(var(--dir,1)*-1.5deg))}100%{transform:rotate(0)}}
 </style>
 
 <div class="pagebg" aria-hidden="true"><svg viewBox="0 0 150 240" preserveAspectRatio="xMidYMid slice"><rect width="150" height="240" class="pz"/><rect x="30" y="30" width="90" height="180" class="pc"/><g class="pl"><rect x="30" y="30" width="90" height="180"/><line x1="30" y1="90" x2="120" y2="90"/><line x1="30" y1="150" x2="120" y2="150"/></g><line x1="22" y1="120" x2="128" y2="120" class="pn"/></svg></div>
@@ -1560,7 +1561,7 @@ function raftersHTML(){
     return `<div class="rafter-row"><div class="rafter-head"><b>${label}</b><span>${L.length} medals · ${g} gold</span></div>
     <div class="rafter ${k}" role="list">${L.map(([y,c,m])=>`<div class="bnrw" role="listitem" aria-label="${label} ${m.toLowerCase()}, ${c} ${y}"><i class="rod"></i><div class="bnr"><span class="md ${m.toLowerCase()}"></span><b class="yr">${y}</b><small>${c}</small><em>${m}</em></div></div>`).join("")}</div></div>`};
   const order=profile&&profile.team==="MNT"?[["men","Men"],["women","Women"]]:[["women","Women"],["men","Men"]];
-  return `<section class="rafters"><h2>In the rafters</h2><p class="muted" style="font-size:.85rem;margin:-4px 0 6px">Every medal the U.S. indoor teams have brought home. Swipe along the beam.</p>${order.map(([k,l])=>row(k,l)).join("")}<p class="stamp" style="margin-top:6px">Source: USA Volleyball medal history; Paris 2024 results.</p></section>`}
+  return `<section class="rafters"><h2>In the rafters</h2><p class="muted" style="font-size:.85rem;margin:-4px 0 6px">Every medal the U.S. indoor teams have brought home. Swipe along the beam.</p>${order.map(([k,l])=>row(k,l)).join("")}</section>`}
 
 /* US flag (13 stripes, 50 stars in 9 alternating rows of 6 and 5), drawn to standard 1.9:1 proportions */
 const FLAG=(()=>{const W=190,H=100,sh=H/13,cw=76,ch=sh*7;let r="";
@@ -2349,6 +2350,16 @@ async function loadSheet(){
   render();
 }
 try{const c=JSON.parse(localStorage.getItem("af_sheet")||"null");if(c&&CONFIG.sheetId)DATA=Object.assign({},DATA,c)}catch(e){}
+/* Rafters: banners swing only when the beam row or the page is scrolled */
+(()=>{let lastY=scrollY,lastX=new WeakMap();
+  const swing=(els,dir)=>{els.forEach((b,i)=>{if(b.classList.contains("swing"))return;b.style.setProperty("--dir",dir);b.style.animationDelay=(i%4)*40+"ms";b.classList.add("swing");b.addEventListener("animationend",()=>b.classList.remove("swing"),{once:true})})};
+  document.addEventListener("scroll",e=>{
+    if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+    const t=e.target;
+    if(t&&t.classList&&t.classList.contains("rafter")){const px=lastX.get(t)||0;swing([...t.querySelectorAll(".bnrw")],t.scrollLeft>=px?-1:1);lastX.set(t,t.scrollLeft);return}
+    const sec=document.querySelector(".rafters");if(!sec)return;const r=sec.getBoundingClientRect();
+    const dir=scrollY>=lastY?1:-1;lastY=scrollY;
+    if(r.top<innerHeight&&r.bottom>0)swing([...sec.querySelectorAll(".bnrw")],dir)},{capture:true,passive:true})})();
 loadSheet();
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")loadSheet()});
 </script>
