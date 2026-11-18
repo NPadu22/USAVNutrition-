@@ -855,6 +855,31 @@ nav.tabs button[aria-current="page"]{background:transparent;box-shadow:none}
 .logo-hero{position:relative;z-index:2;display:block;width:min(230px,64%);height:auto;flex:none;filter:drop-shadow(0 0 1.5px rgb(255 255 255 / .95)) drop-shadow(0 0 12px rgb(255 255 255 / .32))}
 :root[data-theme="light"] .logo-hero{filter:drop-shadow(0 6px 14px rgb(7 29 73 / .18))}
 @media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .logo-hero{filter:drop-shadow(0 6px 14px rgb(7 29 73 / .18))}}
+
+/* In the rafters: arena banners */
+.rafter-row{margin-top:10px}
+.rafter-head{display:flex;justify-content:space-between;align-items:baseline;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase}
+.rafter-head span{color:var(--mute,#9AA6C4);letter-spacing:.04em}
+.rafter{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x proximity;padding:16px 4px 8px;position:relative;scrollbar-width:none;
+  background:linear-gradient(#5B6478,#3A4255) 0 9px/100% 3px no-repeat}
+.rafter::-webkit-scrollbar{display:none}
+.bnrw{flex:none;width:76px;position:relative;scroll-snap-align:start;padding-top:6px}
+.bnrw .rod{position:absolute;left:8px;right:8px;top:0;height:5px;border-radius:3px;background:linear-gradient(#D9DEE7,#8D96A8);box-shadow:0 1px 2px rgb(0 0 0 / .35)}
+.bnrw .rod::before,.bnrw .rod::after{content:"";position:absolute;top:-8px;width:1.5px;height:9px;background:#8D96A8}
+.bnrw .rod::before{left:10px}.bnrw .rod::after{right:10px}
+.bnr{height:138px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 4px 0;color:#fff;text-align:center;
+  clip-path:polygon(0 0,100% 0,100% 100%,50% 88%,0 100%);box-shadow:inset 0 -18px 0 -12px rgb(255 255 255 / .9)}
+.rafter.women .bnr{background:linear-gradient(180deg,#123A86,#071D49 70%),#071D49;background-image:linear-gradient(180deg,#123A86,#071D49 70%),repeating-linear-gradient(90deg,rgb(255 255 255 / .04) 0 2px,transparent 2px 5px)}
+.rafter.men .bnr{background-image:linear-gradient(180deg,#C42340,#7E1022 72%),repeating-linear-gradient(90deg,rgb(255 255 255 / .05) 0 2px,transparent 2px 5px)}
+.bnr .md{width:28px;height:28px;border-radius:50%;box-shadow:inset 0 0 0 2px rgb(255 255 255 / .35),0 2px 4px rgb(0 0 0 / .35);margin-bottom:3px}
+.bnr .md.gold{background:radial-gradient(circle at 35% 30%,#FFE9A8,#D7A928 55%,#9A7300)}
+.bnr .md.silver{background:radial-gradient(circle at 35% 30%,#FFFFFF,#BFC6D1 55%,#7D8696)}
+.bnr .md.bronze{background:radial-gradient(circle at 35% 30%,#F5C49A,#B8743E 55%,#7A4219)}
+.bnr .yr{font-family:var(--num);font-weight:400;font-size:1.25rem;line-height:1;letter-spacing:.02em}
+.bnr small{font-size:.62rem;line-height:1.15;text-transform:uppercase;letter-spacing:.06em;opacity:.85;min-height:2.3em;display:flex;align-items:center}
+.bnr em{font-style:normal;font-size:.6rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#FFD15C}
+@media (prefers-reduced-motion:no-preference){.bnrw{transform-origin:50% 0;animation:sway 6s ease-in-out infinite}.bnrw:nth-child(2n){animation-delay:-2s}.bnrw:nth-child(3n){animation-delay:-4s}}
+@keyframes sway{0%,100%{transform:rotate(-.6deg)}50%{transform:rotate(.6deg)}}
 </style>
 
 <div class="pagebg" aria-hidden="true"><svg viewBox="0 0 150 240" preserveAspectRatio="xMidYMid slice"><rect width="150" height="240" class="pz"/><rect x="30" y="30" width="90" height="180" class="pc"/><g class="pl"><rect x="30" y="30" width="90" height="180"/><line x1="30" y1="90" x2="120" y2="90"/><line x1="30" y1="150" x2="120" y2="150"/></g><line x1="22" y1="120" x2="128" y2="120" class="pn"/></svg></div>
@@ -1522,9 +1547,20 @@ function vHome(){
    <section><h2>More</h2><div class="nav-grid">
     ${(()=>{const x=smoothieFor(todayIso);smTile=x&&(x.team==="Both"||bothTeams()||x.team===teamOf())?mySmoothie(x):null;return ""})()}${go.map(([t,seg,l,d,ic,dseg])=>t==="wa"?`<a class="ng" href="${CONFIG.whatsappLink}" target="_blank" rel="noopener">${ic}<b>${l}</b><span>${d}</span></a>`:`<button class="ng" ${TABS.some(x=>x[0]===t)?`data-tab="${t}"`:`data-go="${t}"${seg?` data-seg="${seg}"`:""}${dseg?` data-dseg="${dseg}"`:""}`}>${ic}<b>${l}</b><span>${d}</span>${!club&&seg==="smoothie"&&smTile?`<small class="ng-sub">${weekend?"Mon":"Today"}: ${esc(smTile.n)}${hits(smTile.a)?" · check allergens":""}</small>`:""}</button>`).join("")}
    </div></section>
+   ${raftersHTML()}
    <div class="usa-mark" role="img" aria-label="USA"></div>
 </div>`;
 }
+/* In the rafters: every U.S. indoor medal, hung like arena banners. Sources: USA Volleyball medal timeline; Paris 2024 results. Plain text only, no rings or marks. */
+const RAFTERS={
+  women:[["1984","Los Angeles","Silver"],["1992","Barcelona","Bronze"],["2008","Beijing","Silver"],["2012","London","Silver"],["2016","Rio de Janeiro","Bronze"],["2021","Tokyo","Gold"],["2024","Paris","Silver"]],
+  men:[["1984","Los Angeles","Gold"],["1988","Seoul","Gold"],["1992","Barcelona","Bronze"],["2008","Beijing","Gold"],["2016","Rio de Janeiro","Bronze"],["2024","Paris","Bronze"]]};
+function raftersHTML(){
+  const row=(k,label)=>{const L=RAFTERS[k],g=L.filter(x=>x[2]==="Gold").length;
+    return `<div class="rafter-row"><div class="rafter-head"><b>${label}</b><span>${L.length} medals · ${g} gold</span></div>
+    <div class="rafter ${k}" role="list">${L.map(([y,c,m])=>`<div class="bnrw" role="listitem" aria-label="${label} ${m.toLowerCase()}, ${c} ${y}"><i class="rod"></i><div class="bnr"><span class="md ${m.toLowerCase()}"></span><b class="yr">${y}</b><small>${c}</small><em>${m}</em></div></div>`).join("")}</div></div>`};
+  const order=profile&&profile.team==="MNT"?[["men","Men"],["women","Women"]]:[["women","Women"],["men","Men"]];
+  return `<section class="rafters"><h2>In the rafters</h2><p class="muted" style="font-size:.85rem;margin:-4px 0 6px">Every medal the U.S. indoor teams have brought home. Swipe along the beam.</p>${order.map(([k,l])=>row(k,l)).join("")}<p class="stamp" style="margin-top:6px">Source: USA Volleyball medal history; Paris 2024 results.</p></section>`}
 
 /* US flag (13 stripes, 50 stars in 9 alternating rows of 6 and 5), drawn to standard 1.9:1 proportions */
 const FLAG=(()=>{const W=190,H=100,sh=H/13,cw=76,ch=sh*7;let r="";
