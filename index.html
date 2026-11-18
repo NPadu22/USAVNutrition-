@@ -878,8 +878,8 @@ nav.tabs button[aria-current="page"]{background:transparent;box-shadow:none}
 .bnr .yr{font-family:var(--num);font-weight:400;font-size:1.25rem;line-height:1;letter-spacing:.02em}
 .bnr small{font-size:.62rem;line-height:1.15;text-transform:uppercase;letter-spacing:.06em;opacity:.85;min-height:2.3em;display:flex;align-items:center}
 .bnr em{font-style:normal;font-size:.6rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#FFD15C}
-@media (prefers-reduced-motion:no-preference){.bnrw{transform-origin:50% 0;animation:sway 6s ease-in-out infinite}.bnrw:nth-child(2n){animation-delay:-2s}.bnrw:nth-child(3n){animation-delay:-4s}}
-@keyframes sway{0%,100%{transform:rotate(-.6deg)}50%{transform:rotate(.6deg)}}
+@media (prefers-reduced-motion:no-preference){.bnrw{transform-origin:50% 0;animation:sway 4.5s ease-in-out infinite}.bnrw:nth-child(2n){animation-delay:-1.5s}.bnrw:nth-child(3n){animation-delay:-3s}}
+@keyframes sway{0%,100%{transform:rotate(-2.4deg)}50%{transform:rotate(2.4deg)}}
 </style>
 
 <div class="pagebg" aria-hidden="true"><svg viewBox="0 0 150 240" preserveAspectRatio="xMidYMid slice"><rect width="150" height="240" class="pz"/><rect x="30" y="30" width="90" height="180" class="pc"/><g class="pl"><rect x="30" y="30" width="90" height="180"/><line x1="30" y1="90" x2="120" y2="90"/><line x1="30" y1="150" x2="120" y2="150"/></g><line x1="22" y1="120" x2="128" y2="120" class="pn"/></svg></div>
@@ -1553,7 +1553,7 @@ function vHome(){
 }
 /* In the rafters: every U.S. indoor medal, hung like arena banners. Sources: USA Volleyball medal timeline; Paris 2024 results. Plain text only, no rings or marks. */
 const RAFTERS={
-  women:[["1984","Los Angeles","Silver"],["1992","Barcelona","Bronze"],["2008","Beijing","Silver"],["2012","London","Silver"],["2016","Rio de Janeiro","Bronze"],["2021","Tokyo","Gold"],["2024","Paris","Silver"]],
+  women:[["1984","Los Angeles","Silver"],["1992","Barcelona","Bronze"],["2008","Beijing","Silver"],["2012","London","Silver"],["2016","Rio de Janeiro","Bronze"],["2020","Tokyo","Gold"],["2024","Paris","Silver"]],
   men:[["1984","Los Angeles","Gold"],["1988","Seoul","Gold"],["1992","Barcelona","Bronze"],["2008","Beijing","Gold"],["2016","Rio de Janeiro","Bronze"],["2024","Paris","Bronze"]]};
 function raftersHTML(){
   const row=(k,label)=>{const L=RAFTERS[k],g=L.filter(x=>x[2]==="Gold").length;
