@@ -881,6 +881,12 @@ nav.tabs button[aria-current="page"]{background:transparent;box-shadow:none}
 .bnrw{transform-origin:50% 0}
 .bnrw{transform:rotate(calc(var(--sw,0)*var(--m,1)*1deg));will-change:transform}
 .bnrw:nth-child(3n+1){--m:1}.bnrw:nth-child(3n+2){--m:.8}.bnrw:nth-child(3n){--m:1.15}
+
+/* Staff preview banner */
+.samplebar{display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:14px;border:1.5px dashed var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.samplebar .eyebrow{margin:0}
+.samplebar b{font-size:.95rem;line-height:1.3}
+.samplebar .choice button{padding:8px 12px;font-size:.82rem}
 </style>
 
 <div class="pagebg" aria-hidden="true"><svg viewBox="0 0 150 240" preserveAspectRatio="xMidYMid slice"><rect width="150" height="240" class="pz"/><rect x="30" y="30" width="90" height="180" class="pc"/><g class="pl"><rect x="30" y="30" width="90" height="180"/><line x1="30" y1="90" x2="120" y2="90"/><line x1="30" y1="150" x2="120" y2="150"/></g><line x1="22" y1="120" x2="128" y2="120" class="pn"/></svg></div>
@@ -1095,8 +1101,26 @@ const BGS=[["plain","Plain"],["gradient","Glow"],["court","Court"],["stars","Sta
 const PREF_DEFAULTS={accent:"",theme:"system",palette:"usa",style:"soft",font:"classic",contrast:"standard",size:"m",bg:"gradient"};
 
 /* ===== State ===== */
-const store={get(k,f){try{const v=localStorage.getItem("af_"+k);return v?JSON.parse(v):f}catch(e){return f}},set(k,v){try{localStorage.setItem("af_"+k,JSON.stringify(v))}catch(e){}}};
+const store={get(k,f){try{const v=localStorage.getItem("af_"+k);return v?JSON.parse(v):f}catch(e){return f}},set(k,v){try{if(k==="profile"&&v&&v._sample)v=sampleStrip(v);localStorage.setItem("af_"+k,JSON.stringify(v))}catch(e){}}};
 let profile=store.get("profile",null);
+/* Staff preview: staff see a sample athlete view with a USA season / club season toggle. Never saved to the profile. */
+const SAMPLE_CLUB={club:"Eczacıbaşı Istanbul",clubCity:"Istanbul",clubCountry:"Türkiye"};
+const SAMPLE_KEYS=["season","club","clubCity","clubCountry"];
+let sampleBase=null;
+function sampleStrip(v){const o={...v};delete o._sample;SAMPLE_KEYS.forEach(f=>{if(!sampleBase||sampleBase[f]===undefined)delete o[f];else o[f]=sampleBase[f]});return o}
+function sampleOn(){return !!profile&&typeof STAFF_ROLES!=="undefined"&&STAFF_ROLES.includes(profile.position)&&!(typeof EDITOR!=="undefined"&&EDITOR&&profile.view==="athlete")}
+function applySample(){
+  if(!profile)return;
+  if(profile._sample)profile=sampleStrip(profile);
+  if(!sampleOn())return;
+  sampleBase={};SAMPLE_KEYS.forEach(f=>{if(profile[f]!==undefined)sampleBase[f]=profile[f]});
+  profile=store.get("sample","usa")==="club"?{...profile,...SAMPLE_CLUB,season:"club",_sample:1}:{...profile,season:"team",_sample:1};
+}
+function sampleBar(){
+  if(!sampleOn())return "";
+  const c=store.get("sample","usa")==="club";
+  return `<div class="samplebar" role="note"><p class="eyebrow">Staff preview</p><b>${c?"Sample of what an athlete sees in the off-season, playing club abroad (Eczacıbaşı Istanbul)":"Sample of what an athlete sees in summer, during USA season"}</b><div class="choice" role="group" aria-label="Season to preview"><button type="button" data-sample="usa" aria-pressed="${!c}">USA season</button><button type="button" data-sample="club" aria-pressed="${c}">Off-season · Club</button></div></div>`;
+}
 let prefs=Object.assign({},PREF_DEFAULTS,store.get("prefs",{}));
 if(prefs.large===true&&!store.get("prefs",{}).size)prefs.size="l";delete prefs.large;
 if(!ACCENTS.some(a=>a.c===prefs.accent))prefs.accent="";
@@ -1319,7 +1343,7 @@ const ARCHIVE=[
 function archiveNote(){const d=new Date(),i=(d.getFullYear()*372+d.getMonth()*31+d.getDate())%ARCHIVE.length,a=ARCHIVE[i];
   return `<div class="board-archive"><i>From the archive · ${a[0]}</i>${a[1]}<small>Source: ${a[2]}</small></div>`}
 const CHAPTER_TINTS={"preseason":"#4FA89A","vnl":"#5A78BE","nations league":"#5A78BE","worlds":"#C99700","world championship":"#C99700","olympics":"#C8102E","road to la":"#C8102E","qualifiers":"#E8A33D","off-season":"#8E9094","offseason":"#8E9094"};
-function chapterName(){return String(DATA.chapter||"").trim()}
+function chapterName(){if(profile&&profile._sample&&profile.season==="team")return "Summer · USA season";return String(DATA.chapter||"").trim()}
 function chapterTint(){const c=chapterName().toLowerCase();return CHAPTER_TINTS[c]||""}
 /* Season wear: months with 3+ logged days earn a punch; chapters with 3+ logged days earn a sticker */
 function wearData(){
@@ -1369,7 +1393,7 @@ async function tryEditor(code){if(!code||!window.crypto||!crypto.subtle)return f
 (()=>{const m=location.search.match(/[?&]editor=([a-z0-9]+)/i);if(m)tryEditor(m[1])})();
 function isStaffRole(){return !!profile&&STAFF_ROLES.includes(profile.position)}
 function isStaff(){return isStaffRole()&&!(EDITOR&&profile.view==="athlete")}
-function clubMode(){if(isStaffRole()&&!EDITOR)return false;const p=profile||{};if(!p.clubCity&&!p.clubCountry)return false;if(p.season==="club")return true;if(p.season==="team")return false;return /off/i.test(chapterName())}
+function clubMode(){if(isStaffRole()&&!EDITOR&&!(profile&&profile._sample))return false;const p=profile||{};if(!p.clubCity&&!p.clubCountry)return false;if(p.season==="club")return true;if(p.season==="team")return false;return /off/i.test(chapterName())}
 function clubPlace(){const p=profile||{};return [p.clubCity,p.clubCountry&&p.clubCountry!=="Other"?p.clubCountry:""].filter(Boolean).join(", ")}
 function clubLabel(){const p=profile||{};return [p.club,clubPlace()].filter(Boolean).join(" · ")}
 /* Allergy cards. Every language must be checked by a native speaker before CARD_REVIEWED is set to true for it. */
@@ -1502,7 +1526,7 @@ function vHome(){
   const flagged=meals.filter(x=>hits(x.a)).length;
   const [feat,...rest]=DATA.announcements;
   const dateLine=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
-  const club=clubMode(),staff=isStaff()&&!club;
+  const club=clubMode(),staff=isStaff()&&!club&&!sampleOn();
   const go=staff?[
    ["food","menu","Weekly menu","The full lineup",IC.plate],
    ["rd","","Ask the RD","Nutrition 411 and booking",IC.chat],
@@ -1523,7 +1547,7 @@ function vHome(){
    ["food","feedback","Food feedback","Rate a meal or request one",IC.chat],
    ["food","dinner","Delivery picks","What to order from LA & OC chains",IC.plate,"delivery"]
   ];
-  return `<div class="view home">
+  return `<div class="view home">${sampleBar()}
    <header class="hero court" style="${chapterTint()?`--chapter:${chapterTint()}`:""}">${COURT_SVG}${profile.num?`<span class="jersey num" aria-hidden="true">${esc(profile.num)}</span>`:""}
     <div class="hero-top"><span class="logo-badge" role="img" aria-label="USA Volleyball logo"></span><div style="text-align:right;display:flex;flex-direction:column;gap:6px"><span class="eyebrow">${club?"Club season":"Team USA"+(bothTeams()?"":" · "+profile.team)}</span><span class="eyebrow">${dateLine}</span></div></div>
     ${STARS5}<p class="wordmark"><span>Nutrition</span></p>${club?`<p class="chapter clubchip">Club season · ${esc(clubLabel())}</p>`:""}
@@ -1682,7 +1706,7 @@ function vFoodClub(){
     <div class="card" style="padding-block:2px">${L2.map(([n,a])=>{const hit=a.some(x=>myAllergens().includes(x));return `<div class="item"><div class="meal-top"><h3>${esc(n)}</h3>${hit?`<span class="chip stop">Your allergen</span>`:""}</div>${a.length?`<p class="contains">Usually contains ${a.map(x=>esc(x.toLowerCase())).join(", ")}</p>`:""}</div>`}).join("")}</div>`}
   else{
     body=`<p class="muted" style="font-size:.88rem">A question about eating where you play? Send it and the RD replies by email or WhatsApp.</p>`+formBlock("ask",[`<label for="ask-q">Your question<textarea id="ask-q" placeholder="e.g. What should I eat after a 9 pm match when nothing is open?"></textarea></label>`],"Send Message to RD")+`<button class="btn ghost block" data-tab="rd">Book a session</button>`}
-  return `<div class="view"><div><p class="eyebrow">Club season${clubLabel()?" · "+esc(clubLabel()):""}</p><h1 style="margin-top:6px">Food</h1></div>
+  return `<div class="view">${sampleBar()}<div><p class="eyebrow">Club season${clubLabel()?" · "+esc(clubLabel()):""}</p><h1 style="margin-top:6px">Food</h1></div>
    <div class="seg" data-cfsegs="1">${segs.map(([k,l])=>`<button data-cfseg="${k}" aria-pressed="${cfSeg===k}">${l}</button>`).join("")}</div>${body}
    <button class="linkbtn" style="align-self:center" data-foodteam="1">USAV menus (for when you're back with the team)</button></div>`;
 }
@@ -1738,7 +1762,7 @@ function vFood(){
       `<label for="fb-note">Details<textarea id="fb-note" placeholder="What worked, what didn't, what you'd like to see"></textarea></label>`
     ],"Send to the kitchen")+`<p class="stamp" style="margin-top:10px">Goes to the RD, who shares it with foodservice.</p></div></div>`;
   }
-  return `<div class="view"><div><p class="eyebrow">Foodservice · updated ${fmtDate(DATA.updated)}</p><h1 style="margin-top:6px">Food</h1>${clubMode()?`<button class="linkbtn" data-foodteam="1">‹ Back to club season food</button>`:""}</div>
+  return `<div class="view">${sampleBar()}<div><p class="eyebrow">Foodservice · updated ${fmtDate(DATA.updated)}</p><h1 style="margin-top:6px">Food</h1>${clubMode()?`<button class="linkbtn" data-foodteam="1">‹ Back to club season food</button>`:""}</div>
    <div class="seg" data-segset="food">${segs.map(([k,l])=>`<button data-v="${k}" aria-pressed="${foodSeg===k}">${l}</button>`).join("")}</div>${body}</div>`;
 }
 /* ===== Send to the RD inbox (Google Form) ===== */
@@ -2151,6 +2175,7 @@ function jSubmit(){
 
 /* ===== Render & events ===== */
 function render(){
+  applySample();
   applyPrefs();
   const app=$("#app");
   if(!profile||draft.editing){$("nav.tabs").hidden=true;app.innerHTML=vOnboard();return}
@@ -2219,6 +2244,8 @@ document.addEventListener("click",e=>{
   if(b.dataset.teamas){profile.team=b.dataset.teamas;store.set("profile",profile);render();toast(`Previewing ${teamLabel()}`);return}
   if(b.dataset.clearclub){["club","clubCity","clubCountry","pro","season"].forEach(k=>delete profile[k]);store.set("profile",profile);render();toast("Test club cleared");return}
   if(b.dataset.replaywo){walkOut(true,{...profile,position:profile.view==="athlete"?"Outside hitter":profile.position,num:profile.num||"22"});return}
+  if(b.dataset.sample){store.set("sample",b.dataset.sample==="club"?"club":"usa");foodTeamView=false;HEAT=null;heatTried=false;render();scrollTo({top:0,behavior:"smooth"});return}
+  if(b.dataset.seasonv&&sampleOn()){store.set("sample",b.dataset.seasonv==="club"?"club":"usa");HEAT=null;heatTried=false;render();return}
   if(b.dataset.seasonv){profile.season=b.dataset.seasonv;store.set("profile",profile);HEAT=null;heatTried=false;render();if(profile.season==="club"&&!profile.clubCity){const c=document.getElementById("club-city");if(c)c.focus()}return}
   if(b.dataset.clang){cardLang=b.dataset.clang;render();return}
   if(b.dataset.gc){guideC=b.dataset.gc;render();return}
