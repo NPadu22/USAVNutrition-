@@ -919,6 +919,7 @@ const CONFIG = {
   facilityName: "Momentous in Tustin",  // Google Sheet ID for menus and announcements (see README)
   // RD inbox (Google Form). Profiles, session requests and feedback are sent here.
   inboxForm: "1FAIpQLSdW-2SWePfyArgLWH8_hUVcID3fX-ASAbdYT6XwMJKCsrtHxA",
+  messagesURL: "",   /* Staff Sheet web app (Apps Script doGet). Paste the /exec URL after deploying. */
   inboxFields: {Type:"entry.750054576",Name:"entry.263971746",Team:"entry.2052735913",Position:"entry.744514368","Pro team":"entry.657252409",
     Allergies:"entry.1687784230","Other allergy or medical diet":"entry.370697720","Protein preference":"entry.241930831",Details:"entry.425757204"}
 };
@@ -1779,7 +1780,7 @@ async function flushInbox(){const q=inboxQueue();if(!q.length||!navigator.onLine
 window.addEventListener("online",flushInbox);
 function profileRecord(type){return {Type:type,Name:profile.name,Team:profile.team,Position:profile.position,"Pro team":profile.pro,
   Allergies:(profile.allergies||[]).join(", ")||"None",
-  "Other allergy or medical diet":profile.other,"Protein preference":profile.protein}}
+  "Other allergy or medical diet":profile.other,"Protein preference":profile.protein,Details:"App ID: "+appId()}}
 /* ===== Shared with nutrition staff =====
    Team policy: what an athlete logs in the journal (meals, water, training) goes to the nutrition staff's private sheet,
    one row per athlete per day, through the same RD inbox form. Photos and personal notes never leave the phone. */
@@ -1802,12 +1803,16 @@ function vConsent(){return `<div class="view"><div><p class="eyebrow">Before you
   <p>To support your fueling, <b>what you log in this app is shared with USA Volleyball nutrition staff</b>. Here is exactly what that covers.</p>
   ${shareHTML()}
   <button class="btn block" data-consent="1">I understand</button></div>`}
-/* Nutrition messages from the dietitian (Sheet tab "Nutrition": Date, For, Headline, Details). For = Everyone, WNT, MNT or a position. The sheet is public: no individual or medical details. */
-function nutFor(a){const f=String(a.who||"").trim().toLowerCase();if(!f||/^(everyone|all|team|all athletes)$/.test(f))return true;if(!profile)return false;
-  if(STAFF_ROLES.includes(profile.position))return true;
-  return f.split(/[,;]/).map(x=>x.trim()).some(x=>x===String(profile.team||"").toLowerCase()||(x==="wnt"||x==="mnt")&&bothTeams()||x===String(profile.position||"").toLowerCase())}
-function nutHTML(){const staff=profile&&STAFF_ROLES.includes(profile.position);const L=(DATA.nutrition||[]).filter(nutFor).slice(0,4);if(!L.length)return "";
-  return `<section><div class="sec-head"><h2>${staff?"Nutrition messages":"From your dietitian"}</h2></div><div class="card" style="padding-block:2px">${L.map(a=>`<div class="ann"><div class="row"><span class="chip accent">Nutrition</span>${staff&&a.who&&!/^(everyone|all)$/i.test(a.who)?`<span class="chip">For: ${esc(a.who)}</span>`:""}<span class="stamp">${fmtDate(a.when)}</span></div><b style="margin-top:6px">${esc(a.t)}</b>${a.d?`<p class="muted" style="font-size:.88rem">${esc(a.d)}</p>`:""}</div>`).join("")}</div></section>`}
+/* Messages from the dietitian. They live in the PRIVATE Staff Sheet (Messages tab: Date, For, Headline, Details; For = Everyone, Staff or an athlete's name).
+   The app asks the Staff Sheet web app for this person's messages with their private app ID, so nobody can read anyone else's. */
+function appId(){if(!profile)return "";if(!profile.appId){const a=new Uint8Array(12);crypto.getRandomValues(a);profile.appId=[...a].map(x=>x.toString(36).padStart(2,"0")).join("").slice(0,18);store.set("profile",profile)}return profile.appId}
+function sendAppLink(){if(!profile)return;const id=appId();if(store.get("idsent","")===id)return;sendInbox(profileRecord("App link")).then(ok=>{if(ok)store.set("idsent",id)})}
+async function loadMessages(){if(!CONFIG.messagesURL||!profile||!navigator.onLine)return;
+  try{const r=await fetch(CONFIG.messagesURL+"?id="+encodeURIComponent(appId()),{cache:"no-store"});const j=await r.json();
+    const L=(j.messages||[]).map(m=>({when:toISO(m.date),who:m.for||"",t:m.headline||"",d:m.details||""})).filter(m=>m.t);
+    if(JSON.stringify(L)!==JSON.stringify(store.get("msgs",[]))){store.set("msgs",L);if(!(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)))render()}}catch(e){}}
+function nutHTML(){const staff=profile&&STAFF_ROLES.includes(profile.position);const L=store.get("msgs",[]).slice(0,5);if(!L.length)return "";
+  return `<section><div class="sec-head"><h2>From your dietitian</h2></div><div class="card" style="padding-block:2px">${L.map(a=>`<div class="ann"><div class="row"><span class="chip accent">${/^everyone$/i.test(a.who)?"Team":/^staff$/i.test(a.who)?"Staff":"Just for you"}</span><span class="stamp">${fmtDate(a.when)}</span></div><b style="margin-top:6px">${esc(a.t)}</b>${a.d?`<p class="muted" style="font-size:.88rem">${esc(a.d)}</p>`:""}</div>`).join("")}</div></section>`}
 function formBlock(id,fields,cta){
   if(draft[id+"Sent"])return `<div class="card stack"><span class="chip ok" style="align-self:flex-start">Sent to the RD</span><p>The RD gets this in their inbox. Need a faster reply? Send it on WhatsApp too.</p><div class="copybox" id="${id}-copy">${esc(draft[id+"Sent"])}</div>
     <div class="row" style="flex-wrap:wrap"><button class="btn" data-copy="${id}-copy">Copy message</button><a class="btn ghost" href="${CONFIG.whatsappLink}?text=${encodeURIComponent(draft[id+"Sent"])}" target="_blank" rel="noopener">Send on WhatsApp</a><button class="btn ghost" data-reset="${id}">New</button></div></div>`;
@@ -2223,7 +2228,7 @@ document.addEventListener("click",e=>{
   if(jClick(b))return;
   if(b.dataset.castvote){if(!draft.vote){toast("Pick a flavor first");return}const v={month:voteMonth(),flavor:draft.vote};try{localStorage.setItem("af_vote",JSON.stringify(v))}catch(e){}
     sendInbox({...profileRecord("Smoothie vote"),Details:`${draft.vote} for ${v.month}`});draft.vote="";render();toast("Vote cast");ballArc();return}
-  if(b.dataset.consent){profile.consentAt=new Date().toISOString();store.set("profile",profile);logDay(isoToday());render();scrollTo({top:0});return}
+  if(b.dataset.consent){profile.consentAt=new Date().toISOString();store.set("profile",profile);logDay(isoToday());sendAppLink();render();scrollTo({top:0});return}
   if(b.dataset.tab){tab=b.dataset.tab;render();scrollTo({top:0});return}
   if(b.dataset.go){e.preventDefault();tab=b.dataset.go;if(b.dataset.foodteamon)foodTeamView=true;if(b.dataset.wkoff!=null){wkOff=+b.dataset.wkoff;day="Mon"}if(b.dataset.seg)foodSeg=b.dataset.seg;if(b.dataset.seg==="dinner")dinnerSeg=b.dataset.dseg||"out";if(b.dataset.session)draft.session=b.dataset.session;render();scrollTo({top:0});return}
   const edseg=b.closest("[data-edseg]");
@@ -2298,7 +2303,7 @@ document.addEventListener("submit",e=>{
     if(prevAllergy!==JSON.stringify([profile.allergies,profile.other]))profile.ack=false;
     const isNew=!draft.editing;
     store.set("profile",profile);draft={};tab="home";render();if(isNew){walkOut();if(STAFF_ROLES.includes(profile.position))setTimeout(()=>toast("Welcome to the staff view"),reduceMotion()?0:4700)}else toast("Profile saved");
-    sendInbox(profileRecord(isNew?"Profile":"Profile update"));return}
+    sendInbox(profileRecord(isNew?"Profile":"Profile update")).then(ok=>{if(ok)store.set("idsent",appId())});return}
   if(f.id==="form-session"){
     if(!draft.session){toast("Pick a session type");return}
     draft.sessionSent=`Session heads-up for the RD\n${profile.name} · ${teamLabel()} · ${profile.position||"—"}\nType: ${draft.session}${$("#rd-note").value.trim()?"\nNotes: "+$("#rd-note").value.trim():""}`;
@@ -2382,7 +2387,7 @@ async function loadSheet(){
   if(!CONFIG.sheetId)return;
   const tabs=["Settings","Announcements","Breakfast","Lunch","Stations","Smoothies","Recipes","Snacks"];
   const T={};
-  try{await Promise.all([...tabs.map(async t=>{T[t]=await gvizTab(t).catch(()=>csvTab(t))}),(async()=>{T.Matches=await gvizTab("Matches").catch(()=>csvTab("Matches")).catch(()=>[])})(),(async()=>{T.Nutrition=await gvizTab("Nutrition").catch(()=>csvTab("Nutrition")).catch(()=>[])})()])}catch(e){console.warn("Sheet not loaded",e);return}
+  try{await Promise.all([...tabs.map(async t=>{T[t]=await gvizTab(t).catch(()=>csvTab(t))}),(async()=>{T.Matches=await gvizTab("Matches").catch(()=>csvTab("Matches")).catch(()=>[])})()])}catch(e){console.warn("Sheet not loaded",e);return}
   const set=Object.fromEntries(T.Settings.map(r=>[r.Setting,r.Value]));
   const recipes={},notes={};
   T.Recipes.forEach(r=>{if(!r.Flavor)return;const x={ing:r.Ingredients.split(/\n|;/).map(s=>s.trim()).filter(Boolean),y:r.Makes||"",a:parseAl(r.Allergens),est:yesv(r.Estimated)};
@@ -2401,7 +2406,6 @@ async function loadSheet(){
     chapter:set["Season chapter"]||"",
     voteOptions:String(set["Smoothie vote options"]||"").split(",").map(x=>x.trim()).filter(Boolean),
     fans:T.Recipes.filter(r=>r.Flavor&&yesv(r["Fan favorite"])).map(r=>r.Flavor),
-    nutrition:(T.Nutrition||[]).filter(r=>r.Headline).map(r=>({when:toISO(r.Date),who:r.For||"",t:r.Headline,d:r.Details||""})).sort((a,b)=>(b.when||"").localeCompare(a.when||"")),
     matches:(T.Matches||[]).filter(r=>r.Date).map(r=>({date:toISO(r.Date),time:r["Start time"]||"",opp:r.Opponent||"",team:/^m/i.test(r.Team||"")?"MNT":/^w/i.test(r.Team||"")?"WNT":"Both",loc:r.Location||""})),
     snackCycle:weeks(T.Snacks,r=>({t:r.Category,n:r.Snack,d:"",a:parseAl(r.Allergens),ok:yesv(r.Confirmed)}))};
   DATA=Object.assign({},DATA,NEW);
@@ -2424,8 +2428,9 @@ try{const c=JSON.parse(localStorage.getItem("af_sheet")||"null");if(c&&CONFIG.sh
     if(t&&t.classList&&t.classList.contains("rafter")){const px=lastX.get(t)??t.scrollLeft;push(-(t.scrollLeft-px));lastX.set(t,t.scrollLeft);return}
     const dy=scrollY-lastY;lastY=scrollY;const sec=document.querySelector(".rafters");if(!sec)return;
     const r=sec.getBoundingClientRect();if(r.top<innerHeight&&r.bottom>0)push(dy)},{capture:true,passive:true})})();
-loadSheet();
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")loadSheet()});
+loadSheet();loadMessages();
+if(profile&&(profile.consentAt||STAFF_ROLES.includes(profile.position)))sendAppLink();
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){loadSheet();loadMessages()}});
 </script>
 
 </body></html>
