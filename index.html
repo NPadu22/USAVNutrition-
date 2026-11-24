@@ -1202,7 +1202,7 @@ function vOnboard(){
      <label for="f-other">Other allergy or medical diet<input id="f-other" value="${esc(p.other||"")}" placeholder="e.g. celiac, kiwi, low-FODMAP"></label></div>
     <div class="stack athlete-only" style="gap:6px"><span class="eyebrow">Protein preference</span><div class="choice" data-pick="protein">${["Whey","Plant","No preference"].map(t=>`<button type="button" data-v="${t}" aria-pressed="${p.protein===t}">${t}</button>`).join("")}</div></div>
     <button class="btn block" type="submit">${draft.editing?"Save changes":"Get started"}</button>${draft.editing?`<button type="button" class="btn ghost block" data-cancel="1">Cancel</button>`:""}
-    <p class="muted" style="font-size:.78rem">Your profile, including allergies, is shared with the USAV sports dietitian so foodservice can keep you safe. Your food journal stays on your phone.</p>
+    <p class="muted" style="font-size:.78rem">Your profile, including allergies, goes to the USAV sports dietitian so foodservice can keep you safe. What you log in the journal is shared with USA Volleyball nutrition staff.</p>
    </form><div class="usa-mark" role="img" aria-label="USA"></div></div>`;
 }
 function vStop(){
@@ -1560,6 +1560,7 @@ function vHome(){
    ${feat?`<section><div class="sec-head"><h2>Announcements</h2></div>
     <article class="feature${/^win/i.test(feat.tag||"")?" win":""}"><div class="row" style="justify-content:space-between"><span class="chip accent">${esc(feat.tag)}</span><span class="stamp">${fmtDate(feat.when)}</span></div><h3>${esc(feat.t)}</h3>${feat.d?`<p>${esc(feat.d)}</p>`:""}</article>
     ${rest.length?`<div class="card" style="padding-block:2px">${rest.map(a=>`<div class="ann"><div class="row"><span class="chip">${esc(a.tag)}</span><span class="stamp">${fmtDate(a.when)}</span></div><b style="margin-top:6px">${esc(a.t)}</b><p class="muted" style="font-size:.88rem">${esc(a.d)}</p></div>`).join("")}</div>`:""}</section>`:""}
+   ${nutHTML()}
 
    ${installCard("home")}
    ${club?checkinHTML():""}
@@ -1779,6 +1780,34 @@ window.addEventListener("online",flushInbox);
 function profileRecord(type){return {Type:type,Name:profile.name,Team:profile.team,Position:profile.position,"Pro team":profile.pro,
   Allergies:(profile.allergies||[]).join(", ")||"None",
   "Other allergy or medical diet":profile.other,"Protein preference":profile.protein}}
+/* ===== Shared with nutrition staff =====
+   Team policy: what an athlete logs in the journal (meals, water, training) goes to the nutrition staff's private sheet,
+   one row per athlete per day, through the same RD inbox form. Photos and personal notes never leave the phone. */
+function shareOn(){return !!profile&&!STAFF_ROLES.includes(profile.position)&&!!profile.consentAt}
+function logQ(){return store.get("logq",{})}
+let logTimer=0;
+function logDay(iso){if(!shareOn())return;const q=logQ();q[iso]=1;store.set("logq",q);clearTimeout(logTimer);logTimer=setTimeout(flushLogs,20000)}
+function dayRecord(iso){const d=jGet(iso);
+  const meals=d.entries.slice().sort((a,b)=>(a.time||"").localeCompare(b.time||"")).map(e=>"- "+[e.occ,e.time,(e.what||(e.photo?"(photo only)":"")).slice(0,160),e.energy?"energy "+e.energy:"",e.gut?"gut "+e.gut:""].filter(Boolean).join(" · "));
+  return {...profileRecord("Daily log"),Details:["Date: "+iso,"Training: "+((d.training||[]).join(", ")||"—"),"Water bottles: "+(d.water||0),"Meals:"].concat(meals.length?meals:["- none logged"]).join("\n")}}
+async function flushLogs(){clearTimeout(logTimer);if(!shareOn())return;const q=logQ();const days=Object.keys(q);if(!days.length)return;
+  for(const iso of days){await sendInbox(dayRecord(iso));const n=logQ();delete n[iso];store.set("logq",n)}}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")flushLogs()});
+function shareHTML(){if(!profile||STAFF_ROLES.includes(profile.position))return "";return `<section><div class="sec-head"><h2>Shared with nutrition staff</h2></div><div class="card stack">
+  <p style="font-size:.9rem">What you log goes to a private sheet that only USA Volleyball nutrition staff can open, so your dietitian can support you between sessions.</p>
+  <div class="stack" style="gap:4px"><span class="eyebrow">Shared</span><p class="muted" style="font-size:.86rem">Your profile and allergies · meals you log (what, when, energy, gut) · water · training-day tags</p></div>
+  <div class="stack" style="gap:4px"><span class="eyebrow">Stays on this phone</span><p class="muted" style="font-size:.86rem">Meal photos · personal notes · passport and theme</p></div>
+  <p class="stamp">Questions about your data? Ask the RD.</p></div></section>`}
+function vConsent(){return `<div class="view"><div><p class="eyebrow">Before you start</p><h1 style="margin-top:4px">What the app shares</h1></div>
+  <p>To support your fueling, <b>what you log in this app is shared with USA Volleyball nutrition staff</b>. Here is exactly what that covers.</p>
+  ${shareHTML()}
+  <button class="btn block" data-consent="1">I understand</button></div>`}
+/* Nutrition messages from the dietitian (Sheet tab "Nutrition": Date, For, Headline, Details). For = Everyone, WNT, MNT or a position. The sheet is public: no individual or medical details. */
+function nutFor(a){const f=String(a.who||"").trim().toLowerCase();if(!f||/^(everyone|all|team|all athletes)$/.test(f))return true;if(!profile)return false;
+  if(STAFF_ROLES.includes(profile.position))return true;
+  return f.split(/[,;]/).map(x=>x.trim()).some(x=>x===String(profile.team||"").toLowerCase()||(x==="wnt"||x==="mnt")&&bothTeams()||x===String(profile.position||"").toLowerCase())}
+function nutHTML(){const staff=profile&&STAFF_ROLES.includes(profile.position);const L=(DATA.nutrition||[]).filter(nutFor).slice(0,4);if(!L.length)return "";
+  return `<section><div class="sec-head"><h2>${staff?"Nutrition messages":"From your dietitian"}</h2></div><div class="card" style="padding-block:2px">${L.map(a=>`<div class="ann"><div class="row"><span class="chip accent">Nutrition</span>${staff&&a.who&&!/^(everyone|all)$/i.test(a.who)?`<span class="chip">For: ${esc(a.who)}</span>`:""}<span class="stamp">${fmtDate(a.when)}</span></div><b style="margin-top:6px">${esc(a.t)}</b>${a.d?`<p class="muted" style="font-size:.88rem">${esc(a.d)}</p>`:""}</div>`).join("")}</div></section>`}
 function formBlock(id,fields,cta){
   if(draft[id+"Sent"])return `<div class="card stack"><span class="chip ok" style="align-self:flex-start">Sent to the RD</span><p>The RD gets this in their inbox. Need a faster reply? Send it on WhatsApp too.</p><div class="copybox" id="${id}-copy">${esc(draft[id+"Sent"])}</div>
     <div class="row" style="flex-wrap:wrap"><button class="btn" data-copy="${id}-copy">Copy message</button><a class="btn ghost" href="${CONFIG.whatsappLink}?text=${encodeURIComponent(draft[id+"Sent"])}" target="_blank" rel="noopener">Send on WhatsApp</a><button class="btn ghost" data-reset="${id}">New</button></div></div>`;
@@ -1882,6 +1911,7 @@ function vMe(){
     ${al.length?`<div class="cred-alert"><span>Allergy alert</span><b>${al.map(esc).join(" · ")}</b></div>`:`<div class="cred-ok">No food allergies listed</div>`}
    </div></div>
    ${isStaff()&&!clubMode()?"":`<p class="wear-note">Your badge earns a punch for each month with 3+ days logged${chapterName()?`, and a sticker for each season chapter`:""}.</p>`}
+   ${shareHTML()}
    <button class="btn ghost block" data-edit="1">Edit profile</button>
    ${installCard("me")}
    ${EDITOR?`<section><h2>Editor tools</h2><div class="card stack">
@@ -2057,7 +2087,7 @@ let J=store.get("journal",{days:{}}); if(!J||!J.days)J={days:{}};
 let jDate=isoToday(), jEdit=null, jDelAsk=false, jRange=1, jShareText="", jSent="";
 const jBlank=()=>({training:[],water:0,entries:[]});
 function jGet(d){return J.days[d]||jBlank()}
-function jPut(d,v){J.days[d]=v;try{localStorage.setItem("af_journal",JSON.stringify(J));return true}catch(e){toast("Phone storage is full. Remove photos from older entries to save more.");return false}}
+function jPut(d,v){J.days[d]=v;try{localStorage.setItem("af_journal",JSON.stringify(J));logDay(d);return true}catch(e){toast("Phone storage is full. Remove photos from older entries to save more.");return false}}
 function jShift(iso,n){const d=new Date(iso+"T12:00:00");d.setDate(d.getDate()+n);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function jLabel(iso){const t=isoToday();return iso===t?"Today":iso===jShift(t,-1)?"Yesterday":fmtDate(iso)}
 function jTime(hm){if(!hm)return "";let[h,m]=hm.split(":").map(Number);const ap=h>=12?"pm":"am";h=h%12||12;return h+":"+String(m).padStart(2,"0")+" "+ap}
@@ -2087,7 +2117,7 @@ function vJournal(){
      </div></button>`).join(""):`<div class="sheet-empty">${COURT_EMPTY}<b>Serve's in your hand.</b><span>Nothing logged for ${jLabel(jDate).toLowerCase()==="today"?"today":jLabel(jDate)} yet. A quick photo plus a few words is enough.</span></div>`}</div>
     <button class="btn block" data-jnew="1">Log a meal or drink</button></section>
    <section><h2>Send your journal to the RD</h2><div class="card stack">
-    <p class="muted" style="font-size:.88rem">Goes directly to the RD's inbox. Photos stay on your phone.</p>
+    <p class="muted" style="font-size:.88rem">Your daily log already reaches nutrition staff. Send a summary here before a session. Photos stay on your phone.</p>
     <div class="choice mini">${[[1,"This day"],[3,"Last 3 days"],[7,"Last 7 days"]].map(([n,l])=>`<button type="button" data-jrange="${n}" aria-pressed="${jRange===n}">${l}</button>`).join("")}</div>
     ${jSent?`<span class="chip ok" style="align-self:flex-start">Sent to the RD</span><p class="stamp">${esc(jSent)}</p>`:`<button class="btn block" data-jsend="1">Send journal to RD</button>`}
    </div>
@@ -2180,6 +2210,7 @@ function render(){
   const app=$("#app");
   if(!profile||draft.editing){$("nav.tabs").hidden=true;app.innerHTML=vOnboard();return}
   $("nav.tabs").hidden=false;
+  if(!profile.consentAt&&!STAFF_ROLES.includes(profile.position)&&!profile._sample){app.innerHTML=vConsent();renderTabs();return}
   if((myAllergens().length||profile.other)&&!profile.ack&&tab!=="rd"&&tab!=="edit"){app.innerHTML=vStop();renderTabs();return}
   if(tab==="edit"&&!canEdit)tab="me";
   if(tab==="home"&&profile){setTimeout(checkWin,0);loadHeat()}
@@ -2192,6 +2223,7 @@ document.addEventListener("click",e=>{
   if(jClick(b))return;
   if(b.dataset.castvote){if(!draft.vote){toast("Pick a flavor first");return}const v={month:voteMonth(),flavor:draft.vote};try{localStorage.setItem("af_vote",JSON.stringify(v))}catch(e){}
     sendInbox({...profileRecord("Smoothie vote"),Details:`${draft.vote} for ${v.month}`});draft.vote="";render();toast("Vote cast");ballArc();return}
+  if(b.dataset.consent){profile.consentAt=new Date().toISOString();store.set("profile",profile);logDay(isoToday());render();scrollTo({top:0});return}
   if(b.dataset.tab){tab=b.dataset.tab;render();scrollTo({top:0});return}
   if(b.dataset.go){e.preventDefault();tab=b.dataset.go;if(b.dataset.foodteamon)foodTeamView=true;if(b.dataset.wkoff!=null){wkOff=+b.dataset.wkoff;day="Mon"}if(b.dataset.seg)foodSeg=b.dataset.seg;if(b.dataset.seg==="dinner")dinnerSeg=b.dataset.dseg||"out";if(b.dataset.session)draft.session=b.dataset.session;render();scrollTo({top:0});return}
   const edseg=b.closest("[data-edseg]");
@@ -2350,7 +2382,7 @@ async function loadSheet(){
   if(!CONFIG.sheetId)return;
   const tabs=["Settings","Announcements","Breakfast","Lunch","Stations","Smoothies","Recipes","Snacks"];
   const T={};
-  try{await Promise.all([...tabs.map(async t=>{T[t]=await gvizTab(t).catch(()=>csvTab(t))}),(async()=>{T.Matches=await gvizTab("Matches").catch(()=>csvTab("Matches")).catch(()=>[])})()])}catch(e){console.warn("Sheet not loaded",e);return}
+  try{await Promise.all([...tabs.map(async t=>{T[t]=await gvizTab(t).catch(()=>csvTab(t))}),(async()=>{T.Matches=await gvizTab("Matches").catch(()=>csvTab("Matches")).catch(()=>[])})(),(async()=>{T.Nutrition=await gvizTab("Nutrition").catch(()=>csvTab("Nutrition")).catch(()=>[])})()])}catch(e){console.warn("Sheet not loaded",e);return}
   const set=Object.fromEntries(T.Settings.map(r=>[r.Setting,r.Value]));
   const recipes={},notes={};
   T.Recipes.forEach(r=>{if(!r.Flavor)return;const x={ing:r.Ingredients.split(/\n|;/).map(s=>s.trim()).filter(Boolean),y:r.Makes||"",a:parseAl(r.Allergens),est:yesv(r.Estimated)};
@@ -2369,6 +2401,7 @@ async function loadSheet(){
     chapter:set["Season chapter"]||"",
     voteOptions:String(set["Smoothie vote options"]||"").split(",").map(x=>x.trim()).filter(Boolean),
     fans:T.Recipes.filter(r=>r.Flavor&&yesv(r["Fan favorite"])).map(r=>r.Flavor),
+    nutrition:(T.Nutrition||[]).filter(r=>r.Headline).map(r=>({when:toISO(r.Date),who:r.For||"",t:r.Headline,d:r.Details||""})).sort((a,b)=>(b.when||"").localeCompare(a.when||"")),
     matches:(T.Matches||[]).filter(r=>r.Date).map(r=>({date:toISO(r.Date),time:r["Start time"]||"",opp:r.Opponent||"",team:/^m/i.test(r.Team||"")?"MNT":/^w/i.test(r.Team||"")?"WNT":"Both",loc:r.Location||""})),
     snackCycle:weeks(T.Snacks,r=>({t:r.Category,n:r.Snack,d:"",a:parseAl(r.Allergens),ok:yesv(r.Confirmed)}))};
   DATA=Object.assign({},DATA,NEW);
