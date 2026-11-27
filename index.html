@@ -887,6 +887,32 @@ nav.tabs button[aria-current="page"]{background:transparent;box-shadow:none}
 .samplebar .eyebrow{margin:0}
 .samplebar b{font-size:.95rem;line-height:1.3}
 .samplebar .choice button{padding:8px 12px;font-size:.82rem}
+
+/* Grocery list + meal prep (ported from the LA Orbit app) */
+.glist{list-style:none;margin:0;padding:2px 12px;display:block!important}
+.gcard.stack{display:flex!important;flex-direction:column!important}
+.gl{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.gl:last-child{border-bottom:0}
+.gl-chk{all:unset;cursor:pointer;width:24px;height:24px;border-radius:7px;border:2px solid var(--line);display:grid;place-items:center;font-weight:800;color:#fff}
+.gl-chk[aria-pressed="true"]{background:var(--ok);border-color:var(--ok)}
+.gl-t{display:grid;gap:1px;min-width:0}
+.gl-t b{font-weight:600;font-size:.94rem;overflow-wrap:anywhere}
+.gl-t span{font-size:.72rem;color:var(--muted)}
+.gl.done .gl-t b{text-decoration:line-through;color:var(--muted)}
+.gl-ic{all:unset;cursor:pointer;width:30px;height:30px;display:grid;place-items:center;border-radius:8px;color:var(--muted)}
+.gl-ic:focus-visible,.gl-chk:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.fuel-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.cartbtn{all:unset;cursor:pointer;flex:none;display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border-radius:999px;background:color-mix(in srgb,var(--ok) 16%,var(--surface));color:var(--fg);font-weight:700;font-size:.86rem;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--ok) 55%,transparent)}
+.cartbtn svg{width:20px;height:20px;color:color-mix(in srgb,var(--ok) 70%,var(--fg))}
+.cartbtn b{min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--ok);color:#06281C;font:800 .72rem/20px var(--mono);text-align:center}
+.cartbtn[aria-pressed="true"]{background:var(--ok);color:#06281C}
+.cartbtn[aria-pressed="true"] svg{color:#06281C}
+.cartbtn[aria-pressed="true"] b{background:#06281C;color:var(--ok)}
+.cartbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.gcard{background:color-mix(in srgb,var(--ok) 8%,var(--surface))!important;box-shadow:inset 4px 0 0 var(--ok)!important}
+.gcard .choice button[aria-pressed="true"]{background:var(--ok);color:#06281C}
+.gcard .btn:not(.ghost),[data-glistmp],[data-glistgroc],#glist-form .btn{background:var(--ok)!important;color:#06281C!important}
+.mpnav{flex:none;width:44px;padding:0;font-size:1.4rem}
 </style>
 
 <div class="pagebg" aria-hidden="true"><svg viewBox="0 0 150 240" preserveAspectRatio="xMidYMid slice"><rect width="150" height="240" class="pz"/><rect x="30" y="30" width="90" height="180" class="pc"/><g class="pl"><rect x="30" y="30" width="90" height="180"/><line x1="30" y1="90" x2="120" y2="90"/><line x1="30" y1="150" x2="120" y2="150"/></g><line x1="22" y1="120" x2="128" y2="120" class="pn"/></svg></div>
@@ -1673,6 +1699,153 @@ function plateSVG(pl){
     return `<path d="M${cx} ${cy} L${(cx+r*Math.cos(a0)).toFixed(1)} ${(cy+r*Math.sin(a0)).toFixed(1)} A${r} ${r} 0 ${large} 1 ${(cx+r*Math.cos(a1)).toFixed(1)} ${(cy+r*Math.sin(a1)).toFixed(1)} Z" fill="${color}" stroke="#fff" stroke-width="3"/>`};
   return `<svg viewBox="0 0 200 200" class="plate" role="img" aria-label="${Math.round(pl.g*100)}% grains and starches, ${Math.round(pl.v*100)}% vegetables and fruit, ${Math.round(pl.p*100)}% protein"><circle cx="100" cy="100" r="98" fill="#fff" stroke="#D0D0CE" stroke-width="2"/>${seg(0,pl.g,"#E8B04A")}${seg(pl.g,pl.v,"#5FA35B")}${seg(pl.g+pl.v,pl.p,"#C8553D")}</svg>`;
 }
+/* Meal prep for meals away from the facility (from the LA Orbit app): recipes per LA/OC store, 4 portions each. Macros per portion are approximate (not label-verified).
+   a = allergen tags (ALLERGENS names) for the usual product; brands vary, so the app always says to check labels. */
+const MEALPREP=[
+ {k:"costco",n:"Costco",r:[
+  {n:"Teriyaki Chicken Rice Bowls",m:[860,119,61,15],a:["Soy","Wheat/Gluten","Sesame"],g:["2 lb chicken breast","3 cups dry jasmine rice","1 lb broccoli","3/4 cup teriyaki sauce","1 tbsp sesame oil"],p:"Cook chicken and rice; steam broccoli. Toss chicken with teriyaki sauce and portion."},
+  {n:"Sous Vide Steak & Rice Bowls",m:[775,111,51,15],a:[],g:["1 1/2 lb fully cooked sous vide sliced sirloin (Cuisine Solutions, refrigerated deli)","2 1/2 cups dry jasmine rice","1 lb broccoli","2 bell peppers","1 tbsp olive oil","1 cup salsa verde"],p:"Cook rice. Roast broccoli and sliced peppers with the oil at 425°F for 20 minutes. The steak is already cooked: sear the slices 1 minute per side in a hot pan, or just warm them with the bowl. Portion and top with salsa verde.",tip:"The fastest protein at Costco: no raw meat to cook. Label is about 120 kcal and 19 g protein per 3 oz; check yours. Unopened, it keeps to the package date."},
+  {n:"Chicken Pesto Pasta",m:[800,91,60,22],a:["Wheat/Gluten","Dairy","Tree nut"],g:["1 1/2 lb chicken breast","1 lb dry penne pasta","6 tbsp basil pesto","1 pint cherry tomatoes","4 cups spinach","1/2 cup Parmesan"],p:"Cook pasta and chicken. Toss with pesto, tomatoes, spinach and Parmesan."},
+  {n:"Beef & Sweet Potato Power Bowls",m:[740,90,55,21],a:[],g:["2 lb 93% lean ground beef","2 lb sweet potatoes","1 cup dry brown rice","1 lb green beans","1 tbsp olive oil","Garlic and preferred seasoning"],p:"Roast sweet potatoes and green beans; brown beef and serve over cooked rice."},
+  {n:"Rotisserie Chicken Burrito Bowls",m:[750,78,58,22],a:["Dairy"],g:["1 rotisserie chicken (skin removed)","1 1/2 cups dry white rice","1 can black beans","1 cup salsa","1/2 cup shredded Mexican-blend cheese","1 avocado"],p:"Pull the meat off the chicken and discard the skin. Cook rice and warm the beans. Portion rice, beans and chicken; top with salsa and cheese.",tip:"Add avocado when you eat so it stays green."},
+  {n:"Lemon Salmon, Quinoa & Broccoli",m:[790,70,56,34],a:["Fish"],g:["4 frozen salmon portions (6 oz)","2 cups dry quinoa","2 lb broccoli","2 tbsp olive oil","1 lemon"],p:"Bake salmon at 400°F for 12–15 min. Cook quinoa. Roast broccoli with oil at 425°F for 20 min. Squeeze lemon over before eating."},
+  {n:"Cajun Shrimp, Rice & Corn Bowls",m:[785,119,57,10],a:["Shellfish"],g:["2 lb frozen raw peeled shrimp (Kirkland, tail-off)","2 1/2 cups dry jasmine rice","2 cups frozen corn","3 bell peppers","2 tbsp olive oil","Cajun seasoning","2 limes"],p:"Thaw shrimp in a colander under cold running water for 5-10 minutes; pat dry and toss with half the oil and the Cajun seasoning. Cook rice. Sauté sliced peppers and corn in the rest of the oil for 6 minutes. Cook shrimp in a hot pan 2 minutes per side, until pink and opaque. Portion over rice and squeeze lime over the top.",tip:"Shrimp cooks in 4 minutes and has almost no fat, so this is one of the leanest bowls in the app. Reheat gently (1 minute, then stir) so it doesn't go rubbery. Cajun blends vary a lot in salt: pick a lower-sodium one if you've been told to watch salt."},
+  {n:"Turkey Bolognese with Spaghetti",m:[810,102,78,12],a:["Wheat/Gluten","Dairy"],g:["2 lb 99% lean ground turkey breast","1 lb dry spaghetti","1 jar marinara sauce (24 oz)","1 onion","4 cups spinach","1/2 cup Parmesan"],p:"Brown turkey with diced onion, add marinara and simmer 10 min; stir in spinach. Cook spaghetti, toss with sauce and portion. Top with Parmesan."},
+  {n:"Chicken Egg Fried Rice",m:[745,86,57,16],a:["Egg","Soy","Wheat/Gluten"],g:["2 cups dry jasmine rice","1 1/2 lb chicken breast","6 eggs","2 cups frozen peas and carrots","3 tbsp low-sodium soy sauce","1 tbsp vegetable oil"],p:"Cook rice a day ahead if you can (day-old rice fries best). Cook diced chicken, push aside, scramble eggs, then add rice, peas and carrots and soy sauce. Stir-fry 5 min and portion."},
+  {n:"Black Bean & Sweet Potato Quinoa Bowls (vegetarian)",v:1,m:[865,120,42,23],a:["Dairy","Egg"],g:["2 cans black beans","2 lb sweet potatoes","1 1/2 cups dry quinoa","8 eggs","1 cup shredded Mexican-blend cheese","1 cup salsa"],p:"Roast cubed sweet potatoes at 425°F for 25 min. Cook quinoa and warm the beans. Hard-boil the eggs (2 per bowl). Portion; top with cheese and salsa.",tip:"The eggs and cheese bring the protein. Skip them and protein drops to about 30 g."},
+  {n:"Tofu & Edamame Teriyaki Stir-Fry (vegetarian)",v:1,m:[820,106,46,23],a:["Soy","Wheat/Gluten"],g:["3 blocks extra-firm tofu","2 cups shelled edamame","2 cups dry jasmine rice","1 lb frozen stir-fry vegetables","1/2 cup teriyaki sauce","1 tbsp vegetable oil"],p:"Press and cube tofu; bake at 425°F for 25 min or pan-fry until golden. Stir-fry vegetables and edamame 5 min, add tofu and teriyaki and toss. Portion over rice."},
+  {n:"Egg & Black Bean Burritos (vegetarian)",v:1,m:[785,82,44,32],a:["Egg","Wheat/Gluten","Dairy"],g:["12 eggs","2 cans black beans","8 large flour tortillas","1 cup shredded Mexican-blend cheese","1 cup salsa"],p:"Scramble the eggs and warm the beans. Fill each tortilla with eggs, beans and cheese, roll tight and wrap in foil. Two burritos per portion. Reheat from the fridge in 2 min.",tip:"Freezes well: good for days 4 and later."}]},
+ {k:"tj",n:"Trader Joe's",r:[
+  {n:"Garlic Shrimp Orzo with Spinach",m:[727, 90, 66, 13],a:["Shellfish", "Wheat/Gluten", "Dairy"],g:["2 lb frozen raw peeled shrimp", "1 lb dry orzo", "4 cups spinach", "1 pint cherry tomatoes", "2 tbsp olive oil", "1/2 cup grated Parmesan", "6 cloves garlic", "1 lemon"],p:"Thaw shrimp under cold running water. Cook orzo. Sauté sliced garlic in the oil 1 minute, add shrimp and cook 2 minutes per side. Stir in orzo, halved tomatoes and spinach until it wilts. Finish with lemon and Parmesan.",tip:"Trader Joe's frozen raw shrimp thaws in about 10 minutes, so this is a 25-minute batch."},
+  {n:"Tempeh & Black Bean Burrito Bowls (vegetarian)",v:1,m:[727, 98, 50, 18],a:["Soy", "Dairy"],g:["2 packages organic tempeh (8 oz)", "1 can black beans", "1 1/2 cups dry white rice", "1 cup frozen corn", "1 cup salsa", "2 cups plain Greek yogurt", "1/2 cup shredded cheese", "Taco seasoning"],p:"Crumble tempeh and brown with taco seasoning and a splash of water, 8 minutes. Cook rice and warm beans and corn. Portion; top with salsa, cheese and a big spoon of Greek yogurt when you eat.",tip:"Two cups of Greek yogurt as the topping bring this to about 50 g protein a portion."},
+  {n:"Mediterranean Chicken Shawarma Bowls",m:[795,84,57,24],a:["Wheat/Gluten","Sesame","Dairy"],g:["2 lb shawarma-marinated chicken thighs","1 1/2 cups dry basmati rice","1 cucumber","1 pint cherry tomatoes","1/2 cup hummus","2 pita breads","1/2 cup tzatziki sauce"],p:"Roast chicken, cook rice, and portion with chopped vegetables and half a pita each. Pack hummus and tzatziki separately."},
+  {n:"Korean Beef Bulgogi Bowls",m:[775,88,61,22],a:["Soy","Wheat/Gluten","Sesame"],g:["2 lb 93% lean ground beef","1 3/4 cups dry jasmine rice","2 cups shelled edamame","2 carrots","6 tbsp bulgogi sauce","1 tbsp sesame seeds"],p:"Brown beef with bulgogi sauce; portion with cooked rice, edamame and shredded carrots."},
+  {n:"Mandarin Orange Chicken & Fried Rice",m:[850,105,39,30],a:["Wheat/Gluten","Soy","Egg"],g:["2 bags frozen Mandarin Orange Chicken","2 bags frozen vegetable fried rice","1 bag shelled edamame","1 bag broccoli florets","Sesame seeds (optional)"],p:"Cook frozen items according to package directions and divide into four containers.",tip:"Lowest protein of the twelve. On heavy training days, add a Greek yogurt or a glass of milk."},
+  {n:"Chicken & Gnocchi Bake",m:[840,108,56,16],a:["Wheat/Gluten","Dairy"],g:["2 packages potato gnocchi (17.6 oz)","1 1/2 lb chicken breast","1 jar marinara sauce (24 oz)","1 cup shredded mozzarella","4 cups spinach"],p:"Brown diced chicken. Mix with uncooked gnocchi, marinara and spinach in a baking dish, top with mozzarella and bake at 400°F for 20–25 min.",tip:"Some gnocchi contain egg: check the label if that matters for you."},
+  {n:"Chicken Sausage & Pepper Pasta",m:[850,108,41,24],a:["Wheat/Gluten"],g:["2 packages fully cooked chicken sausage (4 links each)","1 lb dry penne pasta","2 bell peppers","1 onion","1 jar marinara sauce (24 oz)"],p:"Slice sausage and brown with sliced peppers and onion. Add marinara and simmer 5 min. Toss with cooked penne and portion."},
+  {n:"Lemon Pepper Salmon, Rice & Green Beans",m:[750,83,46,26],a:["Fish"],g:["4 salmon fillets (6 oz)","2 cups dry jasmine rice","1 lb green beans","1 lemon","1 tbsp olive oil","Lemon pepper seasoning"],p:"Season salmon and bake at 400°F for 12–15 min. Cook rice. Roast green beans with oil for 15 min. Add lemon before eating."},
+  {n:"Tofu Peanut Noodles (vegetarian)",v:1,m:[880,107,51,32],a:["Soy","Peanut","Wheat/Gluten"],g:["2 blocks extra-firm tofu","1 lb dry spaghetti","1/2 cup peanut butter","1/4 cup low-sodium soy sauce","2 cups shelled edamame","2 carrots","1 cucumber"],p:"Press and cube tofu, bake at 425°F for 25 min. Whisk peanut butter, soy sauce and hot water into a sauce. Toss with cooked noodles, edamame and shredded carrot. Add cucumber when you eat."},
+  {n:"Tempeh & Veggie Fried Rice (vegetarian)",v:1,m:[690,72,44,27],a:["Soy","Egg","Wheat/Gluten"],g:["2 packages organic tempeh (8 oz)","2 bags frozen vegetable fried rice","4 eggs","2 cups shelled edamame","2 tbsp low-sodium soy sauce"],p:"Crumble tempeh and brown in a pan 6–8 min. Add the frozen fried rice and edamame and cook 8 min. Push aside, scramble the eggs, stir together and finish with soy sauce."},
+  {n:"Spinach Ravioli with Lentils & Marinara (vegetarian)",v:1,m:[770,104,44,20],a:["Wheat/Gluten","Dairy","Egg"],g:["2 packages spinach & ricotta ravioli","2 packages steamed lentils (17.6 oz)","1 jar marinara sauce (24 oz)","4 cups spinach","1/2 cup Parmesan"],p:"Warm marinara with the lentils for 5 min and stir in spinach. Cook ravioli 4–5 min, drain and toss with the sauce. Top with Parmesan.",tip:"Most fresh ravioli contain egg."}]},
+ {k:"wf",n:"Whole Foods",r:[
+  {n:"Maple Dijon Salmon with Sweet Potatoes",m:[785,84,45,29],a:["Fish","Wheat/Gluten"],g:["Four 6 oz salmon fillets","2 lb sweet potatoes","1 lb asparagus","2 tbsp maple syrup","2 tbsp Dijon mustard","1 tbsp olive oil","4 whole-grain rolls"],p:"Roast sweet potatoes and asparagus; brush salmon with maple-Dijon glaze and bake until cooked."},
+  {n:"Kevin's Korean BBQ Chicken Rice Bowls",m:[740,102,53,11],a:["Soy"],g:["2 packs Kevin's Natural Foods Korean BBQ-Style Chicken (16 oz, sous vide)","2 cups dry jasmine rice","2 cups shelled edamame","1 lb snap peas or broccoli","2 carrots"],p:"Cook rice and edamame; steam the snap peas and slice the carrots. Kevin's chicken is fully cooked: warm it in a pan with its sauce for 5 minutes, then portion over rice with the vegetables.",tip:"Kevin's sous vide proteins are fully cooked, so this is about 20 minutes start to finish. Label is about 160 kcal and 22 g protein per 5 oz; check yours. Most flavors use coconut aminos instead of soy, so the soy tag here is for the edamame."},
+  {n:"Chicken Tikka Masala with Rice & Naan",m:[845,96,68,18],a:["Dairy","Wheat/Gluten"],g:["2 lb chicken breast","1 1/2 cups dry basmati rice","1 jar tikka masala simmer sauce","1 lb cauliflower","2 naan breads","1/2 cup plain Greek yogurt"],p:"Simmer chicken in sauce; cook rice and roast cauliflower. Serve with half a naan each and a spoon of yogurt."},
+  {n:"Mediterranean Salmon & Couscous Bowls",m:[790,68,49,34],a:["Fish","Wheat/Gluten","Dairy"],g:["Four 6 oz salmon fillets","1 1/2 cups dry pearl couscous","1 can chickpeas","1 cucumber","1 pint cherry tomatoes","1/4 cup feta","2 tbsp olive oil","1 lemon"],p:"Bake salmon at 400°F for 12–15 min; cook couscous. Combine with chickpeas, cucumber, tomatoes and feta; dress with olive oil and lemon."},
+  {n:"Beef & Bean Chili with Brown Rice",m:[785,97,64,18],a:[],g:["2 lb 93% lean ground beef","2 cans kidney beans","1 can crushed tomatoes (28 oz)","1 onion","1 1/2 cups dry brown rice","Chili powder and cumin"],p:"Brown beef with diced onion and spices. Add beans and tomatoes and simmer 20 min. Serve over cooked brown rice.",tip:"Chili freezes well, so it's a good pick for days 4 and later."},
+  {n:"Greek Chicken & Potatoes Sheet Pan",m:[700,67,52,25],a:["Dairy"],g:["2 lb boneless chicken thighs","3 lb baby potatoes","1 red onion","1 pint cherry tomatoes","2 tbsp olive oil","1/2 cup tzatziki","Oregano and lemon"],p:"Toss chicken, halved potatoes, onion and tomatoes with oil, oregano and lemon. Roast at 425°F for 30–35 min. Portion; add tzatziki when you eat."},
+  {n:"Shrimp & Pineapple Rice Bowls",m:[840,137,56,6],a:["Shellfish","Soy"],g:["2 lb peeled shrimp","3 cups dry jasmine rice","2 cups pineapple chunks","2 bell peppers","1/2 cup teriyaki sauce","1 tbsp vegetable oil"],p:"Cook rice. Sear shrimp 2 min per side; remove. Stir-fry peppers and pineapple, add shrimp and teriyaki and toss. Portion over rice."},
+  {n:"Lentil & Sweet Potato Curry (vegetarian)",v:1,m:[790,145,34,9],a:[],g:["2 cups dry red lentils","2 lb sweet potatoes","1 can light coconut milk","2 tbsp red curry paste","1 cup dry basmati rice","4 cups spinach"],p:"Simmer lentils, cubed sweet potato, coconut milk, curry paste and 4 cups water for 25 min. Stir in spinach. Serve over cooked rice.",tip:"Lower in protein than the others: add Greek yogurt on top or a glass of milk."},
+  {n:"Tofu Tikka Masala with Rice (vegetarian)",v:1,m:[705,79,41,25],a:["Soy","Dairy"],g:["3 blocks extra-firm tofu","1 jar tikka masala simmer sauce","1 1/2 cups dry basmati rice","1 lb cauliflower","1/2 cup plain Greek yogurt"],p:"Press and cube tofu; bake at 425°F for 20 min. Simmer with the sauce and cauliflower florets 10 min. Serve over rice with a spoon of yogurt."},
+  {n:"Veggie Frittata with Roasted Potatoes (vegetarian)",v:1,m:[750,69,43,34],a:["Egg","Dairy"],g:["16 eggs","1 cup cottage cheese","1 cup crumbled feta","4 cups spinach","2 bell peppers","3 lb baby potatoes","1 tbsp olive oil"],p:"Roast halved potatoes with oil at 425°F for 30 min. Whisk eggs with cottage cheese, stir in spinach, diced peppers and feta, pour into a baking dish and bake at 375°F for 30–35 min. Cut into 4 and portion with potatoes."}]},
+ {k:"sprouts",n:"Sprouts",r:[
+  {n:"Shrimp Fajita Bowls",m:[779, 119, 60, 6],a:["Shellfish"],g:["2 lb frozen raw peeled shrimp", "2 1/2 cups dry white rice", "3 bell peppers", "1 onion", "1 can pinto beans", "1 tbsp olive oil", "1 cup salsa", "Fajita seasoning", "2 limes"],p:"Thaw shrimp under cold running water and toss with fajita seasoning. Cook rice. Sauté sliced peppers and onion in the oil 6 minutes, push aside and cook shrimp 2 minutes per side. Warm beans. Portion; add salsa and lime when you eat.",tip:"Very lean: almost all the fat is the tablespoon of oil, so add avocado on the day if you want more."},
+  {n:"Tofu & Edamame Sesame Soba Bowls (vegetarian)",v:1,m:[720, 92, 49, 21],a:["Soy", "Wheat/Gluten", "Sesame"],g:["2 blocks extra-firm tofu", "2 cups shelled edamame", "12 oz dry soba noodles", "1 lb frozen stir-fry vegetables", "1/4 cup low-sodium soy sauce", "1 tbsp sesame oil", "2 tbsp honey", "Ginger and garlic"],p:"Press and cube tofu; bake at 425°F for 25 minutes. Cook soba and rinse cold. Stir-fry vegetables and edamame 5 minutes. Whisk soy sauce, sesame oil, honey, ginger and garlic; toss everything together and portion.",tip:"Most soba contains wheat; 100% buckwheat soba is gluten-free if you need it."},
+  {n:"Turkey Taco Burrito Bowls",m:[750,86,72,14],a:["Dairy"],g:["2 lb 99% lean ground turkey breast","1 1/2 cups dry rice","1 can black beans","1 cup corn","1/2 cup shredded cheese","Salsa","1 avocado","Taco seasoning"],p:"Brown turkey with seasoning; portion with rice, beans, corn and cheese. Add avocado when serving."},
+  {n:"Kevin's Chicken Burrito Bowls",m:[755,105,49,13],a:[],g:["2 packs Kevin's Natural Foods sous vide chicken, any flavor (16 oz)","1 1/2 cups dry white rice","1 can black beans","1 cup frozen corn","3 bell peppers","1 onion","1 cup salsa","1 avocado"],p:"Cook rice. Sauté sliced peppers and onion 8 minutes, then add the beans and corn to warm through. Warm Kevin's chicken in its sauce (it's fully cooked). Portion over rice and add salsa; add avocado on the day you eat it.",tip:"Kevin's chicken is already sous vide cooked, so there's no raw chicken to handle. Label is about 160 kcal and 22 g protein per 5 oz; check yours."},
+  {n:"Honey Garlic Chicken & Roasted Potatoes",m:[850,99,51,28],a:["Soy","Wheat/Gluten"],g:["2 lb boneless chicken thighs","3 lb baby potatoes","1 lb carrots","1/4 cup honey","1/4 cup low-sodium soy sauce","3 garlic cloves","2 tbsp olive oil"],p:"Roast potatoes and carrots. Bake chicken with honey-garlic sauce and portion."},
+  {n:"Turkey Meatballs with Marinara & Pasta",m:[880,97,61,27],a:["Wheat/Gluten","Egg","Dairy"],g:["2 lb lean ground turkey","1 lb dry pasta","1 jar marinara","1 egg","1/2 cup breadcrumbs","1/2 cup Parmesan","1 lb zucchini"],p:"Mix turkey, egg and breadcrumbs; form and bake meatballs. Cook pasta, sauté zucchini, add marinara."},
+  {n:"BBQ Chicken & Sweet Potato Bowls",m:[660,82,59,10],a:[],g:["2 lb chicken breast","2 1/2 lb sweet potatoes","1/2 cup BBQ sauce","1 lb broccoli","1 tbsp olive oil"],p:"Bake chicken at 400°F for 20–25 min, then toss with BBQ sauce. Roast cubed sweet potatoes and broccoli with oil at 425°F for 25 min. Portion."},
+  {n:"Salmon Rice Bowls with Edamame",m:[850,86,54,32],a:["Fish","Soy","Sesame"],g:["4 salmon fillets (6 oz)","2 cups dry sushi rice","2 cups shelled edamame","1 cucumber","1 avocado","1/4 cup low-sodium soy sauce","Sesame seeds"],p:"Bake salmon at 400°F for 12–15 min and flake. Cook rice. Portion rice, salmon and edamame; drizzle with soy sauce and sesame seeds. Add cucumber and avocado when you eat."},
+  {n:"Steak Fajita Bowls",m:[800,98,54,18],a:[],g:["2 lb flank steak","2 cups dry white rice","3 bell peppers","1 onion","1 can pinto beans","1 tbsp olive oil","Fajita seasoning and salsa"],p:"Season and sear steak 4–5 min per side; rest and slice thin. Sauté sliced peppers and onion. Portion over rice with warmed beans; add salsa when you eat."},
+  {n:"Chickpea Shawarma Bowls (vegetarian)",v:1,m:[760,99,32,26],a:["Wheat/Gluten","Dairy","Sesame"],g:["3 cans chickpeas","1 1/2 cups dry pearl couscous","1 cucumber","1 pint cherry tomatoes","1 cup hummus","1 cup crumbled feta","2 tbsp olive oil","Shawarma or cumin-paprika seasoning"],p:"Toss drained chickpeas with oil and seasoning; roast at 425°F for 25 min. Cook couscous. Portion; add cucumber, tomatoes, hummus and feta when you eat.",tip:"Hummus is made with tahini (sesame)."},
+  {n:"Tempeh Taco Bowls (vegetarian)",v:1,m:[685,94,40,17],a:["Soy","Dairy"],g:["2 packages tempeh (8 oz)","1 1/2 cups dry white rice","1 can black beans","1 cup corn","1/2 cup shredded cheese","1/2 cup plain Greek yogurt","Salsa and taco seasoning"],p:"Crumble tempeh and brown with taco seasoning and a splash of water, 8 min. Portion over rice with beans and corn; top with cheese, and add salsa and yogurt when you eat."},
+  {n:"Lentil Bolognese with Whole-Wheat Pasta (vegetarian)",v:1,m:[720,124,37,10],a:["Wheat/Gluten","Dairy"],g:["1 1/2 cups dry brown or green lentils","12 oz dry whole-wheat pasta","1 jar marinara sauce (24 oz)","1 onion","1/2 cup Parmesan"],p:"Simmer lentils in water 20–25 min until tender; drain. Sauté diced onion, add marinara and lentils and simmer 10 min. Toss with cooked pasta; top with Parmesan."}]},
+ {k:"vonsralphs",n:"Vons / Ralphs",r:[
+  {n:"Chicken Fajita Rice Bowls",m:[860, 119, 66, 10],a:[],g:["2 lb chicken breast", "2 1/2 cups dry jasmine rice", "3 bell peppers", "1 onion", "1 can black beans", "1 tbsp olive oil", "1 cup salsa", "Fajita seasoning"],p:"Slice chicken, peppers and onion; toss with oil and fajita seasoning and roast at 425°F for 20 minutes. Cook rice and warm the beans. Portion and top with salsa when you eat.",tip:"Roasting everything on one pan keeps cleanup to one tray."},
+  {n:"Honey Garlic Pork Tenderloin with Potatoes",m:[690, 86, 58, 14],a:["Soy", "Wheat/Gluten"],g:["2 lb pork tenderloin (2 packs)", "3 lb baby potatoes", "1 lb green beans", "1/4 cup honey", "1/4 cup low-sodium soy sauce", "1 1/2 tbsp olive oil", "4 cloves garlic"],p:"Roast halved potatoes with 1 tbsp oil at 425°F for 30 minutes. Whisk honey, soy sauce and minced garlic; brush on the tenderloins and roast at 425°F for 20–25 minutes to 145°F inside, then rest 5 minutes and slice. Roast green beans with the rest of the oil for the last 12 minutes.",tip:"Pork tenderloin is one of the leanest meats in the case and often on sale at both stores."},
+  {n:"Turkey Taco Pasta",m:[745, 90, 54, 20],a:["Wheat/Gluten", "Dairy"],g:["1 1/2 lb 93% lean ground turkey", "12 oz dry pasta (shells or rotini)", "1 can black beans", "1 cup frozen corn", "1 cup salsa", "1/2 cup shredded Mexican-blend cheese", "Taco seasoning"],p:"Brown turkey with taco seasoning. Cook pasta. Stir pasta, beans, corn and salsa into the turkey and heat through. Portion and top with cheese.",tip:"Kid-simple and reheats well; add hot sauce or jalapeños when you eat."},
+  {n:"Sheet-Pan Salmon, Sweet Potatoes & Broccoli",m:[835, 101, 45, 26],a:["Fish"],g:["4 salmon fillets (6 oz)", "2 1/2 lb sweet potatoes", "1 lb broccoli", "1 tbsp olive oil", "1 cup dry jasmine rice", "1 lemon"],p:"Roast cubed sweet potatoes with half the oil at 425°F for 15 minutes. Add salmon and broccoli tossed in the rest of the oil and roast 12–15 minutes more. Cook rice. Squeeze lemon over the salmon before eating.",tip:"Salmon keeps about 3 days in the fridge: eat these portions first and freeze the rest."},
+  {n:"Beef & Broccoli Stir-Fry",m:[850, 121, 53, 17],a:["Soy", "Wheat/Gluten", "Sesame"],g:["1 1/2 lb flank steak", "2 1/2 cups dry jasmine rice", "2 lb broccoli", "1/3 cup low-sodium soy sauce", "2 tbsp honey", "1 tbsp sesame oil", "2 tbsp cornstarch", "Garlic and ginger"],p:"Slice steak thin against the grain and toss with 1 tbsp cornstarch. Sear in hot sesame oil 2 minutes; remove. Stir-fry broccoli with a splash of water 3 minutes. Whisk soy sauce, honey, garlic, ginger and the rest of the cornstarch with 1/2 cup water; add with the beef and simmer 1 minute until glossy. Serve over rice.",tip:"Partly freezing the steak for 20 minutes makes thin slicing easy."},
+  {n:"Shrimp Pesto Pasta",m:[745, 91, 66, 15],a:["Shellfish", "Wheat/Gluten", "Dairy", "Tree nut"],g:["2 lb frozen raw peeled shrimp", "1 lb dry pasta", "1/3 cup basil pesto", "1 pint cherry tomatoes", "4 cups spinach", "1/4 cup grated Parmesan"],p:"Thaw shrimp under cold running water. Cook pasta. Sear shrimp 2 minutes per side. Toss pasta with pesto, shrimp, halved tomatoes and spinach until it wilts. Portion and top with Parmesan.",tip:"Most pestos contain pine nuts or cashews; nut-free pesto is available at both stores."},
+  {n:"Chicken Tortilla Soup with Rice",m:[860, 116, 69, 12],a:[],g:["2 lb chicken breast", "1 can black beans", "1 can diced tomatoes (14.5 oz)", "1 cup frozen corn", "1 onion", "4 cups low-sodium chicken broth", "2 cups dry white rice", "1 tbsp olive oil", "4 corn tortillas", "Cumin and chili powder"],p:"Sauté diced onion in oil, add chicken, broth, tomatoes and spices and simmer 20 minutes. Shred the chicken, add beans and corn and simmer 5 minutes. Cook rice separately. Bake tortilla strips at 400°F for 8 minutes. Serve soup over rice with the strips on top.",tip:"Freezes well, so it's a good pick for days 4 and later. Keep rice and strips separate until you eat."},
+  {n:"Black Bean & Sweet Potato Enchilada Bake (vegetarian)",v:1,m:[810, 122, 41, 20],a:["Dairy"],g:["2 cans black beans", "2 lb sweet potatoes", "8 corn tortillas", "1 can red enchilada sauce (19 oz)", "1 1/2 cups shredded Mexican-blend cheese", "1 cup frozen corn", "2 cups plain Greek yogurt"],p:"Roast cubed sweet potatoes at 425°F for 25 minutes. Mash half the beans with 1 cup of the yogurt and mix in the rest of the beans, corn and sweet potato. Layer sauce, tortillas and filling in a 9x13 dish, top with cheese and bake at 375°F for 25 minutes. Serve with the rest of the yogurt.",tip:"Greek yogurt in the filling and on top brings protein up to about 40 g a portion."},
+  {n:"Tofu Veggie Fried Rice (vegetarian)",v:1,m:[825, 92, 51, 27],a:["Soy", "Egg", "Wheat/Gluten", "Sesame"],g:["2 blocks extra-firm tofu", "6 eggs", "2 cups dry jasmine rice", "1 lb frozen stir-fry vegetables", "1 1/2 cups shelled edamame", "1/4 cup low-sodium soy sauce", "1 tbsp sesame oil"],p:"Cook rice a day ahead if you can. Press and cube tofu and pan-fry in sesame oil until golden; push aside and scramble the eggs. Add rice, vegetables and edamame and stir-fry 6 minutes. Finish with soy sauce.",tip:"Day-old rice fries best and doesn't clump."},
+  {n:"Chickpea, Tofu & Spinach Curry (vegetarian)",v:1,m:[815, 123, 41, 16],a:["Soy", "Dairy"],g:["2 cans chickpeas", "1 block extra-firm tofu", "1 can light coconut milk", "1 can diced tomatoes (14.5 oz)", "1 onion", "4 cups spinach", "2 tbsp curry paste or powder", "2 cups dry basmati rice", "1 1/2 cups plain Greek yogurt"],p:"Sauté diced onion, add curry paste for 1 minute, then chickpeas, cubed tofu, tomatoes and coconut milk; simmer 15 minutes. Stir in spinach until it wilts. Cook rice. Serve with a spoon of yogurt.",tip:"Tofu and Greek yogurt lift a classic chickpea curry to about 40 g protein a portion."}]}
+];
+
+
+/* ===== Grocery list (one running list, kept on this phone) ===== */
+let GLIST=store.get("glist",[]);
+function glistSave(){store.set("glist",GLIST)}
+function glistAdd(items,src){const have=new Set(GLIST.filter(x=>!x.done).map(x=>x.t.toLowerCase()));let n=0;
+  items.map(t=>String(t).trim()).filter(Boolean).forEach(t=>{if(have.has(t.toLowerCase()))return;have.add(t.toLowerCase());GLIST.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),t,src,done:false});n++});glistSave();return n}
+const CART_SVG=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.5L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="19.5" r="1.5" fill="currentColor"/><circle cx="17" cy="19.5" r="1.5" fill="currentColor"/></svg>`;
+function cartBtn(open,back){const n=GLIST.filter(x=>!x.done).length;return `<button class="cartbtn" data-glopen="${open?back:"glist"}" aria-pressed="${open}" aria-label="${open?"Close my grocery list":"Open my grocery list"}${n?`, ${n} items`:""}">${CART_SVG}<span>Grocery list</span>${n?`<b>${n}</b>`:""}</button>`}
+function glistHTML(){const open=GLIST.filter(x=>!x.done),done=GLIST.filter(x=>x.done);
+  const row=x=>`<li class="gl ${x.done?"done":""}"><button class="gl-chk" data-gltoggle="${x.id}" aria-pressed="${x.done}" aria-label="${x.done?"Uncheck":"Check off"} ${esc(x.t)}">${x.done?"✓":""}</button><span class="gl-t"><b>${esc(x.t)}</b>${x.src?`<span>${esc(x.src)}</span>`:""}</span><button class="gl-ic" data-gledit="${x.id}" aria-label="Edit ${esc(x.t)}">✎</button><button class="gl-ic" data-gldel="${x.id}" aria-label="Delete ${esc(x.t)}">✕</button></li>`;
+  const text=["My grocery list · USA Volleyball Nutrition",...open.map(x=>"- "+x.t)].join("\n");
+  return `<p class="muted">One running list for the week. Add a meal prep list with one tap, then add anything else you need.</p>
+   <form id="glist-form" class="row" style="gap:8px"><input id="gl-new" placeholder="Add an item, e.g. paper towels" aria-label="Add a grocery item" style="flex:1" autocomplete="off"><button class="btn sm" type="submit">Add</button></form>
+   ${GLIST.length?`<section><div class="sec-head"><h2>To buy</h2><span class="stamp">${open.length} left</span></div>
+    ${open.length?`<ul class="glist card gcard">${open.map(row).join("")}</ul>`:`<p class="muted">All done. Nice shop.</p>`}</section>
+    ${done.length?`<section><div class="sec-head"><h2>In the cart</h2><span class="stamp">${done.length}</span></div><ul class="glist card gcard">${done.map(row).join("")}</ul></section>`:""}
+    <div class="copybox" id="gl-copy" style="display:none">${esc(text)}</div>
+    <div class="row" style="flex-wrap:wrap"><button class="btn sm" data-glcopy="1">Copy list</button>${done.length?`<button class="btn ghost sm" data-glcleardone="1">Remove checked</button>`:""}<button class="btn ghost sm" data-glclear="1">Clear all</button></div>`
+   :`<div class="card stack"><b>Your list is empty</b><p class="muted" style="font-size:.88rem">Open Meal prep${clubMode()&&!foodTeamView?" or Groceries":""} and tap Add to grocery list, or type items above.</p><button class="btn ghost sm" style="align-self:flex-start" data-glopen="${clubMode()&&!foodTeamView?"groc":"prep"}">${clubMode()&&!foodTeamView?"Go to Groceries":"Go to Meal prep"}</button></div>`}`}
+function copyText(id,ok){const el=document.getElementById(id);const txt=el?el.textContent:"";try{navigator.clipboard.writeText(txt).then(()=>toast(ok),()=>toast("Couldn't copy on this phone"))}catch(e){toast("Couldn't copy on this phone")}}
+function glistClick(b){const ds=b.dataset;
+  if(ds.glopen){const v=ds.glopen;if(clubMode()&&!foodTeamView)cfSeg=v;else foodSeg=v;render();scrollTo({top:0});return true}
+  if(ds.gltoggle){const x=GLIST.find(i=>i.id===ds.gltoggle);if(x){x.done=!x.done;glistSave();render()}return true}
+  if(ds.gldel){GLIST=GLIST.filter(i=>i.id!==ds.gldel);glistSave();render();return true}
+  if(ds.gledit){const x=GLIST.find(i=>i.id===ds.gledit);if(!x)return true;const v=prompt("Edit item",x.t);if(v!=null){const t=v.trim();if(t)x.t=t;else GLIST=GLIST.filter(i=>i.id!==x.id);glistSave();render()}return true}
+  if(ds.glcleardone){GLIST=GLIST.filter(i=>!i.done);glistSave();render();return true}
+  if(ds.glclear){if(confirm("Clear your whole grocery list?")){GLIST=[];glistSave();render()}return true}
+  if(ds.glcopy){copyText("gl-copy","Grocery list copied");return true}
+  if(ds.glistmp){const P=mpPlan();const n=glistAdd(P.list,"Meal prep · "+P.sel.map(i=>P.S.r[i].n).join(", "));toast(n?`Added ${n} item${n>1?"s":""} to your grocery list`:"Already on your grocery list");render();return true}
+  if(ds.glistgroc){const C=cKey(),g=grocState(),L=(GROC[C]||GROC.Other).filter(x=>!g[C+"|"+x[0]]).map(x=>x[1]&&C!=="USA"?`${x[0]} (${x[1]})`:x[0]);const n=glistAdd(L,"Club staples · "+(clubLabel()||C));toast(n?`Added ${n} item${n>1?"s":""} to your grocery list`:"Already on your grocery list");render();return true}
+  return false}
+document.addEventListener("submit",e=>{if(e.target&&e.target.id==="glist-form"){e.preventDefault();const i=document.getElementById("gl-new");const t=(i.value||"").trim();if(!t)return;glistAdd([t],"");render();setTimeout(()=>{const n=document.getElementById("gl-new");if(n)n.focus()},0)}},true);
+
+/* ===== Meal prep: pick a store, one meal and how many days; the app builds the plan and grocery list ===== */
+let MPB=store.get("mpb",{store:"costco",one:null,days:5,mpd:1,got:[]});
+function mpbSave(){store.set("mpb",MPB)}
+const MPWORDS={one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,twelve:12};
+function mpQty(s){let m=s.match(/^(\d+)\s+(\d+)\/(\d+)\s+(.*)$/);if(m)return [+m[1]+m[2]/m[3],m[4]];
+  m=s.match(/^(\d+)\/(\d+)\s+(.*)$/);if(m)return [m[1]/m[2],m[3]];m=s.match(/^(\d+(?:\.\d+)?)\s+(.*)$/);if(m)return [+m[1],m[2]];
+  m=s.match(/^([A-Za-z]+)\s+(.*)$/);if(m&&MPWORDS[m[1].toLowerCase()])return [MPWORDS[m[1].toLowerCase()],m[2]];return [null,s]}
+function mpFmt(q){const w=Math.floor(q+1e-9),f=Math.round((q-w)*4)/4,fr={0.25:"1/4",0.5:"1/2",0.75:"3/4"}[f]||"";if(f===1)return String(w+1);return w&&fr?w+" "+fr:w?String(w):fr||String(Math.round(q*100)/100)}
+function mpStoreObj(){if(MPB.store==="mix")return {k:"mix",n:"Mix stores",r:MEALPREP.flatMap(x=>x.r.map(r=>({...r,st:x.n})))};const S=MEALPREP.find(x=>x.k===MPB.store)||MEALPREP[0];return {...S,r:S.r.map(r=>({...r,st:S.n}))}}
+function mpPlan(){const S=mpStoreObj(),al=myAllergens();
+  if(MPB.one==null||!S.r[MPB.one]){const ok=S.r.findIndex(r=>!r.a.some(a=>al.includes(a)));MPB.one=ok<0?0:ok}
+  const sel=[MPB.one],need=MPB.days*MPB.mpd,per=4,B=Math.ceil(need/per),batches=[B];
+  const agg={},order=[];S.r[MPB.one].g.forEach(line=>{const [q,rest]=mpQty(line),key=rest.toLowerCase();
+    if(!agg[key]){agg[key]={rest,q:0};order.push(key)}if(q!=null)agg[key].q+=q*B});
+  const plur=(q,r)=>q>1?r.replace(/^(cup|pint|jar|bag|can|clove|bunch|head|block|package|box|bottle)\b/i,"$1s").replace(/^(rotisserie chicken|onion|red onion|lemon|lime|cucumber|carrot|avocado|bell pepper|egg|whole-grain roll|pita bread|naan bread)(?=$| \()/i,"$1s"):r;
+  order.forEach(k=>{const a=agg[k];if(a.q>=4&&a.q%4===0&&/^tbsp /.test(a.rest)){a.q=a.q/16;a.rest=a.rest.replace(/^tbsp/,"cup")}});
+  const list=order.map(k=>{const a=agg[k];return a.q?`${mpFmt(a.q)}${/^\d/.test(a.rest)?" ×":""} ${plur(a.q,a.rest)}`:a.rest});
+  return {S,sel,need,batches,spare:B*per-need,list,per}}
+function mealPrepHTML(){const P=mpPlan(),S=P.S,al=myAllergens(),got=MPB.got||[],r=S.r[P.sel[0]],hit=r.a.filter(a=>al.includes(a));
+  const text=[`Meal prep · ${r.st} · ${r.n} · ${MPB.days} days · ${MPB.mpd===2?"lunch + dinner":"dinner"}`,"","GROCERY LIST",...P.list.map(x=>"- "+x)].join("\n");
+  return `<p class="muted">For dinners and weekends away from the facility. Pick a store, one meal and how many days; the app builds your plan and grocery list.</p>
+   <section><h2>Store</h2><div class="seg" data-segset="mpstore">${MEALPREP.map(x=>`<button data-v="${x.k}" aria-pressed="${S.k===x.k}">${esc(x.n)}</button>`).join("")}<button data-v="mix" aria-pressed="${S.k==="mix"}">Mix stores</button></div></section>
+   <section><div class="sec-head"><h2>Meal</h2><span class="stamp">${MPB.one+1} of ${S.r.length}</span></div>
+    <div class="row" style="gap:8px;align-items:stretch"><button class="btn ghost mpnav" data-mpstep="-1" aria-label="Previous meal">‹</button><div style="flex:1;min-width:0"><div class="card stack" style="gap:6px;height:100%"><b>${esc(r.n)}</b>${S.k==="mix"?`<span class="stamp">Buy at ${esc(r.st)}</span>`:""}
+     <div class="row" style="flex-wrap:wrap;gap:6px"><span class="chip accent">${Math.round(r.m[1])} g carbs</span><span class="chip">${Math.round(r.m[2])} g protein</span></div><span class="stamp">Per portion (1/4 of a batch), approximate</span>
+     ${hit.length?`<span class="chip stop" style="align-self:flex-start">Contains ${esc(hit.join(", "))}: on your allergy list</span>`:r.a.length?`<span class="stamp">Usually contains ${esc(r.a.join(", "))}</span>`:""}</div></div><button class="btn ghost mpnav" data-mpstep="1" aria-label="Next meal">›</button></div></section>
+   <section><h2>How many days?</h2><div class="card stack">
+    <div class="choice mini" data-mpdays="1">${[3,4,5,6,7].map(n=>`<button type="button" data-v="${n}" aria-pressed="${MPB.days===n}">${n} days</button>`).join("")}</div>
+    <span class="eyebrow" style="margin-top:4px">Meals a day</span>
+    <div class="choice mini" data-mpmeals="1"><button type="button" data-v="1" aria-pressed="${MPB.mpd===1}">Dinner</button><button type="button" data-v="2" aria-pressed="${MPB.mpd===2}">Lunch + dinner (weekends)</button></div></div></section>
+   <section><div class="sec-head"><h2>Your plan</h2><span class="stamp">${P.need} portions</span></div>
+    <div class="card stack" style="gap:6px"><p style="font-size:.92rem">Cook <b>${esc(r.n)}</b> ×${P.batches[0]}. Each batch makes ${P.per} portions.${P.spare?` That's ${P.spare} spare portion${P.spare>1?"s":""}: freeze them or share with a teammate.`:""}</p></div>
+    ${MPB.days>3?`<p class="stamp" style="margin-top:8px">Cooked food keeps 3–4 days in the fridge. Freeze the portions for day 4 and later, and move each one to the fridge the night before.</p>`:""}</section>
+   <section id="mp-groc"><div class="sec-head"><h2>Grocery list</h2><span class="stamp">${got.filter(x=>P.list.includes(x)).length}/${P.list.length}</span></div>
+    <div class="card stack gcard"><div class="choice mini">${P.list.map(x=>`<button type="button" data-mpbgot="${esc(x)}" aria-pressed="${got.includes(x)}">${esc(x)}</button>`).join("")}</div>
+     <div class="copybox" id="mp-copy" style="display:none">${esc(text)}</div>
+     <div class="row" style="flex-wrap:wrap"><button class="btn sm" data-glistmp="1">Add to grocery list</button><button class="btn ghost sm" data-copymp="1">Copy</button><button class="btn ghost sm" data-mpreset="1">Clear ticks</button></div>
+     <p class="stamp">Brands vary: check labels for your allergens.</p></div></section>
+   <section><h2>Cook it</h2><div class="card stack"><div class="meal-top"><h3>${esc(r.n)}</h3><span class="chip accent">×${P.batches[0]} · ${P.batches[0]*P.per} portions</span></div><p style="font-size:.9rem">${esc(r.p)}</p>${r.tip?`<p class="muted" style="font-size:.86rem">${esc(r.tip)}</p>`:""}</div></section>
+   <p class="stamp">Carbs and protein are approximate per portion, not label-verified. Cool food within 2 hours, refrigerate and eat within 3–4 days, or freeze. Keep cold toppings (avocado, hummus, feta) separate until you eat.</p>`}
+function mpClick(b){const ds=b.dataset;
+  if(ds.mpstep){const n=mpStoreObj().r.length;if(n){MPB.one=((MPB.one||0)+(+ds.mpstep)+n)%n;MPB.got=[];mpbSave();render()}return true}
+  const dd=b.closest("[data-mpdays]");if(dd&&ds.v){MPB.days=+ds.v;mpbSave();render();return true}
+  const mm=b.closest("[data-mpmeals]");if(mm&&ds.v){MPB.mpd=+ds.v;mpbSave();render();return true}
+  if(ds.mpbgot!==undefined){const L=MPB.got||[];MPB.got=L.includes(ds.mpbgot)?L.filter(x=>x!==ds.mpbgot):[...L,ds.mpbgot];mpbSave();render();return true}
+  if(ds.mpreset){MPB.got=[];mpbSave();render();return true}
+  if(ds.copymp){copyText("mp-copy","Copied");return true}
+  return false}
+
 function vFoodClub(){
   const C=cKey(),L=LOCAL[C]||LOCAL.Other;
   const segs=[["plate","Plate"],["groc","Groceries"],["cook","Cook"],["eat","Eat out"],["snacks","Snacks"],["ask","Ask the RD"]];
@@ -1687,7 +1860,7 @@ function vFoodClub(){
   else if(cfSeg==="groc"){const g=grocState(),list=GROC[C]||GROC.Other,done=list.filter(x=>g[C+"|"+x[0]]).length;
     body=`<p class="muted" style="font-size:.88rem">A week of staples for one. Tick things off as you shop${C==="USA"?"":"; the local name is what to look for on the label"}.${usCity()?" "+usCity().g:""}</p>
     <div class="card" style="padding-block:4px">${list.map(x=>{const k=C+"|"+x[0];return `<label class="groc"><input type="checkbox" data-groc="${esc(k)}" ${g[k]?"checked":""}><span><b>${esc(x[0])}</b>${x[1]?`<i>${esc(x[1])}</i>`:""}</span></label>`}).join("")}</div>
-    <div class="row" style="gap:8px"><button class="btn ghost block" data-groccopy="1">Copy list</button><button class="btn ghost block" data-grocclear="1">Start a new week</button></div>
+    <button class="btn block" data-glistgroc="1">Add unticked items to grocery list</button><div class="row" style="gap:8px"><button class="btn ghost block" data-groccopy="1">Copy list</button><button class="btn ghost block" data-grocclear="1">Start a new week</button></div>
     <p class="stamp">${done} of ${list.length} in the basket.</p>`}
   else if(cfSeg==="cook"){
     body=`<p class="muted" style="font-size:.88rem">One-pan meals for a small kitchen. The batch recipes cover two to four meals, so you cook less often.</p>
@@ -1708,13 +1881,14 @@ function vFoodClub(){
     <div class="card" style="padding-block:2px">${L2.map(([n,a])=>{const hit=a.some(x=>myAllergens().includes(x));return `<div class="item"><div class="meal-top"><h3>${esc(n)}</h3>${hit?`<span class="chip stop">Your allergen</span>`:""}</div>${a.length?`<p class="contains">Usually contains ${a.map(x=>esc(x.toLowerCase())).join(", ")}</p>`:""}</div>`}).join("")}</div>`}
   else{
     body=`<p class="muted" style="font-size:.88rem">A question about eating where you play? Send it and the RD replies by email or WhatsApp.</p>`+formBlock("ask",[`<label for="ask-q">Your question<textarea id="ask-q" placeholder="e.g. What should I eat after a 9 pm match when nothing is open?"></textarea></label>`],"Send Message to RD")+`<button class="btn ghost block" data-tab="rd">Book a session</button>`}
-  return `<div class="view">${sampleBar()}<div><p class="eyebrow">Club season${clubLabel()?" · "+esc(clubLabel()):""}</p><h1 style="margin-top:6px">Food</h1></div>
+  if(cfSeg==="glist")body=glistHTML();
+  return `<div class="view">${sampleBar()}<div class="fuel-head"><div><p class="eyebrow">Club season${clubLabel()?" · "+esc(clubLabel()):""}</p><h1 style="margin-top:6px">Food</h1></div>${cartBtn(cfSeg==="glist","groc")}</div>
    <div class="seg" data-cfsegs="1">${segs.map(([k,l])=>`<button data-cfseg="${k}" aria-pressed="${cfSeg===k}">${l}</button>`).join("")}</div>${body}
    <button class="linkbtn" style="align-self:center" data-foodteam="1">USAV menus (for when you're back with the team)</button></div>`;
 }
 function vFood(){
   if(clubMode()&&!foodTeamView)return vFoodClub();
-  const segs=[["menu","Weekly menu"],["smoothie","Smoothies"],["snacks","Court snacks"],["dinner","Away meals"],["feedback","Feedback"]];
+  const segs=[["menu","Weekly menu"],["smoothie","Smoothies"],["snacks","Court snacks"],["dinner","Away meals"],["prep","Meal prep"],["feedback","Feedback"]];
   let body="";
   if(foodSeg==="menu"){
     const mon=jShift(mondayOf(isoToday()),wkOff*7), dIso=jShift(mon,DAYS.indexOf(day));
@@ -1746,6 +1920,8 @@ function vFood(){
       <p class="muted" style="font-size:.9rem">Every court day has one savory, one pickled, one sweeter and one vegan option. Monday to Friday only.</p>
       <div class="lineup">${luHead("Court snacks",dIso,"")}${L.length?L.map(x=>mealHTML(x,x.t)).join(""):'<p class="muted" style="padding:12px 0">No court snacks posted for this day.</p>'}</div>`;
     }
+  }else if(foodSeg==="prep"){body=mealPrepHTML()
+  }else if(foodSeg==="glist"){body=glistHTML()
   }else if(foodSeg==="dinner"){
     body=`<div class="seg" data-segset="dinner">${[["out","Eating out"],["delivery","Delivery"],["weekend","Weekends"],["recipes","Recipes"]].map(([k,l])=>`<button data-v="${k}" aria-pressed="${dinnerSeg===k}">${l}</button>`).join("")}</div>
     <p class="muted">${dinnerSeg==="weekend"?"Weekends are on you. Here's how to keep fueling well in LA and Orange County.":dinnerSeg==="delivery"?"What to order from chains you'll find on DoorDash around LA and Orange County. Menus and availability vary by store.":"Tips for the one meal away from the facility, for athletes around LA and Orange County."}</p>
@@ -1764,7 +1940,7 @@ function vFood(){
       `<label for="fb-note">Details<textarea id="fb-note" placeholder="What worked, what didn't, what you'd like to see"></textarea></label>`
     ],"Send to the kitchen")+`<p class="stamp" style="margin-top:10px">Goes to the RD, who shares it with foodservice.</p></div></div>`;
   }
-  return `<div class="view">${sampleBar()}<div><p class="eyebrow">Foodservice · updated ${fmtDate(DATA.updated)}</p><h1 style="margin-top:6px">Food</h1>${clubMode()?`<button class="linkbtn" data-foodteam="1">‹ Back to club season food</button>`:""}</div>
+  return `<div class="view">${sampleBar()}<div class="fuel-head"><div><p class="eyebrow">Foodservice · updated ${fmtDate(DATA.updated)}</p><h1 style="margin-top:6px">Food</h1>${clubMode()?`<button class="linkbtn" data-foodteam="1">‹ Back to club season food</button>`:""}</div>${cartBtn(foodSeg==="glist","prep")}</div>
    <div class="seg" data-segset="food">${segs.map(([k,l])=>`<button data-v="${k}" aria-pressed="${foodSeg===k}">${l}</button>`).join("")}</div>${body}</div>`;
 }
 /* ===== Send to the RD inbox (Google Form) ===== */
@@ -2226,6 +2402,7 @@ function render(){
 document.addEventListener("click",e=>{
   const b=e.target.closest("button,a");if(!b)return;
   if(jClick(b))return;
+  if(glistClick(b)||mpClick(b))return;
   if(b.dataset.castvote){if(!draft.vote){toast("Pick a flavor first");return}const v={month:voteMonth(),flavor:draft.vote};try{localStorage.setItem("af_vote",JSON.stringify(v))}catch(e){}
     sendInbox({...profileRecord("Smoothie vote"),Details:`${draft.vote} for ${v.month}`});draft.vote="";render();toast("Vote cast");ballArc();return}
   if(b.dataset.consent){profile.consentAt=new Date().toISOString();store.set("profile",profile);logDay(isoToday());sendAppLink();render();scrollTo({top:0});return}
@@ -2248,7 +2425,7 @@ document.addEventListener("click",e=>{
   if(b.dataset.edsave){publishData();return}
   if(b.dataset.wk){wkOff+= +b.dataset.wk;render();return}
   const segset=b.closest("[data-segset]");
-  if(segset){const k=segset.dataset.segset,v=b.dataset.v;if(k==="food")foodSeg=v;if(k==="day")day=v;if(k==="dinner")dinnerSeg=v;render();return}
+  if(segset){const k=segset.dataset.segset,v=b.dataset.v;if(k==="mpstore"){MPB.store=v;MPB.one=null;MPB.got=[];mpbSave()}if(k==="food")foodSeg=v;if(k==="day")day=v;if(k==="dinner")dinnerSeg=v;render();return}
   const pick=b.closest("[data-pick]");
   if(pick){const k=pick.dataset.pick,v=b.dataset.v;
     if(pick.dataset.multi){draft[k]=draft[k]||[];draft[k]=draft[k].includes(v)?draft[k].filter(x=>x!==v):[...draft[k],v]}else draft[k]=v;
